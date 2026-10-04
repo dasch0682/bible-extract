@@ -12,6 +12,41 @@ from validate import norm, validate_entry, check_link
 ROOT = Path(__file__).parent
 PROMPT_VERSION = "2"
 
+
+def _model_slug(model: str) -> str:
+    return re.sub(r"[^\w.-]", "_", model)
+
+
+def make_client(provider: str, base_url: str | None = None):
+    if provider == "anthropic":
+        from anthropic import Anthropic
+        return Anthropic()
+    elif provider == "openai_compat":
+        from openai import OpenAI
+        return OpenAI(base_url=base_url)
+    else:
+        sys.exit(f"Unknown PROVIDER '{provider}' — supported: anthropic, openai_compat")
+
+
+def _call_llm(provider: str, client, model: str, system: str, user: str) -> str | None:
+    try:
+        if provider == "anthropic":
+            r = client.messages.create(
+                model=model, max_tokens=700, system=system,
+                messages=[{"role": "user", "content": user}],
+            )
+            return r.content[0].text
+        else:
+            r = client.chat.completions.create(
+                model=model, max_tokens=700,
+                messages=[{"role": "system", "content": system},
+                          {"role": "user", "content": user}],
+            )
+            return r.choices[0].message.content
+    except Exception as e:
+        print(f"[warn] LLM call failed: {e}", file=sys.stderr)
+        return None
+
 SYSTEM_TEMPLATE = """\
 Analyze a Bible verse ({translation}) for a thematic anthology.
 Write all string values in {prompt_lang}.
@@ -76,7 +111,7 @@ def neighbours(corpus: dict, code: str, c: str, v: str, span: int = 2) -> list:
     return [(x, chap[x]) for x in vs[max(0, i - span): i + span + 1]]
 
 
-def ask(client, model: str, lang_cfg: dict, topic_label: str,
+def ask(provider: str, client, model: str, lang_cfg: dict, topic_label: str,
         ctx_lines: list, code: str, c: str, v: str, text: str, max_words: int) -> dict | None:
     system = SYSTEM_TEMPLATE.format(
         translation=lang_cfg["translation"],
@@ -88,12 +123,10 @@ def ask(client, model: str, lang_cfg: dict, topic_label: str,
         "Neighboring verses:\n" + "\n".join(f"{x}: {t}" for x, t in ctx_lines)
     )
     for _ in range(2):
-        r = client.messages.create(
-            model=model, max_tokens=700,
-            system=system,
-            messages=[{"role": "user", "content": user}],
-        )
-        m = re.search(r"\{.*\}", r.content[0].text, re.S)
+        raw = _call_llm(provider, client, model, system, user)
+        if raw is None:
+            return None
+        m = re.search(r"\{.*\}", raw, re.S)
         if m:
             try:
                 return json.loads(m.group(0))
@@ -104,7 +137,7 @@ def ask(client, model: str, lang_cfg: dict, topic_label: str,
 
 def run_language(
     lang: str, lang_cfg: dict, topic: dict, refs: list,
-    client, model: str, check_links: bool,
+    provider: str, client, model: str, check_links: bool,
 ) -> tuple[list, list, int]:
     """Process all refs for one language. Returns (kept, rejected, skipped_count)."""
     corpus = load_corpus(lang_cfg["corpus"])
@@ -125,11 +158,11 @@ def run_language(
         verse_text = corpus.get(code, {}).get(c, {}).get(v)
         if verse_text is None:
             return h, None, "verse absent from corpus"
-        cf = cache_dir / f"{code}.{c}.{v}.{PROMPT_VERSION}.json"
+        cf = cache_dir / f"{code}.{c}.{v}.{PROMPT_VERSION}.{_model_slug(model)}.json"
         if cf.exists():
             llm = json.loads(cf.read_text(encoding="utf-8"))
         else:
-            llm = ask(client, model, lang_cfg, topic["label"],
+            llm = ask(provider, client, model, lang_cfg, topic["label"],
                       neighbours(corpus, code, c, v), code, c, v, verse_text, max_words)
             if llm is not None:
                 cf.write_text(json.dumps(llm, ensure_ascii=False), encoding="utf-8")
@@ -158,6 +191,7 @@ def run_language(
         entry["reference"] = ref_str
         entry["lien"] = make_link(lang_cfg, code, c, v)
         entry["version"] = lang_cfg["version_label"]
+        entry["modele"] = model
         if check_links and not check_link(entry["lien"]):
             rejected.append((ref_str, "dead link"))
             continue
@@ -174,6 +208,8 @@ def main() -> None:
     ap.add_argument("--limit", type=int)
     ap.add_argument("--check-links", action="store_true")
     ap.add_argument("--strongs-dir", default=os.getenv("STRONGS_DIR", "tmp/byztxt"))
+    ap.add_argument("--provider", default=os.getenv("PROVIDER", "anthropic"))
+    ap.add_argument("--base-url", default=os.getenv("BASE_URL"))
     ap.add_argument("--model", default=os.getenv("MODEL", "claude-sonnet-4-6"))
     a = ap.parse_args()
 
@@ -243,8 +279,7 @@ def main() -> None:
             print(f"  {code} {c}:{v}{tag}")
         return
 
-    from anthropic import Anthropic
-    client = Anthropic()
+    client = make_client(a.provider, a.base_url)
 
     out_dir = ROOT / "out"
     out_dir.mkdir(exist_ok=True)
@@ -276,7 +311,7 @@ def main() -> None:
     for lang, lang_cfg in langs.items():
         print(f"\n=== {lang} ({lang_cfg['translation']}) ===")
         kept, rejected, skipped = run_language(
-            lang, lang_cfg, topic, all_refs, client, a.model, a.check_links,
+            lang, lang_cfg, topic, all_refs, a.provider, client, a.model, a.check_links,
         )
         (out_dir / f"{a.topic}.{lang}.json").write_text(
             json.dumps(kept, ensure_ascii=False, indent=2), encoding="utf-8"
