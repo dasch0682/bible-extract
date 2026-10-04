@@ -1,9 +1,15 @@
 label: "la vérité"
 scope: NT              # NT | OT | ALL | liste de codes ex. [JHN, 1JN]
-version: LSG           # code utilisé dans l'URL lire.la-bible.net
-version_label: "LSG 1910"
 max_words: 14
-# regex appliquées sur le texte sans accents, en minuscules
+
+# Strong's numbers (G = NT Greek) — primary discovery via byztxt Byzantine Greek NT
+strongs:
+  - G225   # ἀλήθεια  aletheia  — truth, reality
+  - G227   # ἀληθής   alethes   — true, genuine
+  - G228   # ἀληθινός alethinos — real, authentic
+  - G230   # ἀληθῶς   alethos   — truly, certainly
+
+# Regex cross-check applied on the FR corpus (text normalised: no accents, lowercase)
 patterns:
   - '\bverit'          # vérité, véritable, véritablement, en vérité
   - '\bvrai'           # vrai, vraie, vraiment

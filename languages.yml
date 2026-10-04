@@ -1,0 +1,17 @@
+fr:
+  corpus: data/fr.json
+  translation: Louis Segond 1910
+  version_label: LSG 1910
+  version: LSG
+  link_template: "https://lire.la-bible.net/bible/{ver}/{code}.{c}.{v}-{code}.{c}.{v}"
+  prompt_lang: French
+  ref_sep: ","           # Jean 3,16
+
+en:
+  corpus: data/en.json
+  translation: King James Version (1769)
+  version_label: KJV 1769
+  version: KJV
+  link_template: "https://www.biblegateway.com/passage/?search={book_name}+{c}%3A{v}&version={ver}"
+  prompt_lang: English
+  ref_sep: ":"           # John 3:16

@@ -6,31 +6,79 @@ on:
         description: "Nom du fichier topics/<sujet>.yml (sans extension)"
         required: true
         default: verite
+      lang:
+        description: "Langues à générer, séparées par virgule (défaut: toutes)"
+        required: false
+        default: ""
       check_links:
         description: "Vérifier les liens (HEAD)"
         type: boolean
         default: false
+
 permissions:
   contents: write
+
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
+
       - run: pip install -r requirements.txt
+
+      # --- Corpus preparation (cached across runs) ---
+      - name: Cache corpora
+        uses: actions/cache@v4
+        id: corpus-cache
+        with:
+          path: data/*.json
+          key: corpus-v1
+
+      - name: Build FR corpus (LSG 1910)
+        if: steps.corpus-cache.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 https://github.com/BibleAquifer/LouisSegond1910 tmp/lsg1910
+          python scripts/build_corpus.py fr
+
+      - name: Build EN corpus (KJV)
+        if: steps.corpus-cache.outputs.cache-hit != 'true'
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/scrollmapper/bible_databases/master/formats/json/KJV.json \
+               -o tmp/kjv.json
+          python scripts/build_corpus.py en
+
+      # --- Strong's concordance data (byztxt, cached) ---
+      - name: Cache byztxt
+        uses: actions/cache@v4
+        id: byztxt-cache
+        with:
+          path: tmp/byztxt
+          key: byztxt-v1
+
+      - name: Download byztxt Greek NT
+        if: steps.byztxt-cache.outputs.cache-hit != 'true'
+        run: git clone --depth 1 https://github.com/byztxt/byzantine-majority-text tmp/byztxt
+
+      # --- Extraction ---
       - name: Extraction
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          python extract.py --topic "${{ inputs.topic }}" ${{ inputs.check_links && '--check-links' || '' }}
+          python extract.py \
+            --topic "${{ inputs.topic }}" \
+            ${{ inputs.lang != '' && format('--lang {0}', inputs.lang) || '' }} \
+            ${{ inputs.check_links && '--check-links' || '' }}
+
       - name: Résumé
         run: cat "out/${{ inputs.topic }}.report.md" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Commit
         run: |
           git config user.name "bible-extract-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add out cache
+          git add out/ cache/
           git commit -m "extract: ${{ inputs.topic }}" || echo "rien à commiter"
           git push

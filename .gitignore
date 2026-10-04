@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+tmp/
+data/en.json
+data/fr.json
+out/
