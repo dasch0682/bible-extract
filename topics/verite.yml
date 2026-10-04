@@ -1,0 +1,9 @@
+label: "la vérité"
+scope: NT              # NT | OT | ALL | liste de codes ex. [JHN, 1JN]
+version: LSG           # code utilisé dans l'URL lire.la-bible.net
+version_label: "LSG 1910"
+max_words: 14
+# regex appliquées sur le texte sans accents, en minuscules
+patterns:
+  - '\bverit'          # vérité, véritable, véritablement, en vérité
+  - '\bvrai'           # vrai, vraie, vraiment

@@ -1,0 +1,36 @@
+name: extract-topic
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Nom du fichier topics/<sujet>.yml (sans extension)"
+        required: true
+        default: verite
+      check_links:
+        description: "Vérifier les liens (HEAD)"
+        type: boolean
+        default: false
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - name: Extraction
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python extract.py --topic "${{ inputs.topic }}" ${{ inputs.check_links && '--check-links' || '' }}
+      - name: Résumé
+        run: cat "out/${{ inputs.topic }}.report.md" >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit
+        run: |
+          git config user.name "bible-extract-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add out cache
+          git commit -m "extract: ${{ inputs.topic }}" || echo "rien à commiter"
+          git push
