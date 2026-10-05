@@ -10,8 +10,8 @@ from books import scope_codes, NAMES, NAMES_BY_LANG
 from validate import norm, validate_entry, check_link
 
 ROOT = Path(__file__).parent
-PROMPT_VERSION = "4"
-PROMPT_VERSION_EXTRACT = "4e"  # extract-only prompt (no pertinence field)
+PROMPT_VERSION = "5"
+PROMPT_VERSION_EXTRACT = "5e"  # extract-only prompt (no pertinence field)
 
 
 def _model_slug(model: str) -> str:
@@ -30,7 +30,8 @@ def make_client(provider: str, base_url: str | None = None):
         sys.exit(f"Unknown PROVIDER '{provider}' — supported: anthropic, openai_compat")
 
 
-def _call_llm(provider: str, client, model: str, system: str, user: str) -> str | None:
+def _call_llm(provider: str, client, model: str, system: str, user: str,
+              json_schema: dict | None = None) -> str | None:
     if provider == "anthropic":
         try:
             r = client.messages.create(
@@ -48,18 +49,23 @@ def _call_llm(provider: str, client, model: str, system: str, user: str) -> str 
     headers = {"Authorization": f"Bearer {client['api_key']}", "Content-Type": "application/json"}
     url = f"{client['base_url']}/chat/completions"
 
-    def _do_call(use_json_fmt: bool):
+    def _do_call(fmt: str):
         body = {"model": model, "max_tokens": 700, "messages": msgs,
                 "reasoning": {"effort": "none"}}
-        if use_json_fmt:
+        if fmt == "schema":
+            body["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {"name": "verse_analysis", "strict": True, "schema": json_schema},
+            }
+        elif fmt == "object":
             body["response_format"] = {"type": "json_object"}
         return _req.post(url, headers=headers, json=body, timeout=60)
 
     for attempt in range(4):
         try:
-            resp = _do_call(use_json_fmt=True)
+            resp = _do_call("schema" if json_schema else "object")
             if resp.status_code in (400, 422):
-                resp = _do_call(use_json_fmt=False)
+                resp = _do_call("object")   # schema not supported — fall back
             if resp.status_code == 429:
                 wait = (2 ** attempt) * 5
                 print(f"[warn] 429 rate-limit, attente {wait}s (tentative {attempt + 1}/4)",
@@ -82,7 +88,7 @@ Reply ONLY with a JSON object, no surrounding text, with these keys:
 - "contexte" (str): one sentence on the situation from the neighboring verses provided.
 - "extrait" (str): a CONTIGUOUS passage copied VERBATIM from the verse (preserving accents, punctuation), \
 at most {max_words} words, containing the key term.
-- "paraphrase" (str|null): REQUIRED (non-null string) whenever your extrait does not cover every word of the verse; null ONLY if the extrait is the complete verse verbatim.
+- "paraphrase" (str): a concise summary of the full verse in your own words. Always provide this — never null. The system discards it automatically when your extrait already covers the entire verse.
 Never quote text not present in the verse.{extra_instructions}"""
 
 SYSTEM_EXTRACT_TEMPLATE = """\
@@ -94,8 +100,33 @@ Reply ONLY with a JSON object, no surrounding text, with these keys:
 - "contexte" (str): one sentence on the situation from the neighboring verses provided.
 - "extrait" (str): a CONTIGUOUS passage copied VERBATIM from the verse (preserving accents, punctuation), \
 at most {max_words} words, containing the key term.
-- "paraphrase" (str|null): REQUIRED (non-null string) whenever your extrait does not cover every word of the verse; null ONLY if the extrait is the complete verse verbatim.
+- "paraphrase" (str): a concise summary of the full verse in your own words. Always provide this — never null. The system discards it automatically when your extrait already covers the entire verse.
 Never quote text not present in the verse.{extra_instructions}"""
+
+# JSON schemas for strict response_format enforcement (paraphrase always str, never null).
+_JSON_SCHEMA_PIVOT = {
+    "type": "object",
+    "properties": {
+        "pertinent": {"type": "boolean"},
+        "auteur": {"type": "string"},
+        "contexte": {"type": "string"},
+        "extrait": {"type": "string"},
+        "paraphrase": {"type": "string"},
+    },
+    "required": ["pertinent", "auteur", "contexte", "extrait", "paraphrase"],
+    "additionalProperties": False,
+}
+_JSON_SCHEMA_EXTRACT = {
+    "type": "object",
+    "properties": {
+        "auteur": {"type": "string"},
+        "contexte": {"type": "string"},
+        "extrait": {"type": "string"},
+        "paraphrase": {"type": "string"},
+    },
+    "required": ["auteur", "contexte", "extrait", "paraphrase"],
+    "additionalProperties": False,
+}
 
 
 def load_languages() -> dict:
@@ -179,8 +210,9 @@ def ask(provider: str, client, model: str, lang_cfg: dict, topic_label: str,
         f"Theme: {topic_label}\nReference: {code} {c}:{v}\nVerse: {text}\n\n"
         "Neighboring verses:\n" + "\n".join(f"{x}: {t}" for x, t in ctx_lines)
     )
+    schema = _JSON_SCHEMA_PIVOT if include_relevance else _JSON_SCHEMA_EXTRACT
     for _ in range(2):
-        raw = _call_llm(provider, client, model, system, user)
+        raw = _call_llm(provider, client, model, system, user, json_schema=schema)
         if raw is None:
             return None
         m = re.search(r"\{.*\}", raw, re.S)
