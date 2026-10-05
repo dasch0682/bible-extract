@@ -10,7 +10,7 @@ from books import scope_codes, NAMES, NAMES_BY_LANG
 from validate import norm, validate_entry, check_link
 
 ROOT = Path(__file__).parent
-PROMPT_VERSION = "5"
+PROMPT_VERSION = "6"
 PROMPT_VERSION_EXTRACT = "5e"  # extract-only prompt (no pertinence field)
 
 
