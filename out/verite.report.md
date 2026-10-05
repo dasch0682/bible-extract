@@ -1,6 +1,7 @@
 # Report: la vérité
 
 ## Discovery cross-check
+- Labels: fr="la vérité", en="truth"
 - Strong's numbers: ['G225', 'G227', 'G228', 'G230']
 - Patterns: ['\\bverit', '\\bvrai']
 - Excluded phrases (pattern filter): []
