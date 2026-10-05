@@ -3,5 +3,4 @@ __pycache__/
 tmp/
 data/en.json
 data/fr.json
-out/
 .claude/
