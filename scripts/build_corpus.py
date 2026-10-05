@@ -41,6 +41,15 @@ _KJV_BOOK_NAME_TO_USFM = {
     "Titus":"TIT","Philemon":"PHM","Hebrews":"HEB","James":"JAS","1 Peter":"1PE",
     "2 Peter":"2PE","1 John":"1JN","2 John":"2JN","3 John":"3JN","Jude":"JUD",
     "Revelation":"REV",
+    # alternate spellings used by some scrollmapper builds (Roman numerals)
+    "I Samuel":"1SA","II Samuel":"2SA","I Kings":"1KI","II Kings":"2KI",
+    "I Chronicles":"1CH","II Chronicles":"2CH",
+    "I Corinthians":"1CO","II Corinthians":"2CO",
+    "I Thessalonians":"1TH","II Thessalonians":"2TH",
+    "I Timothy":"1TI","II Timothy":"2TI",
+    "I Peter":"1PE","II Peter":"2PE",
+    "I John":"1JN","II John":"2JN","III John":"3JN",
+    "Revelation of John":"REV",
 }
 
 
