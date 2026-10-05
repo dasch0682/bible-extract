@@ -14,12 +14,6 @@ patterns:
   - '\bverit'          # vérité, véritable, véritablement (not "en vérité" — filtered below)
   - '\bvrai'           # vrai, vraie, vraiment
 
-# Phrases stripped from the normalised text before pattern matching (Strong's unaffected).
-# A verse whose only match was the introductory formula is counted in the report.
-exclude_phrases:
-  - '\ben verite\b'    # "en vérité (je vous dis)" — introductory formula, not a truth claim
-  - '\bamen\b'         # Greek ἀμήν transliterated — same formula in some translations
-
 extra_instructions: >-
   A verse where the only reason the word "vérité/truth" appears is the
   introductory formula "en vérité, en vérité, je vous le dis" (amen, amen)
