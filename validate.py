@@ -4,6 +4,18 @@ import requests
 
 LINK = "https://lire.la-bible.net/bible/{ver}/{code}.{c}.{v}-{code}.{c}.{v}"
 
+# Length-preserving map: typographic variants → ASCII equivalents.
+# Length-preserving means positions in the softened string map 1-to-1 to the original,
+# so we can recover the verbatim corpus substring after a soft match.
+_SOFT_MAP = str.maketrans(
+    "\u2018\u2019\u02BC`\u201C\u201D\u00AB\u00BB\u2013\u2014\u2212\u00A0",
+    "''''\"\"\"\"--- ",
+)
+
+def _soft(s: str) -> str:
+    """Lowercase + normalise typographic variants, length-preserving."""
+    return s.lower().translate(_SOFT_MAP)
+
 def norm(s):
     s = s.replace("\u2019", "'").replace("\u00a0", " ")
     s = unicodedata.normalize("NFD", s)
@@ -12,6 +24,18 @@ def norm(s):
 
 def _ws(s):
     return re.sub(r"\s+", " ", s.replace("\u00a0", " ")).strip()
+
+def _find_verbatim(ext: str, verse_ws: str) -> str | None:
+    """Find ext in verse_ws with soft typographic normalisation.
+
+    Returns the verbatim corpus substring (from verse_ws) on success, else None.
+    Because _soft is length-preserving, the position found in the softened string
+    maps directly back to the original.
+    """
+    pos = _soft(verse_ws).find(_soft(ext))
+    if pos == -1:
+        return None
+    return verse_ws[pos: pos + len(ext)]
 
 def build_link(version, code, c, v):
     return LINK.format(ver=version, code=code, c=c, v=v)
@@ -28,9 +52,15 @@ def validate_entry(llm, verse_text, max_words):
     ext = _ws(llm.get("extrait") or "")
     if not ext:
         return None, "extrait vide"
-    if ext not in _ws(verse_text):
-        return None, "extrait absent du verset (non exact)"
-    n = len(ext.split())
+    verse_ws = _ws(verse_text)
+    # Strict match first; fall back to soft (typographic-variant-tolerant) match.
+    if ext in verse_ws:
+        verbatim_ext = ext
+    else:
+        verbatim_ext = _find_verbatim(ext, verse_ws)
+        if verbatim_ext is None:
+            return None, "extrait absent du verset (non exact)"
+    n = len(verbatim_ext.split())
     para = (llm.get("paraphrase") or "").strip() or None
     if not (llm.get("auteur") or "").strip():
         return None, "auteur manquant"
@@ -38,23 +68,22 @@ def validate_entry(llm, verse_text, max_words):
         # Extract too long: fall back to full verse as citation; paraphrase is mandatory.
         if para is None:
             return None, "extrait trop long et paraphrase manquante"
-        citation = _ws(verse_text)
         return {
-            "citation": citation,
-            "longueurExtrait": len(citation),
-            "nbMotExtrait": len(citation.split()),
+            "citation": verse_ws,
+            "longueurExtrait": len(verse_ws),
+            "nbMotExtrait": len(verse_ws.split()),
             "paraphrase": para,
             "auteur": llm["auteur"].strip(),
             "contexte": (llm.get("contexte") or "").strip(),
         }, None
-    full = norm(re.sub(r"[^\w\s]", "", ext)) == norm(re.sub(r"[^\w\s]", "", verse_text))
+    full = norm(re.sub(r"[^\w\s]", "", verbatim_ext)) == norm(re.sub(r"[^\w\s]", "", verse_ws))
     if full:
         para = None
     elif para is None:
         return None, "paraphrase manquante (extrait tronque)"
     return {
-        "citation": ext,
-        "longueurExtrait": len(ext),
+        "citation": verbatim_ext,
+        "longueurExtrait": len(verbatim_ext),
         "nbMotExtrait": n,
         "paraphrase": para,
         "auteur": llm["auteur"].strip(),

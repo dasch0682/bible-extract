@@ -77,6 +77,30 @@ def test_reject_none_extract():
     _, err = validate_entry(llm, VERSE, 14)
     assert err == "extrait vide"
 
+def test_soft_match_curly_apostrophe():
+    verse = "C\u2019est la v\u00e9rit\u00e9."   # corpus: curly apostrophe
+    llm = {
+        "extrait": "C'est la v\u00e9rit\u00e9.",  # LLM: straight apostrophe
+        "paraphrase": "...",
+        "auteur": "Jean",
+        "contexte": "",
+    }
+    entry, err = validate_entry(llm, verse, 14)
+    assert err is None
+    assert entry["citation"] == verse  # verbatim from corpus
+
+def test_soft_match_returns_corpus_verbatim():
+    verse = "La v\u00e9rit\u00e9 vous affranchira."
+    llm = {
+        "extrait": "la v\u00e9rit\u00e9 vous affranchira.",  # lowercase first letter
+        "paraphrase": "...",
+        "auteur": "J\u00e9sus",
+        "contexte": "",
+    }
+    entry, err = validate_entry(llm, verse, 14)
+    assert err is None
+    assert entry["citation"] == "La v\u00e9rit\u00e9 vous affranchira."  # corpus case preserved
+
 def test_reject_extract_not_in_verse():
     llm = {
         "extrait": "Je suis la résurrection et la vie",
