@@ -21,6 +21,12 @@ one file per language. Run from mobile via GitHub Actions.
 - Word-level `patterns` in the topic file are an optional cross-check.
   Any verse found by one method but not the other is listed in
   out/<topic>.report.md, never silently dropped.
+- `exclude_phrases` (optional list of regexes in a topic YML) are stripped from
+  the normalised text before pattern matching. A verse that matched only because
+  of an excluded formula is counted in the report under "Excluded by phrase filter".
+  Strong's discovery is never affected by `exclude_phrases`.
+- `extra_instructions` (optional string in a topic YML) is appended to the LLM
+  system prompt for that topic only, to convey topic-specific relevance rules.
 - Record each data source and its license in data/SOURCES.md.
   Verify the license before use; never assume it.
 

@@ -25,24 +25,54 @@ CORPUS = {
 }
 
 def test_patterns_finds_match():
-    hits = find_hits_patterns(CORPUS, ["JHN", "ROM"], [r"v.rit."])
+    hits, _ = find_hits_patterns(CORPUS, ["JHN", "ROM"], [r"v.rit."])
     assert ("JHN", "14", "6") in hits
 
 def test_patterns_no_match():
-    hits = find_hits_patterns(CORPUS, ["JHN"], [r"grâce"])
+    hits, _ = find_hits_patterns(CORPUS, ["JHN"], [r"grâce"])
     assert len(hits) == 0
 
 def test_patterns_scope_filters_books():
-    hits = find_hits_patterns(CORPUS, ["ROM"], [r"v.rit."])
+    hits, _ = find_hits_patterns(CORPUS, ["ROM"], [r"v.rit."])
     assert ("JHN", "14", "6") not in hits
 
 def test_patterns_multiple_patterns():
-    hits = find_hits_patterns(CORPUS, ["JHN"], [r"grâce", r"v.rit."])
+    hits, _ = find_hits_patterns(CORPUS, ["JHN"], [r"grâce", r"v.rit."])
     assert ("JHN", "14", "6") in hits
 
 def test_patterns_empty_patterns():
-    hits = find_hits_patterns(CORPUS, ["JHN"], [])
+    hits, _ = find_hits_patterns(CORPUS, ["JHN"], [])
     assert len(hits) == 0
+
+def test_patterns_exclude_phrases_removes_formula_only_verse():
+    corpus = {
+        "JHN": {
+            "8": {
+                "32": "Et vous connaîtrez la vérité, et la vérité vous affranchira.",
+                "34": "En vérité, en vérité, je vous le dis, quiconque commet le péché est esclave.",
+            }
+        }
+    }
+    hits, excluded = find_hits_patterns(
+        corpus, ["JHN"], [r"\bverit"], exclude_phrases=[r"\ben verite\b"]
+    )
+    assert ("JHN", "8", "32") in hits
+    assert ("JHN", "8", "34") not in hits
+    assert ("JHN", "8", "34") in excluded
+
+def test_patterns_exclude_phrases_keeps_verse_with_both():
+    corpus = {
+        "JHN": {
+            "8": {
+                "45": "En vérité je vous le dis, mais parce que je dis la vérité, vous ne me croyez pas.",
+            }
+        }
+    }
+    hits, excluded = find_hits_patterns(
+        corpus, ["JHN"], [r"\bverit"], exclude_phrases=[r"\ben verite\b"]
+    )
+    assert ("JHN", "8", "45") in hits
+    assert ("JHN", "8", "45") not in excluded
 
 
 # --- neighbours ---

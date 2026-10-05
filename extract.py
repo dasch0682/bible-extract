@@ -22,9 +22,9 @@ def make_client(provider: str, base_url: str | None = None):
         from anthropic import Anthropic
         return Anthropic()
     elif provider == "openai_compat":
-        from openai import OpenAI
         api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
-        return OpenAI(base_url=base_url, api_key=api_key)
+        return {"base_url": (base_url or "https://openrouter.ai/api/v1").rstrip("/"),
+                "api_key": api_key}
     else:
         sys.exit(f"Unknown PROVIDER '{provider}' — supported: anthropic, openai_compat")
 
@@ -41,35 +41,35 @@ def _call_llm(provider: str, client, model: str, system: str, user: str) -> str 
             print(f"[warn] LLM call failed: {e}", file=sys.stderr)
             return None
 
-    # openai_compat (OpenRouter) — retry on 429 with progressive backoff
+    # openai_compat (OpenRouter) — HTTP via requests, retry on 429 with progressive backoff
+    import requests as _req
     msgs = [{"role": "system", "content": system}, {"role": "user", "content": user}]
-    extra = {"reasoning": {"effort": "none"}}
+    headers = {"Authorization": f"Bearer {client['api_key']}", "Content-Type": "application/json"}
+    url = f"{client['base_url']}/chat/completions"
 
     def _do_call(use_json_fmt: bool):
-        kw = dict(model=model, max_tokens=700, messages=msgs, extra_body=extra)
+        body = {"model": model, "max_tokens": 700, "messages": msgs,
+                "reasoning": {"effort": "none"}}
         if use_json_fmt:
-            kw["response_format"] = {"type": "json_object"}
-        return client.chat.completions.create(**kw)
+            body["response_format"] = {"type": "json_object"}
+        return _req.post(url, headers=headers, json=body, timeout=60)
 
     for attempt in range(4):
         try:
-            try:
-                r = _do_call(use_json_fmt=True)
-            except Exception as e:
-                if getattr(e, "status_code", None) in (400, 422):
-                    r = _do_call(use_json_fmt=False)
-                else:
-                    raise
-            return r.choices[0].message.content
-        except Exception as e:
-            if getattr(e, "status_code", None) == 429:
+            resp = _do_call(use_json_fmt=True)
+            if resp.status_code in (400, 422):
+                resp = _do_call(use_json_fmt=False)
+            if resp.status_code == 429:
                 wait = (2 ** attempt) * 5
                 print(f"[warn] 429 rate-limit, attente {wait}s (tentative {attempt + 1}/4)",
                       file=sys.stderr)
                 time.sleep(wait)
-            else:
-                print(f"[warn] LLM call failed: {e}", file=sys.stderr)
-                return None
+                continue
+            resp.raise_for_status()
+            return resp.json()["choices"][0]["message"]["content"]
+        except Exception as e:
+            print(f"[warn] LLM call failed: {e}", file=sys.stderr)
+            return None
     return None
 
 SYSTEM_TEMPLATE = """\
@@ -82,7 +82,7 @@ Reply ONLY with a JSON object, no surrounding text, with these keys:
 - "extrait" (str): a CONTIGUOUS passage copied VERBATIM from the verse (preserving accents, punctuation), \
 at most {max_words} words, containing the key term.
 - "paraphrase" (str|null): summary of the full verse in your words; required if the extract does not cover the whole verse.
-Never quote text not present in the verse."""
+Never quote text not present in the verse.{extra_instructions}"""
 
 
 def load_languages() -> dict:
@@ -108,16 +108,32 @@ def make_link(lang_cfg: dict, code: str, c: str, v: str) -> str:
     )
 
 
-def find_hits_patterns(corpus: dict, codes: list, patterns: list) -> set:
+def find_hits_patterns(
+    corpus: dict, codes: list, patterns: list, exclude_phrases: list | None = None
+) -> tuple[set, set]:
+    """Return (hits, excluded_by_phrase).
+
+    exclude_phrases are stripped from the normalised text before pattern matching.
+    A ref lands in `excluded_by_phrase` when it would have matched on the raw text
+    but no longer matches after stripping — i.e. the only keyword occurrence was
+    inside an excluded formula.
+    """
     rx = [re.compile(p) for p in patterns]
-    hits = set()
+    rx_excl = [re.compile(p) for p in (exclude_phrases or [])]
+    hits: set = set()
+    excluded: set = set()
     for code in codes:
         for c in sorted(corpus.get(code, {}), key=int):
             for v in sorted(corpus[code][c], key=int):
                 t = norm(corpus[code][c][v])
-                if any(r.search(t) for r in rx):
+                t_filtered = t
+                for rx_e in rx_excl:
+                    t_filtered = rx_e.sub("", t_filtered)
+                if any(r.search(t_filtered) for r in rx):
                     hits.add((code, c, v))
-    return hits
+                elif any(r.search(t) for r in rx):
+                    excluded.add((code, c, v))
+    return hits, excluded
 
 
 def _find_hits_strongs(strong_labels: list, codes: list, byztxt_dir: Path) -> set:
@@ -137,11 +153,13 @@ def neighbours(corpus: dict, code: str, c: str, v: str, span: int = 2) -> list:
 
 
 def ask(provider: str, client, model: str, lang_cfg: dict, topic_label: str,
-        ctx_lines: list, code: str, c: str, v: str, text: str, max_words: int) -> dict | None:
+        ctx_lines: list, code: str, c: str, v: str, text: str, max_words: int,
+        extra_instructions: str = "") -> dict | None:
     system = SYSTEM_TEMPLATE.format(
         translation=lang_cfg["translation"],
         prompt_lang=lang_cfg["prompt_lang"],
         max_words=max_words,
+        extra_instructions=("\n" + extra_instructions) if extra_instructions else "",
     )
     user = (
         f"Theme: {topic_label}\nReference: {code} {c}:{v}\nVerse: {text}\n\n"
@@ -188,7 +206,8 @@ def run_language(
             llm = json.loads(cf.read_text(encoding="utf-8"))
         else:
             llm = ask(provider, client, model, lang_cfg, topic["label"],
-                      neighbours(corpus, code, c, v), code, c, v, verse_text, max_words)
+                      neighbours(corpus, code, c, v), code, c, v, verse_text, max_words,
+                      extra_instructions=topic.get("extra_instructions", ""))
             if llm is not None:
                 cf.write_text(json.dumps(llm, ensure_ascii=False), encoding="utf-8")
         return h, llm, None
@@ -261,6 +280,7 @@ def main() -> None:
     # --- Discovery ---
     refs_strongs: set = set()
     refs_patterns: set = set()
+    refs_excluded_patterns: set = set()
 
     if strongs:
         if byztxt_dir.exists():
@@ -272,8 +292,12 @@ def main() -> None:
 
     if patterns:
         if pivot_corpus is not None:
-            refs_patterns = find_hits_patterns(pivot_corpus, codes, patterns)
-            print(f"Pattern discovery ({pivot_lang}): {len(refs_patterns)} refs")
+            refs_patterns, refs_excluded_patterns = find_hits_patterns(
+                pivot_corpus, codes, patterns, topic.get("exclude_phrases"))
+            msg = f"Pattern discovery ({pivot_lang}): {len(refs_patterns)} refs"
+            if refs_excluded_patterns:
+                msg += f", {len(refs_excluded_patterns)} excluded by phrase filter"
+            print(msg)
         else:
             print(f"[warn] no corpus for {pivot_lang}; skipping pattern cross-check",
                   file=sys.stderr)
@@ -315,13 +339,20 @@ def main() -> None:
         "## Discovery cross-check",
         f"- Strong's numbers: {strongs}",
         f"- Patterns: {patterns}",
+        f"- Excluded phrases (pattern filter): {topic.get('exclude_phrases', [])}",
         f"- Refs by Strong's: {len(refs_strongs)}",
         f"- Refs by patterns ({pivot_lang}): {len(refs_patterns)}",
+        f"- Excluded by phrase filter: {len(refs_excluded_patterns)}",
         f"- In both: {len(in_both)}",
         f"- Strong's-only: {len(only_strongs)}",
         f"- Patterns-only: {len(only_patterns)}",
         "",
     ]
+    if refs_excluded_patterns:
+        report.append("### Excluded by phrase filter")
+        report += [f"  - {c} {ch}:{v}" for c, ch, v in
+                   sorted(refs_excluded_patterns, key=lambda r: (code_order.get(r[0], 999), int(r[1]), int(r[2])))]
+        report.append("")
     if only_strongs:
         report.append("### Strong's-only")
         report += [f"  - {c} {ch}:{v}" for c, ch, v in
