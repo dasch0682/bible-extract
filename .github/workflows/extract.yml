@@ -65,7 +65,8 @@ jobs:
       # --- Extraction ---
       - name: Extraction
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MODEL: deepseek/deepseek-v4.1-flash
         run: |
           python extract.py \
             --topic "${{ inputs.topic }}" \

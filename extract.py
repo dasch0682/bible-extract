@@ -2,7 +2,7 @@
 """Usage: python extract.py --topic verite [--lang fr,en] [--dry-run] [--limit N]
                             [--check-links] [--strongs-dir DIR]"""
 from __future__ import annotations
-import argparse, json, os, re, sys
+import argparse, json, os, re, sys, time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import yaml
@@ -23,29 +23,54 @@ def make_client(provider: str, base_url: str | None = None):
         return Anthropic()
     elif provider == "openai_compat":
         from openai import OpenAI
-        return OpenAI(base_url=base_url)
+        api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
+        return OpenAI(base_url=base_url, api_key=api_key)
     else:
         sys.exit(f"Unknown PROVIDER '{provider}' — supported: anthropic, openai_compat")
 
 
 def _call_llm(provider: str, client, model: str, system: str, user: str) -> str | None:
-    try:
-        if provider == "anthropic":
+    if provider == "anthropic":
+        try:
             r = client.messages.create(
                 model=model, max_tokens=700, system=system,
                 messages=[{"role": "user", "content": user}],
             )
             return r.content[0].text
-        else:
-            r = client.chat.completions.create(
-                model=model, max_tokens=700,
-                messages=[{"role": "system", "content": system},
-                          {"role": "user", "content": user}],
-            )
+        except Exception as e:
+            print(f"[warn] LLM call failed: {e}", file=sys.stderr)
+            return None
+
+    # openai_compat (OpenRouter) — retry on 429 with progressive backoff
+    msgs = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+    extra = {"reasoning": {"effort": "none"}}
+
+    def _do_call(use_json_fmt: bool):
+        kw = dict(model=model, max_tokens=700, messages=msgs, extra_body=extra)
+        if use_json_fmt:
+            kw["response_format"] = {"type": "json_object"}
+        return client.chat.completions.create(**kw)
+
+    for attempt in range(4):
+        try:
+            try:
+                r = _do_call(use_json_fmt=True)
+            except Exception as e:
+                if getattr(e, "status_code", None) in (400, 422):
+                    r = _do_call(use_json_fmt=False)
+                else:
+                    raise
             return r.choices[0].message.content
-    except Exception as e:
-        print(f"[warn] LLM call failed: {e}", file=sys.stderr)
-        return None
+        except Exception as e:
+            if getattr(e, "status_code", None) == 429:
+                wait = (2 ** attempt) * 5
+                print(f"[warn] 429 rate-limit, attente {wait}s (tentative {attempt + 1}/4)",
+                      file=sys.stderr)
+                time.sleep(wait)
+            else:
+                print(f"[warn] LLM call failed: {e}", file=sys.stderr)
+                return None
+    return None
 
 SYSTEM_TEMPLATE = """\
 Analyze a Bible verse ({translation}) for a thematic anthology.
@@ -168,7 +193,7 @@ def run_language(
                 cf.write_text(json.dumps(llm, ensure_ascii=False), encoding="utf-8")
         return h, llm, None
 
-    with ThreadPoolExecutor(max_workers=6) as ex:
+    with ThreadPoolExecutor(max_workers=2) as ex:
         results = list(ex.map(work, refs))
 
     kept, rejected, skipped = [], [], 0
@@ -208,9 +233,9 @@ def main() -> None:
     ap.add_argument("--limit", type=int)
     ap.add_argument("--check-links", action="store_true")
     ap.add_argument("--strongs-dir", default=os.getenv("STRONGS_DIR", "tmp/byztxt"))
-    ap.add_argument("--provider", default=os.getenv("PROVIDER", "anthropic"))
-    ap.add_argument("--base-url", default=os.getenv("BASE_URL"))
-    ap.add_argument("--model", default=os.getenv("MODEL", "claude-sonnet-4-6"))
+    ap.add_argument("--provider", default=os.getenv("PROVIDER", "openai_compat"))
+    ap.add_argument("--base-url", default=os.getenv("BASE_URL", "https://openrouter.ai/api/v1"))
+    ap.add_argument("--model", default=os.getenv("MODEL", "deepseek/deepseek-v4.1-flash"))
     a = ap.parse_args()
 
     topic = yaml.safe_load((ROOT / "topics" / f"{a.topic}.yml").read_text(encoding="utf-8"))
