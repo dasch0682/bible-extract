@@ -25,8 +25,9 @@ one file per language. Run from mobile via GitHub Actions.
   the normalised text before pattern matching. A verse that matched only because
   of an excluded formula is counted in the report under "Excluded by phrase filter".
   Strong's discovery is never affected by `exclude_phrases`.
-- `extra_instructions` (optional string in a topic YML) is appended to the LLM
-  system prompt for that topic only, to convey topic-specific relevance rules.
+- `extra_instructions_<lang>` (e.g. `extra_instructions_fr`, `extra_instructions_en`) are
+  appended to the LLM system prompt for that language only. Always provide one per active
+  language when instructions reference language-specific formulas.
 - Record each data source and its license in data/SOURCES.md.
   Verify the license before use; never assume it.
 
@@ -37,6 +38,10 @@ one file per language. Run from mobile via GitHub Actions.
 - languages.yml defines per language: code, translation name, version label,
   link template, corpus path. Adding a language = new corpus + one entry
   there, no code change.
+- Each topic YAML must have `label_<lang>` for every active language (e.g. `label_fr`,
+  `label_en`). The generic `label` field is the canonical identifier used in report
+  titles and filenames. A warning is printed at runtime if a language-specific label
+  is missing.
 - Fields auteur, contexte, paraphrase are written by the LLM in the target
   language, from that language's verse text. The extract is always verbatim
   from that language's corpus.

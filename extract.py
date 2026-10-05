@@ -11,7 +11,7 @@ from validate import norm, validate_entry, check_link
 
 ROOT = Path(__file__).parent
 PROMPT_VERSION = "6"
-PROMPT_VERSION_EXTRACT = "5e"  # extract-only prompt (no pertinence field)
+PROMPT_VERSION_EXTRACT = "6e"  # extract-only prompt (no pertinence field)
 
 
 def _model_slug(model: str) -> str:
@@ -129,6 +129,18 @@ _JSON_SCHEMA_EXTRACT = {
 }
 
 
+def _topic_label(topic: dict, lang: str) -> str:
+    key = f"label_{lang}"
+    if key not in topic:
+        print(f"[warn] topic '{topic.get('_id', '?')}' missing '{key}' — falling back to 'label'",
+              file=sys.stderr)
+    return topic.get(key) or topic["label"]
+
+
+def _topic_extra(topic: dict, lang: str) -> str:
+    return topic.get(f"extra_instructions_{lang}") or topic.get("extra_instructions", "")
+
+
 def load_languages() -> dict:
     p = ROOT / "languages.yml"
     if not p.exists():
@@ -238,7 +250,7 @@ def judge_relevance(
     """
     topic_id = topic["_id"]
     max_words = topic.get("max_words", 14)
-    extra_instructions = topic.get("extra_instructions", "")
+    extra_instructions = _topic_extra(topic, pivot_lang)
     cache_dir = ROOT / "cache" / topic_id / pivot_lang
     cache_dir.mkdir(parents=True, exist_ok=True)
 
@@ -251,7 +263,7 @@ def judge_relevance(
         if cf.exists():
             llm = json.loads(cf.read_text(encoding="utf-8"))
         else:
-            llm = ask(provider, client, model, pivot_cfg, topic["label"],
+            llm = ask(provider, client, model, pivot_cfg, _topic_label(topic, pivot_lang),
                       neighbours(pivot_corpus, code, c, v), code, c, v, verse_text, max_words,
                       extra_instructions=extra_instructions, include_relevance=True)
             if llm is not None:
@@ -312,9 +324,9 @@ def run_language(
             else:
                 if cf.exists():
                     cf.unlink()
-                llm = ask(provider, client, model, lang_cfg, topic["label"],
+                llm = ask(provider, client, model, lang_cfg, _topic_label(topic, lang),
                           neighbours(corpus, code, c, v), code, c, v, verse_text, max_words,
-                          extra_instructions=topic.get("extra_instructions", ""),
+                          extra_instructions=_topic_extra(topic, lang),
                           include_relevance=is_pivot,
                           retry_hint=retry_hint)
                 if llm is None:
@@ -470,10 +482,12 @@ def main() -> None:
     )
     print(f"Relevant: {len(relevant_refs)}/{len(all_refs)}, not relevant: {skipped_relevance}")
 
+    labels_str = ", ".join(f'{l}="{_topic_label(topic, l)}"' for l in langs)
     report = [
         f"# Report: {topic['label']}",
         "",
         "## Discovery cross-check",
+        f"- Labels: {labels_str}",
         f"- Strong's numbers: {strongs}",
         f"- Patterns: {patterns}",
         f"- Excluded phrases (pattern filter): {topic.get('exclude_phrases', [])}",
