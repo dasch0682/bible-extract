@@ -212,7 +212,7 @@ def run_language(
                 cf.write_text(json.dumps(llm, ensure_ascii=False), encoding="utf-8")
         return h, llm, None
 
-    with ThreadPoolExecutor(max_workers=2) as ex:
+    with ThreadPoolExecutor(max_workers=topic.get("workers", 4)) as ex:
         results = list(ex.map(work, refs))
 
     kept, rejected, skipped = [], [], 0
@@ -255,6 +255,7 @@ def main() -> None:
     ap.add_argument("--provider", default=os.getenv("PROVIDER", "openai_compat"))
     ap.add_argument("--base-url", default=os.getenv("BASE_URL", "https://openrouter.ai/api/v1"))
     ap.add_argument("--model", default=os.getenv("MODEL", "deepseek/deepseek-v4.1-flash"))
+    ap.add_argument("--workers", type=int, default=int(os.getenv("WORKERS", "4")))
     a = ap.parse_args()
 
     topic = yaml.safe_load((ROOT / "topics" / f"{a.topic}.yml").read_text(encoding="utf-8"))
@@ -268,6 +269,7 @@ def main() -> None:
     else:
         langs = languages
 
+    topic["workers"] = a.workers
     codes = scope_codes(topic.get("scope", "NT"))
     strongs = topic.get("strongs", [])
     patterns = topic.get("patterns", [])

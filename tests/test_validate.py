@@ -87,12 +87,22 @@ def test_reject_extract_not_in_verse():
     _, err = validate_entry(llm, VERSE, 14)
     assert err == "extrait absent du verset (non exact)"
 
-def test_reject_extract_too_long():
+def test_extract_too_long_falls_back_to_full_verse():
     verse = "a b c d e f g h i j k l m n o p"
     extract = "a b c d e f g h i j k l m n o"  # 15 words
-    llm = {"extrait": extract, "paraphrase": "...", "auteur": "X", "contexte": ""}
+    llm = {"extrait": extract, "paraphrase": "Résumé court.", "auteur": "X", "contexte": ""}
+    entry, err = validate_entry(llm, verse, 14)
+    assert err is None
+    assert entry["citation"] == verse
+    assert entry["paraphrase"] == "Résumé court."
+    assert entry["nbMotExtrait"] == 16  # full verse word count
+
+def test_reject_extract_too_long_without_paraphrase():
+    verse = "a b c d e f g h i j k l m n o p"
+    extract = "a b c d e f g h i j k l m n o"  # 15 words
+    llm = {"extrait": extract, "paraphrase": None, "auteur": "X", "contexte": ""}
     _, err = validate_entry(llm, verse, 14)
-    assert "trop long" in err
+    assert err == "extrait trop long et paraphrase manquante"
 
 def test_reject_missing_paraphrase_on_partial():
     llm = {

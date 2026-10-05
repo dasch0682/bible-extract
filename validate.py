@@ -31,16 +31,27 @@ def validate_entry(llm, verse_text, max_words):
     if ext not in _ws(verse_text):
         return None, "extrait absent du verset (non exact)"
     n = len(ext.split())
-    if n > max_words:
-        return None, f"extrait trop long ({n} mots)"
-    full = norm(re.sub(r"[^\w\s]", "", ext)) == norm(re.sub(r"[^\w\s]", "", verse_text))
     para = (llm.get("paraphrase") or "").strip() or None
+    if not (llm.get("auteur") or "").strip():
+        return None, "auteur manquant"
+    if n > max_words:
+        # Extract too long: fall back to full verse as citation; paraphrase is mandatory.
+        if para is None:
+            return None, "extrait trop long et paraphrase manquante"
+        citation = _ws(verse_text)
+        return {
+            "citation": citation,
+            "longueurExtrait": len(citation),
+            "nbMotExtrait": len(citation.split()),
+            "paraphrase": para,
+            "auteur": llm["auteur"].strip(),
+            "contexte": (llm.get("contexte") or "").strip(),
+        }, None
+    full = norm(re.sub(r"[^\w\s]", "", ext)) == norm(re.sub(r"[^\w\s]", "", verse_text))
     if full:
         para = None
     elif para is None:
         return None, "paraphrase manquante (extrait tronque)"
-    if not (llm.get("auteur") or "").strip():
-        return None, "auteur manquant"
     return {
         "citation": ext,
         "longueurExtrait": len(ext),
