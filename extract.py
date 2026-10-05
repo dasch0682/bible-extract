@@ -10,8 +10,8 @@ from books import scope_codes, NAMES, NAMES_BY_LANG
 from validate import norm, validate_entry, check_link
 
 ROOT = Path(__file__).parent
-PROMPT_VERSION = "3"
-PROMPT_VERSION_EXTRACT = "3e"  # extract-only prompt (no pertinence field)
+PROMPT_VERSION = "4"
+PROMPT_VERSION_EXTRACT = "4e"  # extract-only prompt (no pertinence field)
 
 
 def _model_slug(model: str) -> str:
@@ -82,7 +82,7 @@ Reply ONLY with a JSON object, no surrounding text, with these keys:
 - "contexte" (str): one sentence on the situation from the neighboring verses provided.
 - "extrait" (str): a CONTIGUOUS passage copied VERBATIM from the verse (preserving accents, punctuation), \
 at most {max_words} words, containing the key term.
-- "paraphrase" (str|null): summary of the full verse in your words; required if the extract does not cover the whole verse.
+- "paraphrase" (str|null): REQUIRED (non-null string) whenever your extrait does not cover every word of the verse; null ONLY if the extrait is the complete verse verbatim.
 Never quote text not present in the verse.{extra_instructions}"""
 
 SYSTEM_EXTRACT_TEMPLATE = """\
@@ -94,7 +94,7 @@ Reply ONLY with a JSON object, no surrounding text, with these keys:
 - "contexte" (str): one sentence on the situation from the neighboring verses provided.
 - "extrait" (str): a CONTIGUOUS passage copied VERBATIM from the verse (preserving accents, punctuation), \
 at most {max_words} words, containing the key term.
-- "paraphrase" (str|null): summary of the full verse in your words; required if the extract does not cover the whole verse.
+- "paraphrase" (str|null): REQUIRED (non-null string) whenever your extrait does not cover every word of the verse; null ONLY if the extrait is the complete verse verbatim.
 Never quote text not present in the verse.{extra_instructions}"""
 
 
