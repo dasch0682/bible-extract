@@ -26,16 +26,52 @@ def _ws(s):
     return re.sub(r"\s+", " ", s.replace("\u00a0", " ")).strip()
 
 def _find_verbatim(ext: str, verse_ws: str) -> str | None:
-    """Find ext in verse_ws with soft typographic normalisation.
+    """Find ext in verse_ws with progressively looser matching.
 
-    Returns the verbatim corpus substring (from verse_ws) on success, else None.
-    Because _soft is length-preserving, the position found in the softened string
-    maps directly back to the original.
+    Level 1 — soft: typographic variants (length-preserving, positions transfer 1-to-1).
+    Level 2 — space-insensitive: handles corpus artifacts where spaces are missing
+               (e.g. "ilne" instead of "il ne"). Positions recovered by non-space char count.
+
+    Always returns the verbatim corpus substring on success, or None.
     """
-    pos = _soft(verse_ws).find(_soft(ext))
-    if pos == -1:
+    soft_verse = _soft(verse_ws)
+    soft_ext = _soft(ext)
+
+    # Level 1: soft (length-preserving)
+    pos = soft_verse.find(soft_ext)
+    if pos != -1:
+        return verse_ws[pos: pos + len(ext)]
+
+    # Level 2: space-insensitive
+    ns_verse = re.sub(r"\s", "", soft_verse)
+    ns_ext = re.sub(r"\s", "", soft_ext)
+    if not ns_ext:
         return None
-    return verse_ws[pos: pos + len(ext)]
+    pos_ns = ns_verse.find(ns_ext)
+    if pos_ns == -1:
+        return None
+    # Map no-space position back to original by counting non-space chars
+    count = 0
+    start = None
+    for i, ch in enumerate(soft_verse):
+        if ch != " ":
+            if count == pos_ns:
+                start = i
+                break
+            count += 1
+    if start is None:
+        return None
+    count = 0
+    end = None
+    for i in range(start, len(soft_verse)):
+        if soft_verse[i] != " ":
+            count += 1
+            if count == len(ns_ext):
+                end = i + 1
+                break
+    if end is None:
+        return None
+    return verse_ws[start:end]
 
 def build_link(version, code, c, v):
     return LINK.format(ver=version, code=code, c=c, v=v)

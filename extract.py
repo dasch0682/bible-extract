@@ -198,7 +198,8 @@ def neighbours(corpus: dict, code: str, c: str, v: str, span: int = 2) -> list:
 
 def ask(provider: str, client, model: str, lang_cfg: dict, topic_label: str,
         ctx_lines: list, code: str, c: str, v: str, text: str, max_words: int,
-        extra_instructions: str = "", include_relevance: bool = True) -> dict | None:
+        extra_instructions: str = "", include_relevance: bool = True,
+        retry_hint: str = "") -> dict | None:
     template = SYSTEM_PIVOT_TEMPLATE if include_relevance else SYSTEM_EXTRACT_TEMPLATE
     system = template.format(
         translation=lang_cfg["translation"],
@@ -210,6 +211,8 @@ def ask(provider: str, client, model: str, lang_cfg: dict, topic_label: str,
         f"Theme: {topic_label}\nReference: {code} {c}:{v}\nVerse: {text}\n\n"
         "Neighboring verses:\n" + "\n".join(f"{x}: {t}" for x, t in ctx_lines)
     )
+    if retry_hint:
+        user += f"\n\nIMPORTANT (previous attempt rejected): {retry_hint}"
     schema = _JSON_SCHEMA_PIVOT if include_relevance else _JSON_SCHEMA_EXTRACT
     for _ in range(2):
         raw = _call_llm(provider, client, model, system, user, json_schema=schema)
@@ -302,6 +305,7 @@ def run_language(
             return h, None, "verse absent from corpus"
         cf = cache_dir / f"{code}.{c}.{v}.{pv}.{_model_slug(model)}.json"
         last_why = "LLM response unreadable"
+        retry_hint = ""
         for attempt in range(max_retries + 1):
             if cf.exists() and attempt == 0:
                 llm = json.loads(cf.read_text(encoding="utf-8"))
@@ -311,7 +315,8 @@ def run_language(
                 llm = ask(provider, client, model, lang_cfg, topic["label"],
                           neighbours(corpus, code, c, v), code, c, v, verse_text, max_words,
                           extra_instructions=topic.get("extra_instructions", ""),
-                          include_relevance=is_pivot)
+                          include_relevance=is_pivot,
+                          retry_hint=retry_hint)
                 if llm is None:
                     continue
                 cf.write_text(json.dumps(llm, ensure_ascii=False), encoding="utf-8")
@@ -321,6 +326,17 @@ def run_language(
             if entry is not None:
                 return h, entry, None
             last_why = why
+            if why == "extrait absent du verset (non exact)":
+                ext = (llm.get("extrait") or "").strip()
+                retry_hint = (
+                    f'Your extrait "{ext}" was not found verbatim in the verse. '
+                    f'Copy exact words from the verse without any substitution.'
+                )
+            elif "paraphrase" in why:
+                retry_hint = (
+                    'Your response was rejected because "paraphrase" was missing. '
+                    'You MUST provide a non-null paraphrase string.'
+                )
         return h, None, last_why
 
     with ThreadPoolExecutor(max_workers=topic.get("workers", 4)) as ex:

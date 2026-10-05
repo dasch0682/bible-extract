@@ -101,6 +101,19 @@ def test_soft_match_returns_corpus_verbatim():
     assert err is None
     assert entry["citation"] == "La v\u00e9rit\u00e9 vous affranchira."  # corpus case preserved
 
+def test_soft_match_missing_space_in_corpus():
+    # Corpus artifact: missing space between words ("ilne" instead of "il ne")
+    verse = "Il a \u00e9t\u00e9 meurtrier, et ilne se tient pas dans la v\u00e9rit\u00e9."
+    llm = {
+        "extrait": "il ne se tient pas dans la v\u00e9rit\u00e9",
+        "paraphrase": "Il est \u00e9tranger \u00e0 la v\u00e9rit\u00e9.",
+        "auteur": "J\u00e9sus",
+        "contexte": "",
+    }
+    entry, err = validate_entry(llm, verse, 14)
+    assert err is None
+    assert "ilne" in entry["citation"]  # verbatim from corpus, spaces not inserted
+
 def test_reject_extract_not_in_verse():
     llm = {
         "extrait": "Je suis la résurrection et la vie",
