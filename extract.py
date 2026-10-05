@@ -10,7 +10,8 @@ from books import scope_codes, NAMES, NAMES_BY_LANG
 from validate import norm, validate_entry, check_link
 
 ROOT = Path(__file__).parent
-PROMPT_VERSION = "2"
+PROMPT_VERSION = "3"
+PROMPT_VERSION_EXTRACT = "3e"  # extract-only prompt (no pertinence field)
 
 
 def _model_slug(model: str) -> str:
@@ -72,12 +73,24 @@ def _call_llm(provider: str, client, model: str, system: str, user: str) -> str 
             return None
     return None
 
-SYSTEM_TEMPLATE = """\
+SYSTEM_PIVOT_TEMPLATE = """\
 Analyze a Bible verse ({translation}) for a thematic anthology.
 Write all string values in {prompt_lang}.
 Reply ONLY with a JSON object, no surrounding text, with these keys:
 - "pertinent" (bool): the verse genuinely addresses the given theme (not a trivial use of the keyword).
 - "auteur" (str): who speaks (e.g. "Jésus", "Paul"); for narration give the book author (e.g. "Jean (narrateur)").
+- "contexte" (str): one sentence on the situation from the neighboring verses provided.
+- "extrait" (str): a CONTIGUOUS passage copied VERBATIM from the verse (preserving accents, punctuation), \
+at most {max_words} words, containing the key term.
+- "paraphrase" (str|null): summary of the full verse in your words; required if the extract does not cover the whole verse.
+Never quote text not present in the verse.{extra_instructions}"""
+
+SYSTEM_EXTRACT_TEMPLATE = """\
+Extract a passage from a Bible verse ({translation}) for a thematic anthology.
+This verse has already been selected as thematically relevant.
+Write all string values in {prompt_lang}.
+Reply ONLY with a JSON object, no surrounding text, with these keys:
+- "auteur" (str): who speaks (e.g. "Jesus", "Paul"); for narration give the book author (e.g. "John (narrator)").
 - "contexte" (str): one sentence on the situation from the neighboring verses provided.
 - "extrait" (str): a CONTIGUOUS passage copied VERBATIM from the verse (preserving accents, punctuation), \
 at most {max_words} words, containing the key term.
@@ -154,8 +167,9 @@ def neighbours(corpus: dict, code: str, c: str, v: str, span: int = 2) -> list:
 
 def ask(provider: str, client, model: str, lang_cfg: dict, topic_label: str,
         ctx_lines: list, code: str, c: str, v: str, text: str, max_words: int,
-        extra_instructions: str = "") -> dict | None:
-    system = SYSTEM_TEMPLATE.format(
+        extra_instructions: str = "", include_relevance: bool = True) -> dict | None:
+    template = SYSTEM_PIVOT_TEMPLATE if include_relevance else SYSTEM_EXTRACT_TEMPLATE
+    system = template.format(
         translation=lang_cfg["translation"],
         prompt_lang=lang_cfg["prompt_lang"],
         max_words=max_words,
@@ -178,20 +192,69 @@ def ask(provider: str, client, model: str, lang_cfg: dict, topic_label: str,
     return None
 
 
+def judge_relevance(
+    refs: list, pivot_lang: str, pivot_cfg: dict, pivot_corpus: dict,
+    topic: dict, provider: str, client, model: str,
+) -> tuple[list, int]:
+    """Phase 1: judge relevance once on the pivot language.
+
+    Returns (relevant_refs, skipped_count). Caches under the pivot lang's cache
+    dir so run_language for that lang reads from cache without extra LLM calls.
+    """
+    topic_id = topic["_id"]
+    max_words = topic.get("max_words", 14)
+    extra_instructions = topic.get("extra_instructions", "")
+    cache_dir = ROOT / "cache" / topic_id / pivot_lang
+    cache_dir.mkdir(parents=True, exist_ok=True)
+
+    def work(h: tuple) -> tuple:
+        code, c, v = h
+        verse_text = pivot_corpus.get(code, {}).get(c, {}).get(v)
+        if verse_text is None:
+            return h, None
+        cf = cache_dir / f"{code}.{c}.{v}.{PROMPT_VERSION}.{_model_slug(model)}.json"
+        if cf.exists():
+            llm = json.loads(cf.read_text(encoding="utf-8"))
+        else:
+            llm = ask(provider, client, model, pivot_cfg, topic["label"],
+                      neighbours(pivot_corpus, code, c, v), code, c, v, verse_text, max_words,
+                      extra_instructions=extra_instructions, include_relevance=True)
+            if llm is not None:
+                cf.write_text(json.dumps(llm, ensure_ascii=False), encoding="utf-8")
+        return h, llm
+
+    with ThreadPoolExecutor(max_workers=topic.get("workers", 4)) as ex:
+        results = list(ex.map(work, refs))
+
+    relevant, skipped = [], 0
+    for ref, llm in results:
+        if llm is not None and llm.get("pertinent"):
+            relevant.append(ref)
+        else:
+            skipped += 1
+    return relevant, skipped
+
+
 def run_language(
     lang: str, lang_cfg: dict, topic: dict, refs: list,
     provider: str, client, model: str, check_links: bool,
-) -> tuple[list, list, int]:
-    """Process all refs for one language. Returns (kept, rejected, skipped_count)."""
+    is_pivot: bool = False,
+) -> tuple[list, list]:
+    """Phase 2: annotate relevant refs for one language. Returns (kept, rejected).
+
+    For the pivot language the cache is already warm from judge_relevance.
+    For other languages the extract-only prompt is used (no pertinence field).
+    """
     corpus = load_corpus(lang_cfg["corpus"])
     if corpus is None:
         print(f"[{lang}] corpus not found: {lang_cfg['corpus']} — skipping")
-        return [], [], 0
+        return [], []
 
     book_names = NAMES_BY_LANG.get(lang, NAMES)
     ref_sep = lang_cfg.get("ref_sep", ":")
     max_words = topic.get("max_words", 14)
     topic_id = topic["_id"]
+    pv = PROMPT_VERSION if is_pivot else PROMPT_VERSION_EXTRACT
 
     cache_dir = ROOT / "cache" / topic_id / lang
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -201,13 +264,14 @@ def run_language(
         verse_text = corpus.get(code, {}).get(c, {}).get(v)
         if verse_text is None:
             return h, None, "verse absent from corpus"
-        cf = cache_dir / f"{code}.{c}.{v}.{PROMPT_VERSION}.{_model_slug(model)}.json"
+        cf = cache_dir / f"{code}.{c}.{v}.{pv}.{_model_slug(model)}.json"
         if cf.exists():
             llm = json.loads(cf.read_text(encoding="utf-8"))
         else:
             llm = ask(provider, client, model, lang_cfg, topic["label"],
                       neighbours(corpus, code, c, v), code, c, v, verse_text, max_words,
-                      extra_instructions=topic.get("extra_instructions", ""))
+                      extra_instructions=topic.get("extra_instructions", ""),
+                      include_relevance=is_pivot)
             if llm is not None:
                 cf.write_text(json.dumps(llm, ensure_ascii=False), encoding="utf-8")
         return h, llm, None
@@ -215,7 +279,7 @@ def run_language(
     with ThreadPoolExecutor(max_workers=topic.get("workers", 4)) as ex:
         results = list(ex.map(work, refs))
 
-    kept, rejected, skipped = [], [], 0
+    kept, rejected = [], []
     for (code, c, v), llm, pre_err in results:
         ref_str = f"{book_names.get(code, code)} {c}{ref_sep}{v}"
         if pre_err:
@@ -223,9 +287,6 @@ def run_language(
             continue
         if llm is None:
             rejected.append((ref_str, "LLM response unreadable"))
-            continue
-        if not llm.get("pertinent"):
-            skipped += 1
             continue
         verse_text = corpus[code][c][v]
         entry, why = validate_entry(llm, verse_text, max_words)
@@ -241,7 +302,7 @@ def run_language(
             continue
         kept.append(entry)
 
-    return kept, rejected, skipped
+    return kept, rejected
 
 
 def main() -> None:
@@ -335,6 +396,16 @@ def main() -> None:
     out_dir = ROOT / "out"
     out_dir.mkdir(exist_ok=True)
 
+    # --- Phase 1: relevance judgment on pivot language ---
+    if pivot_corpus is None:
+        sys.exit(f"Pivot corpus not found for '{pivot_lang}'; cannot judge relevance")
+    print(f"\n=== Phase 1: relevance ({pivot_lang}) ===")
+    relevant_refs, skipped_relevance = judge_relevance(
+        all_refs, pivot_lang, langs[pivot_lang], pivot_corpus,
+        topic, a.provider, client, a.model,
+    )
+    print(f"Relevant: {len(relevant_refs)}/{len(all_refs)}, not relevant: {skipped_relevance}")
+
     report = [
         f"# Report: {topic['label']}",
         "",
@@ -348,6 +419,12 @@ def main() -> None:
         f"- In both: {len(in_both)}",
         f"- Strong's-only: {len(only_strongs)}",
         f"- Patterns-only: {len(only_patterns)}",
+        "",
+        "## Relevance judgment",
+        f"- Pivot language: {pivot_lang}",
+        f"- Candidates evaluated: {len(all_refs)}",
+        f"- Relevant: {len(relevant_refs)}",
+        f"- Not relevant: {skipped_relevance}",
         "",
     ]
     if refs_excluded_patterns:
@@ -366,19 +443,20 @@ def main() -> None:
                    sorted(only_patterns, key=lambda r: (code_order.get(r[0], 999), int(r[1]), int(r[2])))]
         report.append("")
 
+    # --- Phase 2: per-language annotation ---
     for lang, lang_cfg in langs.items():
         print(f"\n=== {lang} ({lang_cfg['translation']}) ===")
-        kept, rejected, skipped = run_language(
-            lang, lang_cfg, topic, all_refs, a.provider, client, a.model, a.check_links,
+        kept, rejected = run_language(
+            lang, lang_cfg, topic, relevant_refs, a.provider, client, a.model, a.check_links,
+            is_pivot=(lang == pivot_lang),
         )
         (out_dir / f"{a.topic}.{lang}.json").write_text(
             json.dumps(kept, ensure_ascii=False, indent=2), encoding="utf-8"
         )
         report += [
             f"## {lang}: {lang_cfg['translation']}",
-            f"- candidates: {len(all_refs)}",
+            f"- relevant refs: {len(relevant_refs)}",
             f"- kept: {len(kept)}",
-            f"- judged not relevant: {skipped}",
             f"- rejected by validation: {len(rejected)}",
             "",
         ]
