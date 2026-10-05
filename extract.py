@@ -239,21 +239,25 @@ def run_language(
     lang: str, lang_cfg: dict, topic: dict, refs: list,
     provider: str, client, model: str, check_links: bool,
     is_pivot: bool = False,
-) -> tuple[list, list]:
-    """Phase 2: annotate relevant refs for one language. Returns (kept, rejected).
+) -> tuple[dict, list, dict]:
+    """Phase 2: annotate relevant refs for one language.
 
-    For the pivot language the cache is already warm from judge_relevance.
-    For other languages the extract-only prompt is used (no pertinence field).
+    Returns (kept_dict, rejected_list, rejected_keys).
+      kept_dict:     {(code,c,v): entry}
+      rejected_list: [(ref_str, why)]
+      rejected_keys: {(code,c,v): why}
+
+    On validation failure the cache is deleted and the LLM is retried up to
+    topic["retries"] times before the verse is considered rejected.
     """
     corpus = load_corpus(lang_cfg["corpus"])
     if corpus is None:
         print(f"[{lang}] corpus not found: {lang_cfg['corpus']} — skipping")
-        return [], []
+        return {}, [], {}
 
-    book_names = NAMES_BY_LANG.get(lang, NAMES)
-    ref_sep = lang_cfg.get("ref_sep", ":")
     max_words = topic.get("max_words", 14)
     topic_id = topic["_id"]
+    max_retries = topic.get("retries", 2)
     pv = PROMPT_VERSION if is_pivot else PROMPT_VERSION_EXTRACT
 
     cache_dir = ROOT / "cache" / topic_id / lang
@@ -265,44 +269,54 @@ def run_language(
         if verse_text is None:
             return h, None, "verse absent from corpus"
         cf = cache_dir / f"{code}.{c}.{v}.{pv}.{_model_slug(model)}.json"
-        if cf.exists():
-            llm = json.loads(cf.read_text(encoding="utf-8"))
-        else:
-            llm = ask(provider, client, model, lang_cfg, topic["label"],
-                      neighbours(corpus, code, c, v), code, c, v, verse_text, max_words,
-                      extra_instructions=topic.get("extra_instructions", ""),
-                      include_relevance=is_pivot)
-            if llm is not None:
+        last_why = "LLM response unreadable"
+        for attempt in range(max_retries + 1):
+            if cf.exists() and attempt == 0:
+                llm = json.loads(cf.read_text(encoding="utf-8"))
+            else:
+                if cf.exists():
+                    cf.unlink()
+                llm = ask(provider, client, model, lang_cfg, topic["label"],
+                          neighbours(corpus, code, c, v), code, c, v, verse_text, max_words,
+                          extra_instructions=topic.get("extra_instructions", ""),
+                          include_relevance=is_pivot)
+                if llm is None:
+                    continue
                 cf.write_text(json.dumps(llm, ensure_ascii=False), encoding="utf-8")
-        return h, llm, None
+            if llm is None:
+                continue
+            entry, why = validate_entry(llm, verse_text, max_words)
+            if entry is not None:
+                return h, entry, None
+            last_why = why
+        return h, None, last_why
 
     with ThreadPoolExecutor(max_workers=topic.get("workers", 4)) as ex:
         results = list(ex.map(work, refs))
 
-    kept, rejected = [], []
-    for (code, c, v), llm, pre_err in results:
+    book_names = NAMES_BY_LANG.get(lang, NAMES)
+    ref_sep = lang_cfg.get("ref_sep", ":")
+    kept_dict: dict = {}
+    rejected: list = []
+    rejected_keys: dict = {}
+
+    for (code, c, v), entry, why in results:
         ref_str = f"{book_names.get(code, code)} {c}{ref_sep}{v}"
-        if pre_err:
-            rejected.append((ref_str, pre_err))
-            continue
-        if llm is None:
-            rejected.append((ref_str, "LLM response unreadable"))
-            continue
-        verse_text = corpus[code][c][v]
-        entry, why = validate_entry(llm, verse_text, max_words)
         if entry is None:
             rejected.append((ref_str, why))
-            continue
-        entry["reference"] = ref_str
-        entry["lien"] = make_link(lang_cfg, code, c, v)
-        entry["version"] = lang_cfg["version_label"]
-        entry["modele"] = model
-        if check_links and not check_link(entry["lien"]):
-            rejected.append((ref_str, "dead link"))
-            continue
-        kept.append(entry)
+            rejected_keys[(code, c, v)] = why
+        else:
+            entry["reference"] = ref_str
+            entry["lien"] = make_link(lang_cfg, code, c, v)
+            entry["version"] = lang_cfg["version_label"]
+            entry["modele"] = model
+            if check_links and not check_link(entry["lien"]):
+                rejected.append((ref_str, "dead link"))
+                rejected_keys[(code, c, v)] = "dead link"
+            else:
+                kept_dict[(code, c, v)] = entry
 
-    return kept, rejected
+    return kept_dict, rejected, rejected_keys
 
 
 def main() -> None:
@@ -317,6 +331,7 @@ def main() -> None:
     ap.add_argument("--base-url", default=os.getenv("BASE_URL", "https://openrouter.ai/api/v1"))
     ap.add_argument("--model", default=os.getenv("MODEL", "deepseek/deepseek-v4.1-flash"))
     ap.add_argument("--workers", type=int, default=int(os.getenv("WORKERS", "4")))
+    ap.add_argument("--retries", type=int, default=int(os.getenv("RETRIES", "2")))
     a = ap.parse_args()
 
     topic = yaml.safe_load((ROOT / "topics" / f"{a.topic}.yml").read_text(encoding="utf-8"))
@@ -331,6 +346,7 @@ def main() -> None:
         langs = languages
 
     topic["workers"] = a.workers
+    topic["retries"] = a.retries
     codes = scope_codes(topic.get("scope", "NT"))
     strongs = topic.get("strongs", [])
     patterns = topic.get("patterns", [])
@@ -444,25 +460,63 @@ def main() -> None:
         report.append("")
 
     # --- Phase 2: per-language annotation ---
+    kept_by_lang: dict = {}
+    rejected_by_lang: dict = {}
+    rejected_keys_by_lang: dict = {}
+
     for lang, lang_cfg in langs.items():
         print(f"\n=== {lang} ({lang_cfg['translation']}) ===")
-        kept, rejected = run_language(
+        kept_dict, rejected, rejected_keys = run_language(
             lang, lang_cfg, topic, relevant_refs, a.provider, client, a.model, a.check_links,
             is_pivot=(lang == pivot_lang),
         )
+        kept_by_lang[lang] = kept_dict
+        rejected_by_lang[lang] = rejected
+        rejected_keys_by_lang[lang] = rejected_keys
+        print(f"  validated: {len(kept_dict)}, rejected: {len(rejected)}")
+
+    # --- Intersection: keep only refs that passed in ALL languages ---
+    common_refs_set = set(relevant_refs)
+    for kept in kept_by_lang.values():
+        common_refs_set &= set(kept.keys())
+    common_refs = sorted(
+        common_refs_set, key=lambda r: (code_order.get(r[0], 999), int(r[1]), int(r[2]))
+    )
+    print(f"\nIntersection: {len(common_refs)} refs kept in all languages "
+          f"(dropped {len(relevant_refs) - len(common_refs)})")
+
+    for lang in langs:
+        kept_ordered = [kept_by_lang[lang][ref] for ref in common_refs]
         (out_dir / f"{a.topic}.{lang}.json").write_text(
-            json.dumps(kept, ensure_ascii=False, indent=2), encoding="utf-8"
+            json.dumps(kept_ordered, ensure_ascii=False, indent=2), encoding="utf-8"
         )
+
+    # --- Report ---
+    for lang, lang_cfg in langs.items():
         report += [
             f"## {lang}: {lang_cfg['translation']}",
             f"- relevant refs: {len(relevant_refs)}",
-            f"- kept: {len(kept)}",
-            f"- rejected by validation: {len(rejected)}",
+            f"- kept after validation+retries: {len(kept_by_lang[lang])}",
+            f"- rejected: {len(rejected_by_lang[lang])}",
             "",
         ]
-        if rejected:
-            report += [f"  - {r}: {w}" for r, w in rejected]
+        if rejected_by_lang[lang]:
+            report += [f"  - {r}: {w}" for r, w in rejected_by_lang[lang]]
             report.append("")
+
+    dropped = [r for r in relevant_refs if r not in common_refs_set]
+    report += [
+        "## Intersection",
+        f"- kept in all languages: {len(common_refs)}",
+        f"- dropped (failed in ≥1 language): {len(dropped)}",
+        "",
+    ]
+    if dropped:
+        for code, c, v in sorted(dropped, key=lambda r: (code_order.get(r[0], 999), int(r[1]), int(r[2]))):
+            reasons = [f"{lg}: {rejected_keys_by_lang[lg][(code,c,v)]}"
+                       for lg in langs if (code, c, v) in rejected_keys_by_lang[lg]]
+            report.append(f"  - {code} {c}:{v} — {', '.join(reasons)}")
+        report.append("")
 
     (out_dir / f"{a.topic}.report.md").write_text("\n".join(report), encoding="utf-8")
     print("\n".join(report))
