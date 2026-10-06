@@ -1,0 +1,38 @@
+# =============================================================================
+# models.yml - the ONLY place where language models are named.
+#
+# HOW TO EDIT
+#   * To use another model for a role: change the model id under `roles`, and
+#     make sure that model is listed under `models` with its reference prices.
+#   * To accept a price increase: edit `price_ref` (and `price_ref_date`) of
+#     that model on purpose. Prices are never updated automatically.
+#   * Prices are USD per 1 million tokens, written as quoted strings.
+#   * An id starting with "~" is an OpenRouter "-latest" alias.
+#   * The verification model must come from another family (the part before
+#     the "/") than the paraphrase generation model.
+#
+# Before any batch, `python check_prices.py` compares this file with the prices
+# OpenRouter publishes. The batch stops if a price rose, a model is gone, or
+# prices cannot be read. There is no option to skip that check.
+#
+# The role split below is provisional and will be reviewed later.
+# =============================================================================
+
+models:
+  "deepseek/deepseek-v4.1-flash":
+    price_ref: {input: "0.055", output: "1.32"}
+    price_ref_date: "2026-10-06"
+  "mistralai/mistral-large-4-0":
+    price_ref: {input: "0.68", output: "2.09"}
+    price_ref_date: "2026-10-06"
+  "~deepseek/deepseek-pro-latest":
+    price_ref: {input: "0.2464", output: "4.2"}
+    price_ref_date: "2026-10-06"
+
+roles:
+  relevance: "deepseek/deepseek-v4.1-flash"
+  paraphrase_generation: "deepseek/deepseek-v4.1-flash"
+  paraphrase_verification: "mistralai/mistral-large-4-0"
+  context: "deepseek/deepseek-v4.1-flash"
+  speaker: "deepseek/deepseek-v4.1-flash"
+  escalation: "~deepseek/deepseek-pro-latest"

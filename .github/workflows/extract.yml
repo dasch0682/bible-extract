@@ -29,6 +29,10 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      # --- Price check: first step, stops the batch before any model call ---
+      - name: Price check
+        run: python check_prices.py
+
       # --- Corpus preparation (cached across runs) ---
       - name: Cache corpora
         uses: actions/cache@v4
@@ -66,7 +70,6 @@ jobs:
       - name: Extraction
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          MODEL: deepseek/deepseek-v4.1-flash
         run: |
           python extract.py \
             --topic "${{ inputs.topic }}" \
