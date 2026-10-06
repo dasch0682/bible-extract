@@ -8,6 +8,7 @@ from pathlib import Path
 import yaml
 from books import scope_codes, NAMES, NAMES_BY_LANG
 from validate import norm, validate_entry, check_link
+from models import run_check, format_report, model_for
 
 ROOT = Path(__file__).parent
 PROMPT_VERSION = "6"
@@ -389,7 +390,6 @@ def main() -> None:
     ap.add_argument("--strongs-dir", default=os.getenv("STRONGS_DIR", "tmp/byztxt"))
     ap.add_argument("--provider", default=os.getenv("PROVIDER", "openai_compat"))
     ap.add_argument("--base-url", default=os.getenv("BASE_URL", "https://openrouter.ai/api/v1"))
-    ap.add_argument("--model", default=os.getenv("MODEL", "deepseek/deepseek-v4.1-flash"))
     ap.add_argument("--workers", type=int, default=int(os.getenv("WORKERS", "4")))
     ap.add_argument("--retries", type=int, default=int(os.getenv("RETRIES", "2")))
     a = ap.parse_args()
@@ -467,6 +467,15 @@ def main() -> None:
             print(f"  {code} {c}:{v}{tag}")
         return
 
+    # --- Price check: first step of any batch that calls a model. In doubt, stop. ---
+    price_check = run_check()
+    print(format_report(price_check))
+    if not price_check.ok:
+        sys.exit("Price check failed: no model call was made. "
+                 "Edit models.yml (new price_ref or another model) to continue.")
+    # Until the per-step roles are wired (later tasks), every call uses the relevance model.
+    a.model = model_for("relevance")
+
     client = make_client(a.provider, a.base_url)
 
     out_dir = ROOT / "out"
@@ -485,6 +494,8 @@ def main() -> None:
     labels_str = ", ".join(f'{l}="{_topic_label(topic, l)}"' for l in langs)
     report = [
         f"# Report: {topic['label']}",
+        "",
+        *format_report(price_check).splitlines(),
         "",
         "## Discovery cross-check",
         f"- Labels: {labels_str}",
