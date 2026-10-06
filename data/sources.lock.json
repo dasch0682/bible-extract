@@ -1,0 +1,17 @@
+{
+  "acai": {
+    "commit": "7e6a2d6674910aedb0888493ebbe6684d374ae5c"
+  },
+  "openbible": {
+    "commit": "7eb18a5ee62f27b9b93bd6689ea272d76dd23b8f"
+  },
+  "speaker-quotations": {
+    "commit": "b09e308a3a1aafdb7d6c75baf0fe2a31d61601da"
+  },
+  "theographic": {
+    "commit": "cfb1c485d4da6fb63a69cb3b7f5b0752792f46bc"
+  },
+  "tvtms": {
+    "commit": "1f3423d42400f59f1f30fe08f74e38fcd3bbf7bc"
+  }
+}

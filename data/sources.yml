@@ -1,0 +1,146 @@
+# Registry of every external dataset (machine-readable twin of data/SOURCES.md).
+#
+# * `fetch: true` sources are cloned into `dir` (inside tmp/, ignored by git) by
+#   `python scripts/fetch_sources.py --fetch`, at the commit pinned in
+#   data/sources.lock.json.
+# * `python scripts/fetch_sources.py --check` reads `license_file` and requires
+#   every string of `license_markers` in it, so a changed license is noticed.
+# * The ids below are the dataset ids allowed in an entry's `sources` list
+#   (see validate.check_sources).
+#
+# Attribution strings are what a published output must credit. Nothing is
+# published yet; the licence of the outputs is decided at publication time.
+
+sources:
+  lsg1910:
+    name: Louis Segond 1910 (BibleAquifer)
+    repo: https://github.com/BibleAquifer/LouisSegond1910
+    fetch: false
+    license: CC0-1.0
+    attribution: null
+    usage: French text, built into data/fr.json by scripts/build_corpus.py
+
+  kjv:
+    name: King James Version (scrollmapper/bible_databases)
+    repo: https://github.com/scrollmapper/bible_databases
+    fetch: false
+    license: MIT (repository), text in the public domain
+    attribution: null
+    usage: English text, built into data/en.json by scripts/build_corpus.py
+
+  byztxt:
+    name: Byzantine Majority Text with Strong's numbers
+    repo: https://github.com/byztxt/byzantine-majority-text
+    fetch: false
+    license: Unlicense (public domain)
+    attribution: null
+    usage: Strong's numbers (G-numbers) to verse references, numbers only
+
+  tahot:
+    name: Translators Amalgamated Hebrew OT (STEPBible)
+    repo: https://github.com/STEPBible/STEPBible-Data
+    fetch: false
+    license: CC-BY-4.0
+    attribution: "TAHOT, STEP Bible (www.STEPBible.org), CC BY 4.0"
+    usage: Strong's numbers (H-numbers) for the Old Testament, only when a topic covers it
+
+  versification-copenhagen:
+    name: Copenhagen Alliance versification mappings (eng.json)
+    repo: https://github.com/Copenhagen-Alliance/versification-specification
+    fetch: false
+    license: CC-BY-SA-4.0 (data)
+    attribution: "Copenhagen Alliance for Open Biblical Language Resources, CC BY-SA 4.0"
+    usage: verse-number bounds check (versification.py); build tool only, not in outputs
+
+  tvtms:
+    name: TVTMS, Translators Versification Traditions (STEPBible)
+    repo: https://github.com/STEPBible/STEPBible-Data
+    dir: tmp/stepbible
+    fetch: true
+    license: CC-BY-4.0
+    license_file: README.md
+    license_markers: ["CC BY 4.0", "STEP Bible"]
+    attribution: "Data created by www.STEPBible.org based on work at Tyndale House Cambridge, CC BY 4.0"
+    usage: versification differences between traditions (Versification/ folder)
+
+  theographic:
+    name: Theographic Bible Metadata
+    repo: https://github.com/robertrouse/theographic-bible-metadata
+    dir: tmp/theographic
+    fetch: true
+    license: CC-BY-SA-4.0
+    license_file: LICENSE
+    license_markers: ["Attribution-ShareAlike 4.0 International"]
+    attribution: "Theographic Bible Metadata (github.com/robertrouse/theographic-bible-metadata), CC BY-SA 4.0"
+    usage: event dates (year only), people and places per verse
+
+  openbible:
+    name: OpenBible.info Bible Geocoding Data
+    repo: https://github.com/openbibleinfo/bible-geocoding-data
+    dir: tmp/openbible-geocoding
+    fetch: true
+    license: CC-BY-4.0
+    license_file: license.txt
+    license_markers: ["Attribution 4.0 International"]
+    attribution: "OpenBible.info Bible Geocoding Data (github.com/openbibleinfo/bible-geocoding-data), CC BY 4.0"
+    usage: ancient places, identification scores, Wikidata ids. Geometry is NOT used (part is OpenStreetMap, ODbL)
+
+  speaker-quotations:
+    name: MACULA Quotation and Speaker Data (Clear Bible)
+    repo: https://github.com/Clear-Bible/speaker-quotations
+    dir: tmp/speaker-quotations
+    fetch: true
+    license: CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)
+    license_file: LICENSE.md
+    license_markers: ["MACULA Quotation and Speaker Data", "CC BY 4.0", "MIT License"]
+    attribution: "MACULA Quotation and Speaker Data, © 2023 by Clear Bible, Inc"
+    usage: speaker of a quotation by verse range (tsv/Clear-Aligned-Projections.tsv)
+
+  acai:
+    name: ACAI Biblical Entity Data (BiblioNexus / Mission Mutual)
+    repo: https://github.com/BibleAquifer/ACAI
+    dir: tmp/acai
+    fetch: true
+    license: CC-BY-SA-4.0
+    license_file: LICENSE.md
+    license_markers: ["CC BY SA 4.0"]
+    attribution: "ACAI Biblical Entity Data, © BiblioNexus / Mission Mutual, CC BY-SA 4.0"
+    usage: people and places per verse (test only, measured for coverage)
+
+  perseus-latin:
+    name: Perseus Digital Library, canonical Latin literature (Tacitus, Annals)
+    repo: https://github.com/PerseusDL/canonical-latinLit
+    dir: tmp/perseus-latin
+    fetch: false
+    license: CC-BY-SA-4.0
+    license_file: license.md
+    license_markers: ["Attribution-ShareAlike 4.0 International"]
+    attribution: "Perseus Digital Library (Tufts University), canonical-latinLit, CC BY-SA 4.0"
+    usage: primary text read once to write data/anchors.yml (sparse clone, commit 5493c006cc4c); no data used at run time
+
+  perseus-greek:
+    name: Perseus Digital Library, canonical Greek literature (Josephus, Antiquities, Whiston)
+    repo: https://github.com/PerseusDL/canonical-greekLit
+    dir: tmp/perseus-greek
+    fetch: false
+    license: CC-BY-SA-4.0
+    license_file: license.md
+    license_markers: ["Attribution-ShareAlike 4.0 International"]
+    attribution: "Perseus Digital Library (Tufts University), canonical-greekLit, CC BY-SA 4.0"
+    usage: primary text read once to write data/anchors.yml (sparse clone, commit 01b725d835e6); no data used at run time
+
+  wikidata:
+    name: Wikidata
+    repo: https://www.wikidata.org
+    fetch: false
+    license: CC0-1.0
+    attribution: null
+    usage: place and person names in other languages (not integrated yet)
+
+  anchors:
+    name: Dated anchors of the text (data/anchors.yml)
+    repo: null
+    fetch: false
+    license: project file
+    attribution: null
+    usage: second, independent source for dates; each anchor cites its primary text
