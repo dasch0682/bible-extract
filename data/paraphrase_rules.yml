@@ -1,0 +1,17 @@
+# Paraphrase rules (specification, section "Paraphrase").
+# Starting values, to be confirmed on a sample (task 10). Edit this file, never the code.
+
+# Arbitration: a candidate whose fidelity score (1-5, given by the verification model) is below this
+# value is discarded, whatever its other score. The specification fixes no minimum; this one is provisional.
+min_fidelity: 4
+
+# Target-language check (code, no model). Common words per language code of languages.yml.
+# A candidate fails when another language's words clearly outnumber the target language's.
+# Words shared by several languages are ignored by the code. A language without a list here is not
+# checked (the check is recorded as null and the entry carries the flag `language_unchecked`).
+language_markers:
+  fr: [le, la, les, un, une, des, du, de, et, est, sont, que, qui, dans, pour, par, sur, avec, il, elle,
+       ils, elles, ne, pas, ce, cette, ces, au, aux, nous, vous, son, sa, ses, leur, leurs, mais, ou, où,
+       à, été, être, avoir, a, ont, dit, déclare, affirme]
+  en: [the, a, an, and, is, are, that, who, in, for, by, "on", with, he, she, they, not, this, these, to, of,
+       his, her, its, their, we, you, but, or, was, were, be, been, has, have, had, says, declares, states]

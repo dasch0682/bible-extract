@@ -86,6 +86,11 @@ specification wins.
   `data/calendar_rules.yml`, explicit hypotheses), `places.py` (OpenBible, `data/place_rules.yml`) and
   `literary.py` (model within code limits). `provenance.py` builds the `sources` records from
   `data/sources.yml`. Short texts (names, labels) are written by a model through `localize.py` and cached.
+- Code map (task 7): `paraphrase.build_paraphrase` writes the `paraphrase` field from the excerpt text, with injected calls
+  `calls = {"paraphrase_generation": (call, model_id), "paraphrase_verification": (call, model_id)}` and the rules in
+  `data/paraphrase_rules.yml` (`min_fidelity`, language markers). It returns the field and flags; `paraphrase.review_required`
+  tells when a human must look (`paraphrase_failed`, `genre_conflict`). The genre is proposed by the model in the generation call;
+  a genre that contradicts the speaker role is flagged. Not wired into extract.py yet (task 8).
 - Theographic years are ISO 8601 astronomical (0 = 1 BCE, -3 = 4 BCE); `dating.to_schema` converts them.
   validate.py wants `from <= to` as numbers, so for BCE `from` is the later bound.
 
@@ -123,7 +128,7 @@ auteur, contexte, reference, lien, version).
 ## Status of this file
 validate.py enforces schema 2 (task 2 is done). Task 6 modules exist and are tested but are not wired into
 extract.py yet: extract.py still follows the old flow and calls the old `validate_entry` signature, and is
-migrated in tasks 6 to 8 (paraphrase, discovery). Do not change validate.py without explicit approval.
+migrated in tasks 7 and 8 (paraphrase module done, discovery to do). Do not change validate.py without explicit approval.
 
 ## Conventions
 - The LLM is used only for: relevance judgement (model mode), speaker, context,
