@@ -17,6 +17,7 @@ from pathlib import Path
 import yaml
 
 import datasets as ds
+import day_candidates
 from provenance import dataset_source, merge_sources
 
 RULES_PATH = Path(__file__).parent / "data" / "date_rules.yml"
@@ -125,14 +126,17 @@ def estimates(verse_ids: list, theographic: dict, anchors: list, rules: dict) ->
 
 
 def build_temporal(verse_ids: list, theographic: dict, anchors: list, rules: dict, registry: dict,
-                   localize_label=lambda label: None) -> dict:
+                   localize_label=lambda label: None, day_rules=None, lang: str = "en") -> dict:
     """{'temporal': [...], 'sources': [...], 'flags': [...]} for an entry.
 
     `localize_label(label)` returns the event label in the target language, or None
     (the dataset label is then kept and the entry is flagged `label_not_localized`).
+    `day_rules` (data/calendar_rules.yml, see day_candidates.py): when given, a Theographic event it
+    lists (the Passion, Pentecost) also carries `day_candidates`; with several different dates the
+    level is `disputed`, because no candidate is a fact.
     """
     ests = estimates(verse_ids, theographic, anchors, rules)
-    flags, items, records = [], [], []
+    flags, items, records, kinds = [], [], [], set()
     by_event = {}
     for e in ests:
         by_event.setdefault(e["event"], []).append(e)
@@ -146,8 +150,20 @@ def build_temporal(verse_ids: list, theographic: dict, anchors: list, rules: dic
             if label is None:
                 label = e["label"]
                 flags.append(f"label_not_localized:{e['record']}")
-            items.append({"kind": "scholarly_estimate", "label": label, "date_range": rng,
-                          "confidence": rate(e, group, rules), "sources": [e["record"]], "event": e["event"]})
+            item = {"kind": "scholarly_estimate", "label": label, "date_range": rng,
+                    "confidence": rate(e, group, rules), "sources": [e["record"]], "event": e["event"]}
+            cand = day_candidates.candidates_for_event(e["event"], day_rules, lang) \
+                if day_rules is not None and e["source"] == "theographic" else None
+            if cand and cand["candidates"]:
+                item["day_candidates"] = cand["candidates"]
+                kinds.add(cand["kind"])
+                if len({c["date"] for c in cand["candidates"]}) > 1:
+                    item["confidence"] = "disputed"
+                if cand["text_fallback"]:
+                    flags.append(f"assumptions_in_english:{e['record']}")
+            items.append(item)
             records.append(dataset_source(e["record"], e["source"],
                                           "anchor" if e["anchored"] else "event_data", registry))
+    if kinds:
+        records += day_candidates.source_records(kinds, registry)
     return {"temporal": items, "sources": merge_sources(records), "flags": flags}

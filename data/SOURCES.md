@@ -188,6 +188,30 @@ license file and fails if a marker string disappeared. Coverage measured on 20 p
 
 ---
 
+## 14. Meeus, Astronomical Algorithms (`meeus-astronomical-algorithms`)
+
+| Field | Value |
+|---|---|
+| **Usage** | Julian day (chapter 7) and new-moon times (chapter 49) in `calendar_calc.py`, for the day-level date candidates |
+| **Reference** | Jean Meeus, *Astronomical Algorithms*, 2nd edition, Willmann-Bell, 1998 |
+| **License** | Published formulas of a book. No text or table of the book is copied; the code implements the formulas |
+| **Checks done** | Worked example 49.a of the book (new moon of February 1977, k = -283: JDE 2443192.65118, reproduced to 1e-5 day) and the new moon of 6 January 2000 (18:14 UT). Julian-calendar conversions and weekdays are tested on known dates |
+| **Not yet checked** | The Delta T polynomial (Espenak and Meeus, NASA Five Millennium Canon of Solar Eclipses, valid -500 to +500) and the new-moon times of the first century against a published table (NASA Five Millennium Catalog of Moon Phases). Until then, candidates rely on formulas that are right for modern dates only by test |
+| **Notes** | Nothing here is a source for a Bible fact. It only turns explicit hypotheses into dates |
+
+---
+
+## 15. Calendar rules (`calendar-rules`)
+
+| Field | Value |
+|---|---|
+| **File** | `data/calendar_rules.yml` (project file) |
+| **Content** | Hypotheses, not facts: where the month starts (moon age at sunset, two variants), the spring equinox taken at 21 March (Julian), Nisan 14 or 15 as the day of death, two readings of Leviticus 23:15-16 for Pentecost, the kept Passion years (30 and 33) and the years set aside (27 and 34, single source to check) |
+| **License** | Project file |
+| **Notes** | Every candidate lists the hypotheses it relies on. No candidate is presented as a fact |
+
+---
+
 ## License compatibility summary
 
 | Source | License | In repo? | Used in outputs? |
@@ -202,8 +226,10 @@ license file and fails if a marker string disappeared. Coverage measured on 20 p
 | Theographic | CC BY-SA 4.0 | No | Years, place names |
 | OpenBible.info | CC BY 4.0 | No | Place names, scores, Wikidata ids |
 | speaker-quotations | CC BY 4.0 + MIT | No | Speaker names |
-| ACAI | CC BY-SA 4.0 | No | Not planned |
+| ACAI | CC BY-SA 4.0 | No | Entity ids, as a cross-check of the speaker |
 | Perseus (anchors) | CC BY-SA 4.0 | Short quotes in `anchors.yml` | Reference only |
+| Meeus (algorithms) | published formulas | No | Computed dates only |
+| Calendar rules | project file | `data/calendar_rules.yml` | Hypotheses behind the day candidates |
 
 **Decision of 2026-10-07:** datasets are integrated whatever their license, because nothing is shared for now.
 **The license of the outputs is decided at publication.** Before any sharing, the ShareAlike sources

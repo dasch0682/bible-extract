@@ -1,0 +1,56 @@
+# Calendar rules for the day-level date candidates (specification: "Candidats de dates au jour près").
+# Every value here is an explicit HYPOTHESIS, not a fact; each candidate lists the ones it relies on.
+# Starting values, to be confirmed. Edit this file, never the code.
+
+place: {name: Jerusalem, longitude_east_deg: 35.2}
+sunset_local_hour: 18.0           # sunset taken at 18:00 local mean time (approximation)
+
+# A month begins on the evening when the moon is at least this old at sunset.
+# Each value is a variant: it gives its own candidates.
+crescent_min_age_hours: [18, 24]
+
+# Nisan is the first month whose 14th day is on or after this Julian date (the spring equinox is
+# taken at this date, not computed).
+equinox_julian: {month: 3, day: 21}
+
+# Events whose day matters, by Theographic event id (data/COVERAGE.md, theographic:event:<id>).
+events:
+  "459": {kind: passion}          # Crucifixion and Burial
+  "307": {kind: pentecost}        # The Holy Spirit comes
+
+passion:
+  # Years kept at the start (specification). Friday only.
+  years: [30, 33]
+  # Day of death: 14 Nisan (John) or 15 Nisan (the other three Gospels).
+  day_of_nisan: [14, 15]
+  # Considered and set aside by other arguments, from a single source still to check:
+  # recorded as hypotheses, never computed.
+  set_aside:
+    27: "Set aside by the chronology of John the Baptist (single source, to check)."
+    34: "Set aside by the conversion of Paul (single source, to check)."
+
+pentecost:
+  # Readings of Leviticus 23:15-16 (count of fifty days). `pharisaic`: the count starts the day after
+  # 15 Nisan. `sunday`: the count starts on the Sunday after the first Sabbath on or after 15 Nisan.
+  readings: [pharisaic, sunday]
+
+# Texts of the assumptions, per language. A language missing here falls back to English and is flagged.
+texts:
+  en:
+    calendar: "Dates are in the Julian calendar; days begin at sunset."
+    sunset: "Sunset is taken at {hour}:00 local mean time in {place} (longitude {longitude} degrees east)."
+    crescent: "A month begins on the evening when the moon is at least {hours} hours old at sunset (geocentric conjunction)."
+    equinox: "Nisan is the first month whose 14th day falls on or after 21 March (Julian), the spring equinox being taken at that date."
+    death_14: "Jesus died on the 14th of Nisan, as in John's Gospel."
+    death_15: "Jesus died on the 15th of Nisan, as in the other three Gospels."
+    pharisaic: "The fifty days are counted from the day after the 15th of Nisan (Leviticus 23:15-16)."
+    sunday: "The fifty days are counted from the Sunday after the first Sabbath on or after the 15th of Nisan (Leviticus 23:15-16)."
+  fr:
+    calendar: "Les dates sont en calendrier julien ; les jours commencent au coucher du soleil."
+    sunset: "Le coucher du soleil est pris à {hour} h, heure solaire moyenne locale, à {place} (longitude {longitude} degrés est)."
+    crescent: "Un mois commence le soir où la lune a au moins {hours} heures au coucher du soleil (conjonction géocentrique)."
+    equinox: "Nisan est le premier mois dont le 14e jour tombe le 21 mars (julien) ou après, l'équinoxe de printemps étant pris à cette date."
+    death_14: "Jésus est mort le 14 Nisan, comme dans l'Évangile de Jean."
+    death_15: "Jésus est mort le 15 Nisan, comme dans les trois autres Évangiles."
+    pharisaic: "Les cinquante jours se comptent à partir du lendemain du 15 Nisan (Lévitique 23,15-16)."
+    sunday: "Les cinquante jours se comptent à partir du dimanche qui suit le premier sabbat tombant le 15 Nisan ou après (Lévitique 23,15-16)."
