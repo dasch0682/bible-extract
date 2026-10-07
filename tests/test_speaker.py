@@ -10,6 +10,7 @@ import pytest
 import yaml
 
 import datasets as ds
+import localize
 import provenance as pv
 import speaker as sp
 import validate
@@ -153,8 +154,8 @@ def test_missing_localized_name_keeps_the_label_and_flags_review():
     ("Jésus", "Jésus"), ('  "Pilate"\n', "Pilate"), ("«Pierre»", "Pierre"),
     ("", None), (None, None), ("Jésus\nou Christ", None), ("a b c d e f g h i j k l m", None), ("{name}", None),
 ])
-def test_clean_name(raw, expected):
-    assert sp.clean_name(raw) == expected
+def test_clean_text(raw, expected):
+    assert localize.clean_text(raw) == expected
 
 
 def test_render_name_calls_the_model_once_then_uses_the_cache(tmp_path):

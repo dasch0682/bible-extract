@@ -10,17 +10,14 @@ with reason `not_identified`, the candidates, and the review flag `speaker_ambig
 """
 from __future__ import annotations
 
-import hashlib
-import json
 import re
 import unicodedata
-from pathlib import Path
 
 import datasets as ds
+import localize
 from provenance import dataset_source, merge_sources, verse_source
 
 NAME_PROMPT_VERSION = "speaker-name-1"
-MAX_NAME_WORDS = 12
 
 # Flags that force a human decision in the review page.
 REVIEW_FLAGS = {"speaker_ambiguous", "name_not_localized"}
@@ -129,48 +126,14 @@ def rate(ident: dict):
 
 # --- name in the target language (the only model use) ---
 
-def _slug(s: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", _norm(s)).strip("-")[:40]
-
-
-def _name_prompt(label: str, book: str, lang_cfg: dict, verse_lines: list) -> tuple:
-    system = (
-        f"You write the name of a biblical speaker in {lang_cfg['prompt_lang']}, "
-        f"as it is usually written in the {lang_cfg['translation']}. "
-        "The label comes from a dataset and is in English. Answer with the name only: "
-        "no quotes, no explanation, one line, at most 12 words. "
-        "For a narrator label (narrator-XXX) answer with the usual word for 'the narrator'."
-    )
-    user = f"Label: {label}\nBook: {book}\nVerses ({lang_cfg['translation']}):\n" + "\n".join(verse_lines)
-    return system, user
-
-
-def clean_name(raw):
-    """A model answer is accepted only as a short, single-line name; otherwise None."""
-    if not isinstance(raw, str):
-        return None
-    name = raw.strip().strip('"«»“”\'').strip()
-    if not name or "\n" in name or len(name.split()) > MAX_NAME_WORDS or any(c in name for c in "{}[]<>"):
-        return None
-    return name
-
-
 def render_name(label: str, book: str, lang: str, lang_cfg: dict, verse_lines: list,
-                call, model: str, cache_dir) -> str | None:
-    """Name of the speaker in the target language, cached per label, language, prompt version and model.
-
-    `call(system, user)` returns the raw model text or None. Returns None when no valid name was obtained.
-    """
-    digest = hashlib.sha1(label.encode("utf-8")).hexdigest()[:8]
-    cf = Path(cache_dir) / "speaker-name" / lang / f"{_slug(label)}-{digest}.{NAME_PROMPT_VERSION}.{_slug(model)}.json"
-    if cf.exists():
-        return clean_name(json.loads(cf.read_text(encoding="utf-8")).get("name"))
-    name = clean_name(call(*_name_prompt(label, book, lang_cfg, verse_lines)))
-    if name is not None:
-        cf.parent.mkdir(parents=True, exist_ok=True)
-        cf.write_text(json.dumps({"label": label, "name": name, "model": model,
-                                  "prompt_version": NAME_PROMPT_VERSION}, ensure_ascii=False), encoding="utf-8")
-    return name
+                call, model: str, cache_dir):
+    """Name of the speaker in the target language (see localize.localize), or None if no valid name."""
+    return localize.localize(
+        "speaker-name", label, "name of a biblical speaker", lang, lang_cfg, verse_lines, call, model, cache_dir,
+        NAME_PROMPT_VERSION,
+        extra=f"A label such as narrator-XXX means 'the narrator' of the book {book}: answer with the usual word for it.",
+    )
 
 
 # --- the schema-2 field ---

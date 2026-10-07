@@ -56,7 +56,10 @@ def parse_usfm_ref(ref: str):
 # --- Theographic (dates by event, places) ---
 
 def parse_theographic_date(raw):
-    """'-4003' or '0030-05-02' -> {'year': int, 'precision': 'year'|'day', 'raw': str}; BCE is negative.
+    """'-4003' or '0030-05-02' -> {'year': int, 'precision': 'year'|'day', 'raw': str}.
+
+    The year is in ISO 8601 astronomical numbering, as the dataset documents it
+    (docs/api-documentation.md): 0 is 1 BCE, -1 is 2 BCE, -4003 is 4004 BCE.
 
     Only the year is kept downstream: days come from a calendar computation, not a dataset.
     """
@@ -81,7 +84,7 @@ def load_theographic(base=TMP / "theographic") -> dict:
         date = parse_theographic_date(f.get("startDate"))
         if date is None:
             continue
-        item = {"title": f.get("title"), "duration": f.get("duration"), **date,
+        item = {"id": str(f.get("eventID") or e["id"]), "title": f.get("title"), "duration": f.get("duration"), **date,
                 "places": [place_name[r] for r in f.get("locations", []) if place_name.get(r)]}
         for rid in f.get("verses", []):
             if rid in rec_to_key:
