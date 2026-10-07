@@ -89,13 +89,16 @@ def test_load_theographic(tmp_path):
 def test_load_openbible(tmp_path):
     f = tmp_path / "ancient.jsonl"
     rec = {"id": "a1", "friendly_id": "Bethany",
-           "identifications": [{"score": {"vote_average": 400}}, {"score": {"vote_average": 900}}, {"score": "x"}],
+           "identifications": [{"score": {"vote_average": 400, "vote_total": 400, "vote_count": 1}},
+                               {"score": {"vote_average": 900, "vote_total": 900, "vote_count": 2}, "special": "nonspecific_place"},
+                               {"score": "x"}],
            "linked_data": {"wikidata": {"id": "Q123"}, "other": {"id": "nope"}},
            "verses": [{"sort": "43011001"}, {"sort": "oops"}]}
     f.write_text(json.dumps(rec) + "\n\n")
     out = ds.load_openbible(f)
     assert list(out) == ["43011001"]
-    assert out["43011001"][0] | {} == {"id": "a1", "name": "Bethany", "wikidata": "Q123", "score": 900, "identifications": 3}
+    assert out["43011001"][0] | {} == {"id": "a1", "name": "Bethany", "wikidata": "Q123", "score": 900, "identifications": 3,
+                                       "total": 900, "count": 2, "special": "nonspecific_place"}
 
 
 def test_load_openbible_without_scores(tmp_path):
@@ -103,6 +106,7 @@ def test_load_openbible_without_scores(tmp_path):
     f.write_text(json.dumps({"id": "a", "friendly_id": "X", "verses": [{"sort": "01001001"}]}))
     item = ds.load_openbible(f)["01001001"][0]
     assert item["score"] is None and item["wikidata"] is None
+    assert (item["total"], item["count"], item["special"]) == (None, None, None)
 
 
 # --- speaker-quotations ---

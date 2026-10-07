@@ -20,8 +20,11 @@ specification wins.
 - An LLM writes and judges, it is never a source.
 - A field without a source is null, with a reason (no_source, not_identified,
   disputed_no_consensus).
-- Every uncertain value carries a confidence level. Confidence levels are
-  computed by the code, never by an LLM.
+- Every uncertain value carries a confidence level. Date, place and speaker levels are
+  computed by the code from the rule files (`data/date_rules.yml`, `data/place_rules.yml`,
+  `speaker.rate`), never by an LLM. The only level a model judges is the literary context,
+  in the same call that writes it; the code limits the call (citations must come from the verses
+  shown, valid level, short text) and records `confidence_by: model`, the model and the prompt version.
 - Counters and measurements are computed by the code, never by the LLM.
 - Do not modify validate.py without explicit approval.
 - Public-domain texts only. Never add copyrighted translations
@@ -77,6 +80,14 @@ specification wins.
 - Speaker: `role` is speaker or narrator, confidence is high, medium or low,
   and an unidentified speaker is null with reason `not_identified`.
   Ambiguous cases must go through review.
+- Code map (task 6): `context.build_context` assembles `speaker` and `context` from
+  `speaker.py` (speaker-quotations + ACAI cross-check), `dating.py` (one entry per source, levels from
+  `data/date_rules.yml`), `day_candidates.py` + `calendar_calc.py` (Passion and Pentecost candidates from
+  `data/calendar_rules.yml`, explicit hypotheses), `places.py` (OpenBible, `data/place_rules.yml`) and
+  `literary.py` (model within code limits). `provenance.py` builds the `sources` records from
+  `data/sources.yml`. Short texts (names, labels) are written by a model through `localize.py` and cached.
+- Theographic years are ISO 8601 astronomical (0 = 1 BCE, -3 = 4 BCE); `dating.to_schema` converts them.
+  validate.py wants `from <= to` as numbers, so for BCE `from` is the later bound.
 
 ## Models and costs
 - Everything about models lives in models.yml, nowhere else. The code contains
@@ -110,8 +121,9 @@ reintroduce the old French keys (citation, longueurExtrait, nbMotExtrait,
 auteur, contexte, reference, lien, version).
 
 ## Status of this file
-validate.py and its tests still enforce the old 14-word rule until task 2 of
-the specification is done. Do not change validate.py before that task is agreed.
+validate.py enforces schema 2 (task 2 is done). Task 6 modules exist and are tested but are not wired into
+extract.py yet: extract.py still follows the old flow and calls the old `validate_entry` signature, and is
+migrated in tasks 6 to 8 (paraphrase, discovery). Do not change validate.py without explicit approval.
 
 ## Conventions
 - The LLM is used only for: relevance judgement (model mode), speaker, context,

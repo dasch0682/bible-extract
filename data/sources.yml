@@ -83,7 +83,7 @@ sources:
     license_file: license.txt
     license_markers: ["Attribution 4.0 International"]
     attribution: "OpenBible.info Bible Geocoding Data (github.com/openbibleinfo/bible-geocoding-data), CC BY 4.0"
-    usage: ancient places, identification scores, Wikidata ids. Geometry is NOT used (part is OpenStreetMap, ODbL)
+    usage: ancient places, identification totals and special resolutions, Wikidata ids (places.py, data/place_rules.yml). Geometry is NOT used (part is OpenStreetMap, ODbL)
 
   speaker-quotations:
     name: MACULA Quotation and Speaker Data (Clear Bible)
@@ -105,7 +105,7 @@ sources:
     license_file: LICENSE.md
     license_markers: ["CC BY SA 4.0"]
     attribution: "ACAI Biblical Entity Data, © BiblioNexus / Mission Mutual, CC BY-SA 4.0"
-    usage: people and places per verse (test only, measured for coverage)
+    usage: people per verse, ids only, as a cross-check of the speaker (speaker.py); places measured for coverage
 
   perseus-latin:
     name: Perseus Digital Library, canonical Latin literature (Tacitus, Annals)
@@ -144,3 +144,19 @@ sources:
     license: project file
     attribution: null
     usage: second, independent source for dates; each anchor cites its primary text
+
+  meeus-astronomical-algorithms:
+    name: Jean Meeus, Astronomical Algorithms, 2nd edition (Willmann-Bell, 1998)
+    repo: null
+    fetch: false
+    license: published formulas (a book; no text or table is copied)
+    attribution: "Jean Meeus, Astronomical Algorithms, 2nd ed., Willmann-Bell, 1998 (chapters 7 and 49)"
+    usage: Julian day and new-moon times for calendar_calc.py. Checked against the worked example 49.a of the book (new moon of February 1977) and the new moon of 6 January 2000. Delta T uses the Espenak and Meeus polynomial (NASA Five Millennium Canon of Solar Eclipses), not yet checked against a fetched table.
+
+  calendar-rules:
+    name: Calendar rules for day-level candidates (data/calendar_rules.yml)
+    repo: null
+    fetch: false
+    license: project file
+    attribution: null
+    usage: explicit hypotheses (crescent rule, equinox date, readings of Leviticus 23:15-16) behind the day candidates; every value is a hypothesis, not a fact

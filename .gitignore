@@ -4,3 +4,4 @@ tmp/
 data/en.json
 data/fr.json
 .claude/
+cache/

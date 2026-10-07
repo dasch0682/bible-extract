@@ -1,0 +1,20 @@
+# Date rules (specification: "Contexte, dates et lieux"). The margins and thresholds
+# live here and nowhere else: change them here, never in the code.
+# Starting values, to be confirmed on a sample (specification, "Points ouverts").
+#
+# A dataset gives one year. It becomes a range [year - margin, year + margin].
+# Theographic numbers years in ISO 8601 astronomical numbering (0 = 1 BCE, -1 = 2 BCE,
+# -3 = 4 BCE, see docs/api-documentation.md of the dataset); the code converts to CE/BCE.
+
+margin_years:
+  theographic: 2          # 30 -> 28..32 ; with a span of 4 a Theographic entry can reach "probable" only
+
+# Largest span (end - start, in years) for each level. Above `approximate`: disputed.
+max_span:
+  certain: 2
+  probable: 10
+  approximate: 25
+
+# "certain" also needs the date anchored by data/anchors.yml, or this many independent
+# datasets that agree. A single chronology (Theographic alone) never goes above "probable".
+certain_min_sources: 2

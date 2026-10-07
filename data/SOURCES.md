@@ -126,8 +126,9 @@ license file and fails if a marker string disappeared. Coverage measured on 20 p
 | **License** | **CC BY 4.0** (file `license.txt`) |
 | **Verified** | 2026-10-07 |
 | **Attribution** | "OpenBible.info Bible Geocoding Data (github.com/openbibleinfo/bible-geocoding-data), CC BY 4.0" |
-| **Read by** | `datasets.load_openbible` (`data/ancient.jsonl`) |
-| **Notes** | Geometry is NOT used: part of it comes from OpenStreetMap (ODbL), which has its own obligations. |
+| **Read by** | `datasets.load_openbible` (`data/ancient.jsonl`), `places.py` (rules in `data/place_rules.yml`) |
+| **Score used** | The `vote_total` of the best identification. README: "an overall total of 500 or higher represents high confidence". `vote_average` is not used for the level: it equals 500 for any place with a single identification, but is a mean vote (at most about 30) otherwise |
+| **Notes** | Geometry is NOT used: part of it comes from OpenStreetMap (ODbL), which has its own obligations. Places whose best identification is `not_a_place` or `not_a_proper_name` are left out. |
 
 ## 9. TVTMS, Translators Versification Traditions (`tvtms`)
 
@@ -152,13 +153,14 @@ license file and fails if a marker string disappeared. Coverage measured on 20 p
 | **License** | **CC BY 4.0**, plus **MIT** for the Glyssen / Faith Comes By Hearing character data (file `LICENSE.md`) |
 | **Verified** | 2026-10-07 |
 | **Attribution** | "MACULA Quotation and Speaker Data, © 2023 by Clear Bible, Inc" |
-| **Read by** | `datasets.load_speakers` (`tsv/Clear-Aligned-Projections.tsv`), `datasets.speakers_at` |
+| **Read by** | `datasets.load_speakers` (`tsv/Clear-Aligned-Projections.tsv`), `datasets.speakers_at`, `speaker.py` |
+| **Notes** | The dataset does not document its quote types (`Implicit`, `Quotation`...): they are recorded but never change a confidence level, except `Hypothetical` |
 
 ## 11. ACAI Biblical Entity Data (`acai`)
 
 | Field | Value |
 |---|---|
-| **Usage** | People and places per verse (id and English label only). Measured for coverage; not planned for outputs |
+| **Usage** | People and places per verse (id and English label only). People: cross-check of the speaker (`speaker.py`, ids only). Places: measured for coverage, not used in outputs (no identification confidence) |
 | **Repository** | https://github.com/BibleAquifer/ACAI |
 | **Pinned commit** | `7e6a2d6674910aedb0888493ebbe6684d374ae5c` |
 | **License** | **CC BY-SA 4.0** (file `LICENSE.md`) |
@@ -188,6 +190,30 @@ license file and fails if a marker string disappeared. Coverage measured on 20 p
 
 ---
 
+## 14. Meeus, Astronomical Algorithms (`meeus-astronomical-algorithms`)
+
+| Field | Value |
+|---|---|
+| **Usage** | Julian day (chapter 7) and new-moon times (chapter 49) in `calendar_calc.py`, for the day-level date candidates |
+| **Reference** | Jean Meeus, *Astronomical Algorithms*, 2nd edition, Willmann-Bell, 1998 |
+| **License** | Published formulas of a book. No text or table of the book is copied; the code implements the formulas |
+| **Checks done** | Worked example 49.a of the book (new moon of February 1977, k = -283: JDE 2443192.65118, reproduced to 1e-5 day) and the new moon of 6 January 2000 (18:14 UT). Julian-calendar conversions and weekdays are tested on known dates |
+| **Not yet checked** | The Delta T polynomial (Espenak and Meeus, NASA Five Millennium Canon of Solar Eclipses, valid -500 to +500) and the new-moon times of the first century against a published table (NASA Five Millennium Catalog of Moon Phases). Until then, candidates rely on formulas that are right for modern dates only by test |
+| **Notes** | Nothing here is a source for a Bible fact. It only turns explicit hypotheses into dates |
+
+---
+
+## 15. Calendar rules (`calendar-rules`)
+
+| Field | Value |
+|---|---|
+| **File** | `data/calendar_rules.yml` (project file) |
+| **Content** | Hypotheses, not facts: where the month starts (moon age at sunset, two variants), the spring equinox taken at 21 March (Julian), Nisan 14 or 15 as the day of death, two readings of Leviticus 23:15-16 for Pentecost, the kept Passion years (30 and 33) and the years set aside (27 and 34, single source to check) |
+| **License** | Project file |
+| **Notes** | Every candidate lists the hypotheses it relies on. No candidate is presented as a fact |
+
+---
+
 ## License compatibility summary
 
 | Source | License | In repo? | Used in outputs? |
@@ -202,8 +228,10 @@ license file and fails if a marker string disappeared. Coverage measured on 20 p
 | Theographic | CC BY-SA 4.0 | No | Years, place names |
 | OpenBible.info | CC BY 4.0 | No | Place names, scores, Wikidata ids |
 | speaker-quotations | CC BY 4.0 + MIT | No | Speaker names |
-| ACAI | CC BY-SA 4.0 | No | Not planned |
+| ACAI | CC BY-SA 4.0 | No | Entity ids, as a cross-check of the speaker |
 | Perseus (anchors) | CC BY-SA 4.0 | Short quotes in `anchors.yml` | Reference only |
+| Meeus (algorithms) | published formulas | No | Computed dates only |
+| Calendar rules | project file | `data/calendar_rules.yml` | Hypotheses behind the day candidates |
 
 **Decision of 2026-10-07:** datasets are integrated whatever their license, because nothing is shared for now.
 **The license of the outputs is decided at publication.** Before any sharing, the ShareAlike sources
