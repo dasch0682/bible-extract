@@ -1,5 +1,6 @@
 fr:
   corpus: data/fr.json
+  dataset: lsg1910       # id in data/sources.yml, cited in each verse source
   translation: Louis Segond 1910
   version_label: LSG 1910
   version: LSG
@@ -9,6 +10,7 @@ fr:
 
 en:
   corpus: data/en.json
+  dataset: kjv           # id in data/sources.yml, cited in each verse source
   translation: King James Version (1769)
   version_label: KJV 1769
   version: KJV
