@@ -83,7 +83,7 @@ sources:
     license_file: license.txt
     license_markers: ["Attribution 4.0 International"]
     attribution: "OpenBible.info Bible Geocoding Data (github.com/openbibleinfo/bible-geocoding-data), CC BY 4.0"
-    usage: ancient places, identification scores, Wikidata ids. Geometry is NOT used (part is OpenStreetMap, ODbL)
+    usage: ancient places, identification totals and special resolutions, Wikidata ids (places.py, data/place_rules.yml). Geometry is NOT used (part is OpenStreetMap, ODbL)
 
   speaker-quotations:
     name: MACULA Quotation and Speaker Data (Clear Bible)

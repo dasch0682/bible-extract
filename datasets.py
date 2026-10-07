@@ -101,18 +101,29 @@ def load_theographic(base=TMP / "theographic") -> dict:
 # --- OpenBible.info geocoding (places, identification scores) ---
 
 def load_openbible(path=TMP / "openbible-geocoding" / "data" / "ancient.jsonl") -> dict:
-    """{key: [place]} with name, Wikidata id and best identification score. No geometry."""
+    """{key: [place]} with name, Wikidata id and the published scores. No geometry.
+
+    `score` is the best `vote_average`. `total`, `count` and `special` describe the identification with the
+    highest `vote_total` (README: a total of 500 or higher represents high confidence). `special` is
+    multiple_locations, nonspecific_place or not_a_place when the place has no single location.
+    """
     index = {}
     for line in Path(path).read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
         r = json.loads(line)
-        scores = [i["score"]["vote_average"] for i in r.get("identifications", [])
-                  if isinstance(i.get("score"), dict) and "vote_average" in i["score"]]
+        idents = r.get("identifications", [])
+        scored = [i for i in idents if isinstance(i.get("score"), dict)]
+        scores = [i["score"]["vote_average"] for i in scored if "vote_average" in i["score"]]
+        totals = [i for i in scored if "vote_total" in i["score"]]
+        best = max(totals, key=lambda i: i["score"]["vote_total"], default=None)
         wikidata = next((v["id"] for v in (r.get("linked_data") or {}).values()
                          if isinstance(v, dict) and _QID.match(str(v.get("id", "")))), None)
         item = {"id": r["id"], "name": r.get("friendly_id"), "wikidata": wikidata,
-                "score": max(scores) if scores else None, "identifications": len(r.get("identifications", []))}
+                "score": max(scores) if scores else None, "identifications": len(idents),
+                "total": best["score"]["vote_total"] if best else None,
+                "count": best["score"].get("vote_count") if best else None,
+                "special": best.get("special") if best else None}
         for v in r.get("verses", []):
             if _KEY.match(str(v.get("sort", ""))):
                 index.setdefault(v["sort"], []).append(item)

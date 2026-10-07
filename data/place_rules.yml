@@ -1,0 +1,23 @@
+# Place rules (specification: "Un lieu prend la confiance de l'identification publiée par OpenBible.info").
+# Starting values, to be confirmed on a sample. Edit this file, never the code.
+#
+# OpenBible.info README, "Vote scores": "A total of 500 with a single vote means there's no substantial
+# disagreement on the location. An overall total of 500 or higher represents high confidence in the
+# identification." The level comes from the `vote_total` of the best identification of the place.
+
+vote_total:
+  probable: 500        # total >= 500: high confidence in the dataset. One dataset alone never gives "certain".
+  approximate: 1       # 1 to 499
+  # a total of 0 or less (the identification is doubted) gives "disputed"
+
+# No score at all: nothing says how sure the identification is.
+no_score: disputed
+
+# Places that have no single location (README, "Special resolutions").
+special:
+  not_a_place: exclude          # a personal name or a word some translations treat as a place: left out
+  not_a_proper_name: exclude    # a common noun such as "forest" that some translations treat as a name: left out
+  nonspecific_place: disputed   # symbolic or prophetic place
+  multiple_locations: disputed  # refers to several locations
+  unknown_place: disputed       # the location is unknown (the Garden of Eden)
+  recursive: disputed           # resolutions only point back to the same place

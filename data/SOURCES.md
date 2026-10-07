@@ -126,8 +126,9 @@ license file and fails if a marker string disappeared. Coverage measured on 20 p
 | **License** | **CC BY 4.0** (file `license.txt`) |
 | **Verified** | 2026-10-07 |
 | **Attribution** | "OpenBible.info Bible Geocoding Data (github.com/openbibleinfo/bible-geocoding-data), CC BY 4.0" |
-| **Read by** | `datasets.load_openbible` (`data/ancient.jsonl`) |
-| **Notes** | Geometry is NOT used: part of it comes from OpenStreetMap (ODbL), which has its own obligations. |
+| **Read by** | `datasets.load_openbible` (`data/ancient.jsonl`), `places.py` (rules in `data/place_rules.yml`) |
+| **Score used** | The `vote_total` of the best identification. README: "an overall total of 500 or higher represents high confidence". `vote_average` is not used for the level: it equals 500 for any place with a single identification, but is a mean vote (at most about 30) otherwise |
+| **Notes** | Geometry is NOT used: part of it comes from OpenStreetMap (ODbL), which has its own obligations. Places whose best identification is `not_a_place` or `not_a_proper_name` are left out. |
 
 ## 9. TVTMS, Translators Versification Traditions (`tvtms`)
 
@@ -152,13 +153,14 @@ license file and fails if a marker string disappeared. Coverage measured on 20 p
 | **License** | **CC BY 4.0**, plus **MIT** for the Glyssen / Faith Comes By Hearing character data (file `LICENSE.md`) |
 | **Verified** | 2026-10-07 |
 | **Attribution** | "MACULA Quotation and Speaker Data, © 2023 by Clear Bible, Inc" |
-| **Read by** | `datasets.load_speakers` (`tsv/Clear-Aligned-Projections.tsv`), `datasets.speakers_at` |
+| **Read by** | `datasets.load_speakers` (`tsv/Clear-Aligned-Projections.tsv`), `datasets.speakers_at`, `speaker.py` |
+| **Notes** | The dataset does not document its quote types (`Implicit`, `Quotation`...): they are recorded but never change a confidence level, except `Hypothetical` |
 
 ## 11. ACAI Biblical Entity Data (`acai`)
 
 | Field | Value |
 |---|---|
-| **Usage** | People and places per verse (id and English label only). Measured for coverage; not planned for outputs |
+| **Usage** | People and places per verse (id and English label only). People: cross-check of the speaker (`speaker.py`, ids only). Places: measured for coverage, not used in outputs (no identification confidence) |
 | **Repository** | https://github.com/BibleAquifer/ACAI |
 | **Pinned commit** | `7e6a2d6674910aedb0888493ebbe6684d374ae5c` |
 | **License** | **CC BY-SA 4.0** (file `LICENSE.md`) |
