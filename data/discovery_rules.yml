@@ -1,0 +1,14 @@
+# Discovery rules (specification, sections "Découverte et sélection" and "Extrait").
+# Starting values, to be confirmed on a sample (task 10). Edit this file, never the code.
+
+excerpt:
+  # Rules mode: the excerpt is the verse that was found, extended by at most this many verses before and
+  # after it (so at most 2 * window + 1 verses), and never beyond the quotation (speaker-quotations) that
+  # covers it. Without a covering quotation the excerpt is the verse alone. Excerpts of neighbouring
+  # candidates that overlap are merged into one entry.
+  window: 2
+
+model:
+  # Model mode: verses shown before and after a candidate verse, inside its chapter. The bounds that the
+  # model proposes must lie inside what it was shown.
+  window: 3

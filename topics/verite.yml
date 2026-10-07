@@ -2,7 +2,6 @@ label: "la vérité"
 label_fr: "la vérité"
 label_en: "truth"
 scope: NT              # NT | OT | ALL | liste de codes ex. [JHN, 1JN]
-max_words: 14
 
 # Strong's numbers (G = NT Greek) — primary discovery via byztxt Byzantine Greek NT
 strongs:
@@ -11,26 +10,37 @@ strongs:
   - G228   # ἀληθινός alethinos — real, authentic
   - G230   # ἀληθῶς   alethos   — truly, certainly
 
-# Regex cross-check applied on the FR corpus (text normalised: no accents, lowercase)
-patterns:
-  - '\bverit'          # vérité, véritable, véritablement (not "en vérité" — filtered below)
-  - '\bvrai'           # vrai, vraie, vraiment
+# Word patterns, one mapping per language (rule name: regex). They run on the corpus text of that language,
+# normalised (no accents, lowercase), and cross-check the Strong's route. The rule name is recorded in the
+# entry's discovery steps. The English patterns are a first proposal, to be checked on a sample (task 10).
+patterns_fr:
+  verit: '\bverit'     # vérité, véritable, véritablement
+  vrai: '\bvrai'       # vrai, vraie, vraiment
+patterns_en:
+  truth: '\btruth'
+  true_word: '\btru(?:e|ly)\b'   # true, truly (rule names are never bare true, no, on: YAML reads them as booleans)
+
+# Formulas stripped from the normalised text before the pattern search (rule name: regex), per language.
+# "en vérité" translates amen (G281) when it introduces a saying: it is not a mention of truth. A verse that
+# matched only because of such a formula is listed in the report; the Strong's route is never affected.
+exclude_phrases_fr:
+  amen_formula: '\ben verite\b'
 
 extra_instructions_fr: >-
   Nuance on the formula "en vérité / amen":
   (1) "Amen" used only as a liturgical closing (end of a doxology or prayer) is
-  NOT relevant — mark pertinent: false.
+  NOT relevant — answer relevant: false.
   (2) The introductory formula "en vérité, en vérité, je vous le dis" (amen amen
   I say to you) does NOT by itself make a verse relevant. Judge the CONTENT that
   follows: if the verse addresses truth, reality, or genuine knowledge beyond the
-  formula, it may be pertinent; if the formula is merely rhetorical emphasis on
-  unrelated content, mark pertinent: false.
+  formula, it may be relevant; if the formula is merely rhetorical emphasis on
+  unrelated content, answer relevant: false.
 
 extra_instructions_en: >-
   Nuance on the formula "verily / amen":
   (1) "Amen" used only as a liturgical closing (end of a doxology or prayer) is
-  NOT relevant — mark pertinent: false.
+  NOT relevant — answer relevant: false.
   (2) The introductory formula "Verily, verily, I say unto you" does NOT by itself
   make a verse relevant. Judge the CONTENT that follows: if the verse addresses
-  truth, reality, or genuine knowledge beyond the formula, it may be pertinent;
-  if the formula is merely rhetorical emphasis on unrelated content, mark pertinent: false.
+  truth, reality, or genuine knowledge beyond the formula, it may be relevant;
+  if the formula is merely rhetorical emphasis on unrelated content, answer relevant: false.

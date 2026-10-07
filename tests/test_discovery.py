@@ -1,6 +1,6 @@
 """Tests for discovery functions: patterns, Strong's, neighbours."""
 import pytest
-from extract import find_hits_patterns, neighbours
+from discovery import find_hits_patterns, neighbours
 from strongs import find_hits_strongs
 from books import scope_codes
 

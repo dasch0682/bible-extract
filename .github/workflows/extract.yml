@@ -10,10 +10,11 @@ on:
         description: "Langues à générer, séparées par virgule (défaut: toutes)"
         required: false
         default: ""
-      check_links:
-        description: "Vérifier les liens (HEAD)"
-        type: boolean
-        default: false
+      mode:
+        description: "Mode de découverte : rules (le code décide) ou model (le modèle juge la pertinence)"
+        type: choice
+        options: [rules, model]
+        default: rules
 
 permissions:
   contents: write
@@ -66,6 +67,21 @@ jobs:
         if: steps.byztxt-cache.outputs.cache-hit != 'true'
         run: git clone --depth 1 https://github.com/byztxt/byzantine-majority-text tmp/byztxt
 
+      # --- Datasets read by the context step (speaker, dates, places), pinned in data/sources.lock.json ---
+      - name: Cache datasets
+        uses: actions/cache@v4
+        with:
+          path: |
+            tmp/stepbible
+            tmp/theographic
+            tmp/openbible-geocoding
+            tmp/speaker-quotations
+            tmp/acai
+          key: datasets-${{ hashFiles('data/sources.lock.json') }}
+
+      - name: Fetch datasets
+        run: python scripts/fetch_sources.py --fetch
+
       # --- Extraction ---
       - name: Extraction
         env:
@@ -73,11 +89,12 @@ jobs:
         run: |
           python extract.py \
             --topic "${{ inputs.topic }}" \
-            ${{ inputs.lang != '' && format('--lang {0}', inputs.lang) || '' }} \
-            ${{ inputs.check_links && '--check-links' || '' }}
+            --mode "${{ inputs.mode }}" \
+            ${{ inputs.lang != '' && format('--lang {0}', inputs.lang) || '' }}
 
       - name: Résumé
-        run: cat "out/${{ inputs.topic }}.report.md" >> "$GITHUB_STEP_SUMMARY"
+        if: always()
+        run: test -f "out/${{ inputs.topic }}.report.md" && cat "out/${{ inputs.topic }}.report.md" >> "$GITHUB_STEP_SUMMARY" || true
 
       - name: Commit
         run: |
