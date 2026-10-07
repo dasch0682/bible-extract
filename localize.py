@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
+import threading
 import unicodedata
 from pathlib import Path
 
@@ -19,6 +21,14 @@ MAX_WORDS = 12
 def slug(s: str) -> str:
     s = "".join(ch for ch in unicodedata.normalize("NFD", s or "") if unicodedata.category(ch) != "Mn")
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")[:40]
+
+
+def write_atomic(path: Path, text: str) -> None:
+    """Write a cache file so that a concurrent reader sees the old file or the whole new one, never half of it."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.{threading.get_ident()}.tmp")
+    tmp.write_text(text, encoding="utf-8")
+    os.replace(tmp, path)
 
 
 def clean_text(raw, max_words: int = MAX_WORDS):
@@ -52,7 +62,6 @@ def localize(kind: str, text: str, what: str, lang: str, lang_cfg: dict, context
     user = f"Label: {text}\nVerses ({lang_cfg['translation']}):\n" + "\n".join(context_lines)
     out = clean_text(call(system, user))
     if out is not None:
-        cf.parent.mkdir(parents=True, exist_ok=True)
-        cf.write_text(json.dumps({"label": text, "text": out, "model": model, "prompt_version": prompt_version},
-                                 ensure_ascii=False), encoding="utf-8")
+        write_atomic(cf, json.dumps({"label": text, "text": out, "model": model, "prompt_version": prompt_version},
+                                    ensure_ascii=False))
     return out

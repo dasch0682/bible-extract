@@ -33,26 +33,30 @@ specification wins.
   data/SOURCES.md. Never assume a license.
 
 ## Finding references (default: Strong's numbers)
-- Default discovery uses Strong's numbers (Greek/Hebrew lemmas), listed per topic
-  in topics/<topic>.yml (e.g. strongs: [G225, G227, G228, G230]).
+- Default discovery uses Strong's numbers (Greek lemmas), listed per topic in topics/<topic>.yml
+  (e.g. strongs: [G225, G227, G228, G230]).
 - Strong's: numbers only. Never copy the dictionary definitions (GPL).
-- Pivot: Strong's-tagged King James Version gives the verse references;
-  they are mapped to every other language by verse reference
-  (with a versification map for numbering differences, notably Psalms).
-- Word-level `patterns` in the topic file are an optional cross-check.
-  Any verse found by one method but not the other is listed in
-  out/<topic>.report.md, never silently dropped.
-- `exclude_phrases` (optional list of regexes in a topic YML) are stripped from
-  the normalised text before pattern matching. A verse that matched only because
-  of an excluded formula is counted in the report under "Excluded by phrase filter".
-  Strong's discovery is never affected by `exclude_phrases`.
-- `extra_instructions_<lang>` (e.g. `extra_instructions_fr`, `extra_instructions_en`) are
-  appended to the LLM system prompt for that language only. Always provide one per active
-  language when instructions reference language-specific formulas.
-- Discovery has two modes: `rules` (the code decides, the LLM only writes) and
-  `model` (the LLM judges relevance and cites the verses that justify it).
-  Mode, model, prompt version and every step are recorded in the entry's
-  `discovery` field.
+- Pivot: the Strong's-tagged Byzantine Greek NT (byztxt, public domain) gives the verse references; they are
+  used as they are in every language (NT numbering is shared by the LSG and the KJV). TVTMS is only a check:
+  the candidates it has a rule for are listed in the report, nothing is remapped (to revisit with OT topics).
+- Word patterns are a cross-check on each language's own corpus: `patterns_<lang>` in the topic file is a mapping
+  rule name -> regex, run on the normalised text (no accents, lowercase). Rule names are never bare YAML booleans
+  (`true`, `no`, `on`...). The union of the Strong's route and the patterns of every language gives the candidates.
+  A verse found by one family of routes only stays a candidate, is listed in out/<topic>.report.md and carries
+  `single_route: true` in its `union` step, never silently dropped.
+- `exclude_phrases_<lang>` (mapping name -> regex in a topic YML) are stripped from the normalised text before
+  pattern matching (e.g. `amen_formula`: "en vérité"). A verse that matched only because of an excluded formula is
+  listed in the report under "Excluded by phrase filter" and recorded in its `exclusion_check` step
+  (`excluded: true`). Strong's discovery is never affected.
+- `extra_instructions_<lang>` are appended to the relevance prompt (model mode) of the pivot language.
+- Discovery has two modes (`--mode rules|model`, default rules). `rules`: the code decides (Strong's, patterns,
+  exclusions) and every candidate is kept; the excerpt is the verse extended by at most `excerpt.window` verses
+  (data/discovery_rules.yml, 2 at first) inside the speaker-quotations range that covers it, the verse alone when
+  none covers it. `model`: `relevance.judge` (role `relevance`) judges each candidate once, on the pivot language,
+  cites verses and proposes bounds among the verses shown (`model.window`); the code checks them, and the bounds
+  apply to every language file. Excerpts that overlap are merged. Candidates not kept (not relevant, or no valid
+  verdict) are listed in the report. Mode, model, prompt version and every step are recorded in the entry's
+  `discovery` field (steps: `union`, `strongs`, `pattern`, `exclusion_check`, `llm_relevance`).
 
 ## Paraphrase
 - Keeps the original genre (discourse, narrative, letter, prayer, parable),
@@ -90,9 +94,17 @@ specification wins.
   `calls = {"paraphrase_generation": (call, model_id), "paraphrase_verification": (call, model_id)}` and the rules in
   `data/paraphrase_rules.yml` (`min_fidelity`, language markers). It returns the field and flags; `paraphrase.review_required`
   tells when a human must look (`paraphrase_failed`, `genre_conflict`). The genre is proposed by the model in the generation call;
-  a genre that contradicts the speaker role is flagged. Not wired into extract.py yet (task 8).
+  a genre that contradicts the speaker role is flagged.
 - Theographic years are ISO 8601 astronomical (0 = 1 BCE, -3 = 4 BCE); `dating.to_schema` converts them.
   validate.py wants `from <= to` as numbers, so for BCE `from` is the later bound.
+
+- Code map (task 8): `discovery.py` (routes, union, recorded steps, TVTMS check; no model), `bounds.py` (rules-mode
+  bounds, merge of overlapping excerpts), `relevance.py` (model-mode verdict within the code's limits) and
+  `extract.py`, which wires everything: price check, `context.build_context`, `paraphrase.build_paraphrase`,
+  `validate.validate_entry`, `validate.check_cross_language`, report. Each entry carries
+  `review: {status, note, flags, required}`: `flags` and `required` come from the modules (`speaker_ambiguous`,
+  `literary_failed`, `paraphrase_failed`, `genre_conflict`...) and tell the review page what a human must look at.
+  A range is written only when its entry validates in every language; the others are listed in the report.
 
 ## Models and costs
 - Everything about models lives in models.yml, nowhere else. The code contains
@@ -126,9 +138,9 @@ reintroduce the old French keys (citation, longueurExtrait, nbMotExtrait,
 auteur, contexte, reference, lien, version).
 
 ## Status of this file
-validate.py enforces schema 2 (task 2 is done). Task 6 modules exist and are tested but are not wired into
-extract.py yet: extract.py still follows the old flow and calls the old `validate_entry` signature, and is
-migrated in tasks 7 and 8 (paraphrase module done, discovery to do). Do not change validate.py without explicit approval.
+validate.py enforces schema 2 (task 2 is done). extract.py is migrated to schema 2 (task 8): discovery, context,
+paraphrase and validation run end to end, tested with fake models. Still to do: the review page for schema 2 (task 9)
+and a trial on a varied sample before any full batch (task 10). Do not change validate.py without explicit approval.
 
 ## Conventions
 - The LLM is used only for: relevance judgement (model mode), speaker, context,

@@ -346,5 +346,5 @@ def test_workflow_runs_price_check_before_extraction_and_has_no_model_env():
 
 def test_extract_runs_price_check_before_creating_the_client():
     text = (ROOT / "extract.py").read_text(encoding="utf-8")
-    assert text.index("run_check()") < text.index("make_client(a.provider")
+    assert text.index("run_check()") < text.index("calls = build_calls(")
     assert "--model" not in text

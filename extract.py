@@ -1,146 +1,43 @@
 #!/usr/bin/env python3
-"""Usage: python extract.py --topic verite [--lang fr,en] [--dry-run] [--limit N]
-                            [--check-links] [--strongs-dir DIR]"""
+"""Usage: python extract.py --topic verite [--lang fr,en] [--mode rules|model] [--dry-run] [--limit N]
+                            [--workers N] [--strongs-dir DIR] [--data-dir DIR]
+
+The whole pipeline of the specification, schema 2:
+  discovery (Strong's + word patterns, then rules or model mode) -> excerpt bounds -> speaker and context
+  -> paraphrase -> sources -> validate.py -> cross-language check -> out/<topic>.<lang>.json + report.
+
+Every model call goes through a role of models.yml; this file names no model. The price check runs before the
+first call. The modules receive their model calls by injection, so they can be tested without a network.
+"""
 from __future__ import annotations
-import argparse, json, os, re, sys, time
+
+import argparse
+import json
+import os
+import sys
+import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+
 import yaml
-from books import scope_codes, NAMES, NAMES_BY_LANG
-from validate import norm, validate_entry, check_link
-from models import run_check, format_report, model_for
+
+import bounds
+import context
+import datasets as ds
+import discovery
+import paraphrase
+import provenance
+import relevance
+import validate
+from books import NAMES, NAMES_BY_LANG, scope_codes
+from models import format_report, load_models, run_check
 
 ROOT = Path(__file__).parent
-PROMPT_VERSION = "6"
-PROMPT_VERSION_EXTRACT = "6e"  # extract-only prompt (no pertinence field)
+MAX_TOKENS = 2000                      # room for three paraphrase candidates of a multi-verse excerpt
+CALL_ROLES = ("speaker", "context", "paraphrase_generation", "paraphrase_verification", "relevance")
 
 
-def _model_slug(model: str) -> str:
-    return re.sub(r"[^\w.-]", "_", model)
-
-
-def make_client(provider: str, base_url: str | None = None):
-    if provider == "anthropic":
-        from anthropic import Anthropic
-        return Anthropic()
-    elif provider == "openai_compat":
-        api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
-        return {"base_url": (base_url or "https://openrouter.ai/api/v1").rstrip("/"),
-                "api_key": api_key}
-    else:
-        sys.exit(f"Unknown PROVIDER '{provider}' — supported: anthropic, openai_compat")
-
-
-def _call_llm(provider: str, client, model: str, system: str, user: str,
-              json_schema: dict | None = None) -> str | None:
-    if provider == "anthropic":
-        try:
-            r = client.messages.create(
-                model=model, max_tokens=700, system=system,
-                messages=[{"role": "user", "content": user}],
-            )
-            return r.content[0].text
-        except Exception as e:
-            print(f"[warn] LLM call failed: {e}", file=sys.stderr)
-            return None
-
-    # openai_compat (OpenRouter) — HTTP via requests, retry on 429 with progressive backoff
-    import requests as _req
-    msgs = [{"role": "system", "content": system}, {"role": "user", "content": user}]
-    headers = {"Authorization": f"Bearer {client['api_key']}", "Content-Type": "application/json"}
-    url = f"{client['base_url']}/chat/completions"
-
-    def _do_call(fmt: str):
-        body = {"model": model, "max_tokens": 700, "messages": msgs,
-                "reasoning": {"effort": "none"}}
-        if fmt == "schema":
-            body["response_format"] = {
-                "type": "json_schema",
-                "json_schema": {"name": "verse_analysis", "strict": True, "schema": json_schema},
-            }
-        elif fmt == "object":
-            body["response_format"] = {"type": "json_object"}
-        return _req.post(url, headers=headers, json=body, timeout=60)
-
-    for attempt in range(4):
-        try:
-            resp = _do_call("schema" if json_schema else "object")
-            if resp.status_code in (400, 422):
-                resp = _do_call("object")   # schema not supported — fall back
-            if resp.status_code == 429:
-                wait = (2 ** attempt) * 5
-                print(f"[warn] 429 rate-limit, attente {wait}s (tentative {attempt + 1}/4)",
-                      file=sys.stderr)
-                time.sleep(wait)
-                continue
-            resp.raise_for_status()
-            return resp.json()["choices"][0]["message"]["content"]
-        except Exception as e:
-            print(f"[warn] LLM call failed: {e}", file=sys.stderr)
-            return None
-    return None
-
-SYSTEM_PIVOT_TEMPLATE = """\
-Analyze a Bible verse ({translation}) for a thematic anthology.
-Write all string values in {prompt_lang}.
-Reply ONLY with a JSON object, no surrounding text, with these keys:
-- "pertinent" (bool): the verse genuinely addresses the given theme (not a trivial use of the keyword).
-- "auteur" (str): who speaks (e.g. "Jésus", "Paul"); for narration give the book author (e.g. "Jean (narrateur)").
-- "contexte" (str): one sentence on the situation from the neighboring verses provided.
-- "extrait" (str): a CONTIGUOUS passage copied VERBATIM from the verse (preserving accents, punctuation), \
-at most {max_words} words, containing the key term.
-- "paraphrase" (str): a concise summary of the full verse in your own words. Always provide this — never null. The system discards it automatically when your extrait already covers the entire verse.
-Never quote text not present in the verse.{extra_instructions}"""
-
-SYSTEM_EXTRACT_TEMPLATE = """\
-Extract a passage from a Bible verse ({translation}) for a thematic anthology.
-This verse has already been selected as thematically relevant.
-Write all string values in {prompt_lang}.
-Reply ONLY with a JSON object, no surrounding text, with these keys:
-- "auteur" (str): who speaks (e.g. "Jesus", "Paul"); for narration give the book author (e.g. "John (narrator)").
-- "contexte" (str): one sentence on the situation from the neighboring verses provided.
-- "extrait" (str): a CONTIGUOUS passage copied VERBATIM from the verse (preserving accents, punctuation), \
-at most {max_words} words, containing the key term.
-- "paraphrase" (str): a concise summary of the full verse in your own words. Always provide this — never null. The system discards it automatically when your extrait already covers the entire verse.
-Never quote text not present in the verse.{extra_instructions}"""
-
-# JSON schemas for strict response_format enforcement (paraphrase always str, never null).
-_JSON_SCHEMA_PIVOT = {
-    "type": "object",
-    "properties": {
-        "pertinent": {"type": "boolean"},
-        "auteur": {"type": "string"},
-        "contexte": {"type": "string"},
-        "extrait": {"type": "string"},
-        "paraphrase": {"type": "string"},
-    },
-    "required": ["pertinent", "auteur", "contexte", "extrait", "paraphrase"],
-    "additionalProperties": False,
-}
-_JSON_SCHEMA_EXTRACT = {
-    "type": "object",
-    "properties": {
-        "auteur": {"type": "string"},
-        "contexte": {"type": "string"},
-        "extrait": {"type": "string"},
-        "paraphrase": {"type": "string"},
-    },
-    "required": ["auteur", "contexte", "extrait", "paraphrase"],
-    "additionalProperties": False,
-}
-
-
-def _topic_label(topic: dict, lang: str) -> str:
-    key = f"label_{lang}"
-    if key not in topic:
-        print(f"[warn] topic '{topic.get('_id', '?')}' missing '{key}' — falling back to 'label'",
-              file=sys.stderr)
-    return topic.get(key) or topic["label"]
-
-
-def _topic_extra(topic: dict, lang: str) -> str:
-    return topic.get(f"extra_instructions_{lang}") or topic.get("extra_instructions", "")
-
+# --- inputs ---
 
 def load_languages() -> dict:
     p = ROOT / "languages.yml"
@@ -150,253 +47,318 @@ def load_languages() -> dict:
 
 
 def load_corpus(path: str) -> dict | None:
-    p = Path(path)
+    p = ROOT / path
+    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
+
+
+def load_topic(name: str) -> dict:
+    p = ROOT / "topics" / f"{name}.yml"
     if not p.exists():
-        return None
-    return json.loads(p.read_text(encoding="utf-8"))
+        sys.exit(f"topic not found: {p}")
+    topic = yaml.safe_load(p.read_text(encoding="utf-8"))
+    topic["_id"] = name
+    return topic
 
 
-def make_link(lang_cfg: dict, code: str, c: str, v: str) -> str:
-    from books import EN_NAMES
-    book_names = EN_NAMES if lang_cfg.get("prompt_lang") == "English" else NAMES
-    return lang_cfg["link_template"].format(
-        ver=lang_cfg["version"], code=code, c=c, v=v,
-        book_name=book_names.get(code, code),
-    )
+def topic_label(topic: dict, lang: str) -> str:
+    key = f"label_{lang}"
+    if key not in topic:
+        print(f"[warn] topic '{topic.get('_id', '?')}' missing '{key}' - falling back to 'label'", file=sys.stderr)
+    return topic.get(key) or topic["label"]
 
 
-def find_hits_patterns(
-    corpus: dict, codes: list, patterns: list, exclude_phrases: list | None = None
-) -> tuple[set, set]:
-    """Return (hits, excluded_by_phrase).
+# --- model calls (OpenRouter over requests, no SDK) ---
 
-    exclude_phrases are stripped from the normalised text before pattern matching.
-    A ref lands in `excluded_by_phrase` when it would have matched on the raw text
-    but no longer matches after stripping — i.e. the only keyword occurrence was
-    inside an excluded formula.
-    """
-    rx = [re.compile(p) for p in patterns]
-    rx_excl = [re.compile(p) for p in (exclude_phrases or [])]
-    hits: set = set()
-    excluded: set = set()
-    for code in codes:
-        for c in sorted(corpus.get(code, {}), key=int):
-            for v in sorted(corpus[code][c], key=int):
-                t = norm(corpus[code][c][v])
-                t_filtered = t
-                for rx_e in rx_excl:
-                    t_filtered = rx_e.sub("", t_filtered)
-                if any(r.search(t_filtered) for r in rx):
-                    hits.add((code, c, v))
-                elif any(r.search(t) for r in rx):
-                    excluded.add((code, c, v))
-    return hits, excluded
+def make_call(api_key: str, base_url: str, model: str, max_tokens: int = MAX_TOKENS, post=None, sleep=time.sleep):
+    """call(system, user) -> text | None for one model. Retries 429 with a progressive wait; any other failure is None."""
+    if post is None:
+        import requests
+        post = requests.post
+    url = f"{base_url.rstrip('/')}/chat/completions"
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
-
-def _find_hits_strongs(strong_labels: list, codes: list, byztxt_dir: Path) -> set:
-    from strongs import find_hits_strongs
-    try:
-        return find_hits_strongs(strong_labels, codes, byztxt_dir)
-    except Exception as e:
-        print(f"[warn] Strong's discovery: {e}", file=sys.stderr)
-        return set()
-
-
-def neighbours(corpus: dict, code: str, c: str, v: str, span: int = 2) -> list:
-    chap = corpus[code][c]
-    vs = sorted(chap, key=int)
-    i = vs.index(v)
-    return [(x, chap[x]) for x in vs[max(0, i - span): i + span + 1]]
-
-
-def ask(provider: str, client, model: str, lang_cfg: dict, topic_label: str,
-        ctx_lines: list, code: str, c: str, v: str, text: str, max_words: int,
-        extra_instructions: str = "", include_relevance: bool = True,
-        retry_hint: str = "") -> dict | None:
-    template = SYSTEM_PIVOT_TEMPLATE if include_relevance else SYSTEM_EXTRACT_TEMPLATE
-    system = template.format(
-        translation=lang_cfg["translation"],
-        prompt_lang=lang_cfg["prompt_lang"],
-        max_words=max_words,
-        extra_instructions=("\n" + extra_instructions) if extra_instructions else "",
-    )
-    user = (
-        f"Theme: {topic_label}\nReference: {code} {c}:{v}\nVerse: {text}\n\n"
-        "Neighboring verses:\n" + "\n".join(f"{x}: {t}" for x, t in ctx_lines)
-    )
-    if retry_hint:
-        user += f"\n\nIMPORTANT (previous attempt rejected): {retry_hint}"
-    schema = _JSON_SCHEMA_PIVOT if include_relevance else _JSON_SCHEMA_EXTRACT
-    for _ in range(2):
-        raw = _call_llm(provider, client, model, system, user, json_schema=schema)
-        if raw is None:
-            return None
-        m = re.search(r"\{.*\}", raw, re.S)
-        if m:
+    def call(system: str, user: str):
+        body = {"model": model, "max_tokens": max_tokens, "reasoning": {"effort": "none"},
+                "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
+        for attempt in range(4):
             try:
-                return json.loads(m.group(0))
-            except json.JSONDecodeError:
-                pass
-    return None
-
-
-def judge_relevance(
-    refs: list, pivot_lang: str, pivot_cfg: dict, pivot_corpus: dict,
-    topic: dict, provider: str, client, model: str,
-) -> tuple[list, int]:
-    """Phase 1: judge relevance once on the pivot language.
-
-    Returns (relevant_refs, skipped_count). Caches under the pivot lang's cache
-    dir so run_language for that lang reads from cache without extra LLM calls.
-    """
-    topic_id = topic["_id"]
-    max_words = topic.get("max_words", 14)
-    extra_instructions = _topic_extra(topic, pivot_lang)
-    cache_dir = ROOT / "cache" / topic_id / pivot_lang
-    cache_dir.mkdir(parents=True, exist_ok=True)
-
-    def work(h: tuple) -> tuple:
-        code, c, v = h
-        verse_text = pivot_corpus.get(code, {}).get(c, {}).get(v)
-        if verse_text is None:
-            return h, None
-        cf = cache_dir / f"{code}.{c}.{v}.{PROMPT_VERSION}.{_model_slug(model)}.json"
-        if cf.exists():
-            llm = json.loads(cf.read_text(encoding="utf-8"))
-        else:
-            llm = ask(provider, client, model, pivot_cfg, _topic_label(topic, pivot_lang),
-                      neighbours(pivot_corpus, code, c, v), code, c, v, verse_text, max_words,
-                      extra_instructions=extra_instructions, include_relevance=True)
-            if llm is not None:
-                cf.write_text(json.dumps(llm, ensure_ascii=False), encoding="utf-8")
-        return h, llm
-
-    with ThreadPoolExecutor(max_workers=topic.get("workers", 4)) as ex:
-        results = list(ex.map(work, refs))
-
-    relevant, skipped = [], 0
-    for ref, llm in results:
-        if llm is not None and llm.get("pertinent"):
-            relevant.append(ref)
-        else:
-            skipped += 1
-    return relevant, skipped
-
-
-def run_language(
-    lang: str, lang_cfg: dict, topic: dict, refs: list,
-    provider: str, client, model: str, check_links: bool,
-    is_pivot: bool = False,
-) -> tuple[dict, list, dict]:
-    """Phase 2: annotate relevant refs for one language.
-
-    Returns (kept_dict, rejected_list, rejected_keys).
-      kept_dict:     {(code,c,v): entry}
-      rejected_list: [(ref_str, why)]
-      rejected_keys: {(code,c,v): why}
-
-    On validation failure the cache is deleted and the LLM is retried up to
-    topic["retries"] times before the verse is considered rejected.
-    """
-    corpus = load_corpus(lang_cfg["corpus"])
-    if corpus is None:
-        print(f"[{lang}] corpus not found: {lang_cfg['corpus']} — skipping")
-        return {}, [], {}
-
-    max_words = topic.get("max_words", 14)
-    topic_id = topic["_id"]
-    max_retries = topic.get("retries", 2)
-    pv = PROMPT_VERSION if is_pivot else PROMPT_VERSION_EXTRACT
-
-    cache_dir = ROOT / "cache" / topic_id / lang
-    cache_dir.mkdir(parents=True, exist_ok=True)
-
-    def work(h: tuple) -> tuple:
-        code, c, v = h
-        verse_text = corpus.get(code, {}).get(c, {}).get(v)
-        if verse_text is None:
-            return h, None, "verse absent from corpus"
-        cf = cache_dir / f"{code}.{c}.{v}.{pv}.{_model_slug(model)}.json"
-        last_why = "LLM response unreadable"
-        retry_hint = ""
-        for attempt in range(max_retries + 1):
-            if cf.exists() and attempt == 0:
-                llm = json.loads(cf.read_text(encoding="utf-8"))
-            else:
-                if cf.exists():
-                    cf.unlink()
-                llm = ask(provider, client, model, lang_cfg, _topic_label(topic, lang),
-                          neighbours(corpus, code, c, v), code, c, v, verse_text, max_words,
-                          extra_instructions=_topic_extra(topic, lang),
-                          include_relevance=is_pivot,
-                          retry_hint=retry_hint)
-                if llm is None:
+                resp = post(url, headers=headers, json=body, timeout=90)
+                if resp.status_code == 429:
+                    wait = (2 ** attempt) * 5
+                    print(f"[warn] 429 rate limit, waiting {wait}s (attempt {attempt + 1}/4)", file=sys.stderr)
+                    sleep(wait)
                     continue
-                cf.write_text(json.dumps(llm, ensure_ascii=False), encoding="utf-8")
-            if llm is None:
-                continue
-            entry, why = validate_entry(llm, verse_text, max_words)
-            if entry is not None:
-                return h, entry, None
-            last_why = why
-            if why == "extrait absent du verset (non exact)":
-                ext = (llm.get("extrait") or "").strip()
-                retry_hint = (
-                    f'Your extrait "{ext}" was not found verbatim in the verse. '
-                    f'Copy exact words from the verse without any substitution.'
-                )
-            elif "paraphrase" in why:
-                retry_hint = (
-                    'Your response was rejected because "paraphrase" was missing. '
-                    'You MUST provide a non-null paraphrase string.'
-                )
-        return h, None, last_why
+                resp.raise_for_status()
+                return resp.json()["choices"][0]["message"]["content"]
+            except Exception as e:  # noqa: BLE001 - a failed call is a missing answer, the modules handle it
+                print(f"[warn] model call failed: {type(e).__name__}", file=sys.stderr)
+                return None
+        return None
 
-    with ThreadPoolExecutor(max_workers=topic.get("workers", 4)) as ex:
-        results = list(ex.map(work, refs))
+    return call
 
-    book_names = NAMES_BY_LANG.get(lang, NAMES)
-    ref_sep = lang_cfg.get("ref_sep", ":")
-    kept_dict: dict = {}
-    rejected: list = []
-    rejected_keys: dict = {}
 
-    for (code, c, v), entry, why in results:
-        ref_str = f"{book_names.get(code, code)} {c}{ref_sep}{v}"
-        if entry is None:
-            rejected.append((ref_str, why))
-            rejected_keys[(code, c, v)] = why
-        else:
-            entry["reference"] = ref_str
-            entry["lien"] = make_link(lang_cfg, code, c, v)
-            entry["version"] = lang_cfg["version_label"]
-            entry["modele"] = model
-            if check_links and not check_link(entry["lien"]):
-                rejected.append((ref_str, "dead link"))
-                rejected_keys[(code, c, v)] = "dead link"
+def build_calls(roles: dict, make) -> dict:
+    """{role: (call, model id)} for the roles the modules use; `make(model_id)` builds one call."""
+    return {role: (make(roles[role]), roles[role]) for role in CALL_ROLES}
+
+
+# --- references ---
+
+def ref_label(lang: str, lang_cfg: dict, ids: list) -> str:
+    """'Jean 14,6' / 'Jean 14,6-8' / 'Jean 14,30-15,2' (separator from languages.yml)."""
+    book = ids[0].split(".")[0]
+    name = NAMES_BY_LANG.get(lang, NAMES).get(book, book)
+    sep = lang_cfg.get("ref_sep", ":")
+    (_, c1, v1), (_, c2, v2) = ids[0].split("."), ids[-1].split(".")
+    if ids[0] == ids[-1]:
+        tail = f"{c1}{sep}{v1}"
+    elif c1 == c2:
+        tail = f"{c1}{sep}{v1}-{v2}"
+    else:
+        tail = f"{c1}{sep}{v1}-{c2}{sep}{v2}"
+    return f"{name} {tail}"
+
+
+def in_every_corpus(corpora: dict, vid: str) -> bool:
+    """True when the verse id exists in the corpus of every language."""
+    p = validate.parse_verse_id(vid)
+    return p is not None and all(c.get(p[0], {}).get(p[1], {}).get(p[2]) is not None for c in corpora.values())
+
+
+def excerpt_text(corpus: dict, ids: list) -> str:
+    return " ".join(corpus[b][c][v] for b, c, v in (i.split(".") for i in ids))
+
+
+# --- selection and bounds ---
+
+def plan_ranges(disc: dict, candidates: list, mode: str, pivot: str, langs: dict, corpora: dict, topic: dict,
+                rules: dict, quotations: list, calls: dict | None, cache_dir, workers: int = 2) -> dict:
+    """Decide which candidates are kept and which verses each excerpt covers.
+
+    rules mode: every candidate is kept; the code gives the bounds (bounds.rules_bounds).
+    model mode: the model judges each candidate once, on the pivot language (relevance.judge).
+    Returns {'ranges', 'verdicts', 'not_relevant', 'no_verdict'}; nothing is dropped without being listed.
+    """
+    corpus = corpora[pivot]
+    verdicts, not_relevant, no_verdict, items = {}, [], [], []
+    if mode == "rules":
+        for ref in candidates:
+            b = bounds.rules_bounds(ref, corpus, quotations, rules["excerpt_window"])
+            items.append({"verses": b["verses"], "candidates": [ref]})
+    else:
+        call, model = calls["relevance"]
+        extra = topic.get(f"extra_instructions_{pivot}") or topic.get("extra_instructions", "")
+        label = topic_label(topic, pivot)
+
+        def work(ref):
+            return relevance.judge(discovery.ref_id(ref), corpus, pivot, langs[pivot], label, extra,
+                                   call, model, cache_dir, rules["model_window"])
+        with ThreadPoolExecutor(max_workers=workers) as ex:
+            results = list(ex.map(work, candidates))
+        for ref, v in zip(candidates, results):
+            if v is None:
+                no_verdict.append(ref)
+            elif not v["relevant"]:
+                not_relevant.append(ref)
             else:
-                kept_dict[(code, c, v)] = entry
+                verdicts[ref] = v
+                items.append({"verses": v["verses"], "candidates": [ref]})
+    return {"ranges": bounds.merge_ranges(items, corpus), "verdicts": verdicts,
+            "not_relevant": not_relevant, "no_verdict": no_verdict}
 
-    return kept_dict, rejected, rejected_keys
+
+# --- one entry ---
+
+def range_steps(rng: dict, disc: dict, lang: str, mode: str, verdicts: dict, codes: list) -> list:
+    steps = []
+    for ref in sorted(rng["candidates"], key=discovery.ref_order(codes)):
+        steps += discovery.steps_for(disc, ref, lang)
+        if mode == "model":
+            v = verdicts[ref]
+            steps.append({"step": "llm_relevance", "verse": discovery.ref_id(ref), "model": v["model"],
+                          "prompt_version": v["prompt_version"], "verdict": "relevant",
+                          "cited_verses": list(v["cited_verses"])})
+    return steps
 
 
-def main() -> None:
+def build_entry(verse_ids: list, steps: list, mode: str, lang: str, lang_cfg: dict, corpus: dict, shared: dict,
+                calls: dict, cache_dir) -> dict:
+    """One schema-2 entry of language `lang` for an excerpt (the caller validates it)."""
+    registry = shared["registry"]
+    built = context.build_context(verse_ids, corpus, lang, lang_cfg, shared["data"], shared["rules"], registry,
+                                  calls, cache_dir)
+    text = excerpt_text(corpus, verse_ids)
+    spk = built["speaker"]
+    role = spk.get("role") if spk.get("value") is not None else None
+    para = paraphrase.build_paraphrase(text, verse_ids, lang, lang_cfg, calls, cache_dir,
+                                       shared["paraphrase_rules"], role)
+    numbers = sorted({n for s in steps if s["step"] == "strongs" for n in s["numbers"]}, key=lambda n: int(n[1:]))
+    sources = provenance.merge_sources(
+        [provenance.verse_source(v, lang_cfg["dataset"], registry) for v in verse_ids],
+        [provenance.dataset_source(n, "byztxt", "concordance", registry) for n in numbers],
+        built["sources"])
+    flags = list(built["flags"]) + list(para["flags"])
+    required = bool(built["review_required"] or paraphrase.review_required(para["flags"]))
+    book = verse_ids[0].split(".")[0]
+    return {
+        "schema_version": validate.SCHEMA_VERSION,
+        "language": lang,
+        "translation": lang_cfg["version_label"],
+        "reference": {"book": book, "start": verse_ids[0].split(".", 1)[1], "end": verse_ids[-1].split(".", 1)[1],
+                      "label": ref_label(lang, lang_cfg, verse_ids)},
+        "excerpt": {"text": text, "verses": list(verse_ids)},
+        "paraphrase": para["paraphrase"],
+        "speaker": spk,
+        "context": built["context"],
+        "discovery": {"mode": mode, "steps": steps},
+        "review": {"status": None, "note": None, "flags": flags, "required": required},
+        "sources": sources,
+    }
+
+
+def produce(plan: dict, disc: dict, mode: str, langs: dict, corpora: dict, shared: dict, calls: dict, cache_dir,
+            codes: list, workers: int = 2) -> dict:
+    """{lang: [(entry | None, [errors]) per range]}; an entry is valid when its error list is empty."""
+    known = provenance.known_datasets(shared["registry"])
+    jobs = [(i, lang) for i in range(len(plan["ranges"])) for lang in langs]
+
+    def work(job):
+        i, lang = job
+        rng = plan["ranges"][i]
+        try:
+            entry = build_entry(rng["verses"], range_steps(rng, disc, lang, mode, plan["verdicts"], codes), mode,
+                                lang, langs[lang], corpora[lang], shared, calls, cache_dir)
+            return job, entry, validate.validate_entry(entry, corpora[lang], known)
+        except Exception as e:  # noqa: BLE001 - one failed entry must not lose the batch (answers are cached)
+            return job, None, [f"exception: {type(e).__name__}: {e}"]
+
+    out = {lang: [None] * len(plan["ranges"]) for lang in langs}
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        for (i, lang), entry, errs in ex.map(work, jobs):
+            out[lang][i] = (entry, errs)
+    return out
+
+
+def intersect(plan: dict, built: dict) -> tuple:
+    """(kept range indexes, {index: [reasons]}): a range is kept when its entry is valid in every language."""
+    kept, dropped = [], {}
+    for i in range(len(plan["ranges"])):
+        reasons = [f"{lang}: {'; '.join(res[i][1])}" for lang, res in built.items() if res[i][1]]
+        if reasons:
+            dropped[i] = reasons
+        else:
+            kept.append(i)
+    return kept, dropped
+
+
+# --- report ---
+
+def _refs(refs: list) -> list:
+    return [f"  - {discovery.ref_id(r)}" for r in refs]
+
+
+def build_report(info: dict) -> str:
+    topic, disc, summary = info["topic"], info["disc"], info["summary"]
+    labels = ", ".join(l + "=" + json.dumps(topic_label(topic, l), ensure_ascii=False) for l in info["langs"])
+    lines = [f"# Report: {topic['label']}", "", *info["price_report"].splitlines(), "",
+             "## Discovery",
+             f"- Mode: {info['mode']}",
+             f"- Labels: {labels}",
+             f"- Strong's numbers: {topic.get('strongs', [])}"
+             + ("" if info["strongs_used"] else " (route skipped: Greek data not found)"),
+             f"- Refs by Strong's: {len(disc['strongs'])}"]
+    for lang in info["langs"]:
+        hits = sum(1 for v in disc["patterns"][lang].values() if v["matches"])
+        lines.append(f"- Refs by patterns ({lang}, rules {disc['pattern_rules'][lang]}): {hits}")
+        if disc["exclusions"][lang]:
+            lines.append(f"- Excluded formulas ({lang}): {disc['exclusions'][lang]}; verses whose only match was "
+                         f"inside one: {len(summary['lost_by_phrase'][lang])}")
+    lines += [f"- Candidates: {len(disc['candidates'])} (kept for the run: {len(info['candidates'])})",
+              f"- Found by both routes: {len(summary['both'])}",
+              f"- Strong's only: {len(summary['only_strongs'])}",
+              f"- Patterns only: {len(summary['only_patterns'])}", ""]
+    for title, refs in (("Strong's only", summary["only_strongs"]), ("Patterns only", summary["only_patterns"])):
+        if refs:
+            lines += [f"### {title}", *_refs(refs), ""]
+    for lang, refs in summary["lost_by_phrase"].items():
+        if refs:
+            lines += [f"### Excluded by phrase filter ({lang})", *_refs(refs), ""]
+    if info["absent"]:
+        lines += ["### Candidates absent from a language corpus (dropped)", *_refs(info["absent"]), ""]
+    notes = info["versification"]
+    if notes is None:
+        lines += ["## Versification", "- TVTMS not found: numbering was not checked.", ""]
+    else:
+        lines += ["## Versification",
+                  f"- TVTMS has a rule for {len(notes)} candidate verse(s); nothing is remapped."]
+        lines += [f"  - {vid}: {n}" for vid, n in notes.items()]
+        lines.append("")
+    if info["mode"] == "model":
+        lines += ["## Relevance judgement (pivot language: " + info["pivot"] + ")",
+                  f"- Candidates judged: {len(info['candidates'])}",
+                  f"- Relevant: {len(info['plan']['verdicts'])}",
+                  f"- Not relevant: {len(info['plan']['not_relevant'])}",
+                  f"- No valid verdict (not kept): {len(info['plan']['no_verdict'])}", ""]
+        for title, refs in (("Not relevant", info["plan"]["not_relevant"]), ("No valid verdict", info["plan"]["no_verdict"])):
+            if refs:
+                lines += [f"### {title}", *_refs(refs), ""]
+    ranges = info["plan"]["ranges"]
+    merged = [r for r in ranges if r["merged_from"] > 1]
+    lines += ["## Excerpts",
+              f"- Excerpts: {len(ranges)} (window of rules mode: {info['rules']['excerpt_window']})",
+              f"- Merged because they overlapped: {len(merged)}"]
+    lines += [f"  - {r['verses'][0]} to {r['verses'][-1]}: {r['merged_from']} candidates" for r in merged]
+    lines.append("")
+    for lang in info["langs"]:
+        res = info["built"][lang]
+        lines += [f"## {lang}: {info['langs'][lang]['translation']}",
+                  f"- excerpts: {len(res)}",
+                  f"- valid: {sum(1 for _, errs in res if not errs)}",
+                  f"- rejected: {sum(1 for _, errs in res if errs)}", ""]
+    lines += ["## Intersection",
+              f"- kept in all languages: {len(info['kept'])}",
+              f"- dropped (invalid in at least one language): {len(info['dropped'])}", ""]
+    for i, reasons in info["dropped"].items():
+        v = ranges[i]["verses"]
+        lines.append(f"  - {v[0]} to {v[-1]} - {' | '.join(reasons)}")
+    if info["dropped"]:
+        lines.append("")
+    review = []
+    for i in info["kept"]:
+        entries = [info["built"][lang][i][0] for lang in info["langs"]]
+        flags = sorted({f for e in entries for f in e["review"]["flags"]})
+        review.append((i, flags, any(e["review"]["required"] for e in entries)))
+    lines += ["## Review", f"- entries that must go through the review page: {sum(1 for _, _, req in review if req)}", ""]
+    for i, flags, required in review:
+        if flags or required:
+            v = ranges[i]["verses"]
+            lines.append(f"  - {v[0]} to {v[-1]}{' (review required)' if required else ''}: {', '.join(flags) or '-'}")
+    lines.append("")
+    if info["cross_errors"]:
+        lines += ["## Cross-language check: FAILED", *[f"  - {e}" for e in info["cross_errors"]], ""]
+    else:
+        lines += ["## Cross-language check", "- neutral fields identical in every language file", ""]
+    return "\n".join(lines)
+
+
+# --- main ---
+
+def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--topic", required=True)
     ap.add_argument("--lang", help="comma-separated language codes (default: all)")
-    ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--limit", type=int)
-    ap.add_argument("--check-links", action="store_true")
+    ap.add_argument("--mode", choices=["rules", "model"], default="rules",
+                    help="discovery mode: the code decides (rules) or the language model judges relevance (model)")
+    ap.add_argument("--dry-run", action="store_true", help="discovery and bounds only, no model call")
+    ap.add_argument("--limit", type=int, help="keep only the first N candidates")
+    ap.add_argument("--workers", type=int, default=int(os.getenv("WORKERS", "2")))
     ap.add_argument("--strongs-dir", default=os.getenv("STRONGS_DIR", "tmp/byztxt"))
-    ap.add_argument("--provider", default=os.getenv("PROVIDER", "openai_compat"))
+    ap.add_argument("--data-dir", default=os.getenv("DATA_DIR", "tmp"))
     ap.add_argument("--base-url", default=os.getenv("BASE_URL", "https://openrouter.ai/api/v1"))
-    ap.add_argument("--workers", type=int, default=int(os.getenv("WORKERS", "4")))
-    ap.add_argument("--retries", type=int, default=int(os.getenv("RETRIES", "2")))
-    a = ap.parse_args()
+    a = ap.parse_args(argv)
 
-    topic = yaml.safe_load((ROOT / "topics" / f"{a.topic}.yml").read_text(encoding="utf-8"))
-    topic["_id"] = a.topic
-
+    topic = load_topic(a.topic)
     languages = load_languages()
     if a.lang:
         langs = {k: languages[k] for k in a.lang.split(",") if k in languages}
@@ -404,196 +366,98 @@ def main() -> None:
             sys.exit(f"Unknown language(s): {a.lang}")
     else:
         langs = languages
-
-    topic["workers"] = a.workers
-    topic["retries"] = a.retries
+    corpora = {}
+    for lang, cfg in langs.items():
+        corpora[lang] = load_corpus(cfg["corpus"])
+        if corpora[lang] is None:
+            sys.exit(f"[{lang}] corpus not found: {cfg['corpus']} (see data/README.md)")
+    pivot = next((l for l in ("fr", "en") if l in langs), next(iter(langs)))
+    rules = discovery.load_rules()
     codes = scope_codes(topic.get("scope", "NT"))
-    strongs = topic.get("strongs", [])
-    patterns = topic.get("patterns", [])
-    byztxt_dir = ROOT / a.strongs_dir
+    data_dir = ROOT / a.data_dir
+    byztxt = ROOT / a.strongs_dir
 
-    # --- Pivot corpus for pattern cross-check (prefer fr) ---
-    pivot_lang = next((l for l in ("fr", "en") if l in langs), next(iter(langs)))
-    pivot_corpus = load_corpus(langs[pivot_lang]["corpus"])
-
-    # --- Discovery ---
-    refs_strongs: set = set()
-    refs_patterns: set = set()
-    refs_excluded_patterns: set = set()
-
-    if strongs:
-        if byztxt_dir.exists():
-            refs_strongs = _find_hits_strongs(strongs, codes, byztxt_dir)
-            print(f"Strong's discovery: {len(refs_strongs)} refs")
-        else:
-            print(f"[warn] --strongs-dir {byztxt_dir} not found; skipping Strong's discovery",
-                  file=sys.stderr)
-
-    if patterns:
-        if pivot_corpus is not None:
-            refs_patterns, refs_excluded_patterns = find_hits_patterns(
-                pivot_corpus, codes, patterns, topic.get("exclude_phrases"))
-            msg = f"Pattern discovery ({pivot_lang}): {len(refs_patterns)} refs"
-            if refs_excluded_patterns:
-                msg += f", {len(refs_excluded_patterns)} excluded by phrase filter"
-            print(msg)
-        else:
-            print(f"[warn] no corpus for {pivot_lang}; skipping pattern cross-check",
-                  file=sys.stderr)
-
-    if not refs_strongs and not refs_patterns:
-        sys.exit("No refs found: provide byztxt data (--strongs-dir) or a corpus for pattern matching")
-
-    all_refs_set = refs_strongs | refs_patterns
-    only_strongs = refs_strongs - refs_patterns
-    only_patterns = refs_patterns - refs_strongs
-    in_both = refs_strongs & refs_patterns
-
-    code_order = {c: i for i, c in enumerate(codes)}
-    all_refs = sorted(
-        all_refs_set,
-        key=lambda r: (code_order.get(r[0], 999), int(r[1]), int(r[2])),
-    )
+    # --- discovery: the code alone ---
+    strongs_used = bool(topic.get("strongs")) and byztxt.exists()
+    if topic.get("strongs") and not strongs_used:
+        print(f"[warn] --strongs-dir {byztxt} not found; skipping Strong's discovery", file=sys.stderr)
+    try:
+        disc = discovery.discover(topic, corpora, codes, byztxt if strongs_used else None)
+    except discovery.TopicError as e:
+        sys.exit(f"topic {a.topic}: {e}")
+    if not disc["candidates"]:
+        sys.exit("No refs found: provide byztxt data (--strongs-dir) or word patterns for the languages")
+    absent = [r for r in disc["candidates"] if not in_every_corpus(corpora, discovery.ref_id(r))]
+    candidates = [r for r in disc["candidates"] if r not in absent]
     if a.limit:
-        all_refs = all_refs[: a.limit]
+        candidates = candidates[: a.limit]
+    summary = discovery.summarize(disc, candidates)
+    print(f"Candidates: {len(candidates)} ({len(summary['both'])} by both routes, "
+          f"{len(summary['only_strongs'])} Strong's only, {len(summary['only_patterns'])} patterns only)")
 
-    print(f"Total: {len(all_refs)} refs "
-          f"({len(in_both)} in both, {len(only_strongs)} Strong's-only, {len(only_patterns)} patterns-only)")
+    try:
+        tvtms_path = next((data_dir / "stepbible" / "Versification").glob("TVTMS*.txt"), None)
+        notes = discovery.versification_notes(candidates, ds.load_tvtms(tvtms_path)) if tvtms_path else None
+    except (OSError, ValueError):
+        notes = None
 
     if a.dry_run:
-        for code, c, v in all_refs:
-            tag = (" [Strong's-only]" if (code, c, v) in only_strongs
-                   else " [patterns-only]" if (code, c, v) in only_patterns else "")
-            print(f"  {code} {c}:{v}{tag}")
-        return
+        try:
+            quotations = ds.load_speakers(data_dir / "speaker-quotations" / "tsv" / "Clear-Aligned-Projections.tsv")
+        except OSError:
+            quotations = []
+            print("[warn] speaker-quotations not found: excerpts are single verses in this preview", file=sys.stderr)
+        for ref in candidates:
+            tag = "+".join(discovery.routes_of(disc, ref)) + (" [single route]" if discovery.single_route(disc, ref) else "")
+            span = ""
+            if a.mode == "rules":
+                v = bounds.rules_bounds(ref, corpora[pivot], quotations, rules["excerpt_window"])["verses"]
+                span = f"  excerpt {v[0]} to {v[-1]}"
+            print(f"  {discovery.ref_id(ref)}  {tag}{span}")
+        return 0
 
-    # --- Price check: first step of any batch that calls a model. In doubt, stop. ---
+    # --- price check: first step of any batch that calls a model. In doubt, stop. ---
     price_check = run_check()
     print(format_report(price_check))
     if not price_check.ok:
         sys.exit("Price check failed: no model call was made. "
                  "Edit models.yml (new price_ref or another model) to continue.")
-    # Until the per-step roles are wired (later tasks), every call uses the relevance model.
-    a.model = model_for("relevance")
+    api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        sys.exit("OPENROUTER_API_KEY is not set")
+    try:
+        data = context.load_data(data_dir)
+    except (OSError, ValueError) as e:
+        sys.exit(f"datasets not found in {data_dir} ({type(e).__name__}); run: python scripts/fetch_sources.py --fetch")
+    shared = {"data": data, "rules": context.load_rules(), "paraphrase_rules": paraphrase.load_rules(),
+              "registry": provenance.load_registry()}
+    calls = build_calls(load_models().roles, lambda model: make_call(api_key, a.base_url, model))
+    cache_dir = ROOT / "cache" / a.topic
 
-    client = make_client(a.provider, a.base_url)
+    plan = plan_ranges(disc, candidates, a.mode, pivot, langs, corpora, topic, rules, data["speakers"], calls,
+                       cache_dir, a.workers)
+    plan["ranges"] = [r for r in plan["ranges"]            # a verse of the pivot corpus must exist in every language
+                      if all(in_every_corpus(corpora, v) for v in r["verses"])]
+    print(f"Excerpts: {len(plan['ranges'])} from {len(candidates)} candidates")
 
+    built = produce(plan, disc, a.mode, langs, corpora, shared, calls, cache_dir, codes, a.workers)
+    kept, dropped = intersect(plan, built)
     out_dir = ROOT / "out"
     out_dir.mkdir(exist_ok=True)
-
-    # --- Phase 1: relevance judgment on pivot language ---
-    if pivot_corpus is None:
-        sys.exit(f"Pivot corpus not found for '{pivot_lang}'; cannot judge relevance")
-    print(f"\n=== Phase 1: relevance ({pivot_lang}) ===")
-    relevant_refs, skipped_relevance = judge_relevance(
-        all_refs, pivot_lang, langs[pivot_lang], pivot_corpus,
-        topic, a.provider, client, a.model,
-    )
-    print(f"Relevant: {len(relevant_refs)}/{len(all_refs)}, not relevant: {skipped_relevance}")
-
-    labels_str = ", ".join(f'{l}="{_topic_label(topic, l)}"' for l in langs)
-    report = [
-        f"# Report: {topic['label']}",
-        "",
-        *format_report(price_check).splitlines(),
-        "",
-        "## Discovery cross-check",
-        f"- Labels: {labels_str}",
-        f"- Strong's numbers: {strongs}",
-        f"- Patterns: {patterns}",
-        f"- Excluded phrases (pattern filter): {topic.get('exclude_phrases', [])}",
-        f"- Refs by Strong's: {len(refs_strongs)}",
-        f"- Refs by patterns ({pivot_lang}): {len(refs_patterns)}",
-        f"- Excluded by phrase filter: {len(refs_excluded_patterns)}",
-        f"- In both: {len(in_both)}",
-        f"- Strong's-only: {len(only_strongs)}",
-        f"- Patterns-only: {len(only_patterns)}",
-        "",
-        "## Relevance judgment",
-        f"- Pivot language: {pivot_lang}",
-        f"- Candidates evaluated: {len(all_refs)}",
-        f"- Relevant: {len(relevant_refs)}",
-        f"- Not relevant: {skipped_relevance}",
-        "",
-    ]
-    if refs_excluded_patterns:
-        report.append("### Excluded by phrase filter")
-        report += [f"  - {c} {ch}:{v}" for c, ch, v in
-                   sorted(refs_excluded_patterns, key=lambda r: (code_order.get(r[0], 999), int(r[1]), int(r[2])))]
-        report.append("")
-    if only_strongs:
-        report.append("### Strong's-only")
-        report += [f"  - {c} {ch}:{v}" for c, ch, v in
-                   sorted(only_strongs, key=lambda r: (code_order.get(r[0], 999), int(r[1]), int(r[2])))]
-        report.append("")
-    if only_patterns:
-        report.append("### Patterns-only")
-        report += [f"  - {c} {ch}:{v}" for c, ch, v in
-                   sorted(only_patterns, key=lambda r: (code_order.get(r[0], 999), int(r[1]), int(r[2])))]
-        report.append("")
-
-    # --- Phase 2: per-language annotation ---
-    kept_by_lang: dict = {}
-    rejected_by_lang: dict = {}
-    rejected_keys_by_lang: dict = {}
-
-    for lang, lang_cfg in langs.items():
-        print(f"\n=== {lang} ({lang_cfg['translation']}) ===")
-        kept_dict, rejected, rejected_keys = run_language(
-            lang, lang_cfg, topic, relevant_refs, a.provider, client, a.model, a.check_links,
-            is_pivot=(lang == pivot_lang),
-        )
-        kept_by_lang[lang] = kept_dict
-        rejected_by_lang[lang] = rejected
-        rejected_keys_by_lang[lang] = rejected_keys
-        print(f"  validated: {len(kept_dict)}, rejected: {len(rejected)}")
-
-    # --- Intersection: keep only refs that passed in ALL languages ---
-    common_refs_set = set(relevant_refs)
-    for kept in kept_by_lang.values():
-        common_refs_set &= set(kept.keys())
-    common_refs = sorted(
-        common_refs_set, key=lambda r: (code_order.get(r[0], 999), int(r[1]), int(r[2]))
-    )
-    print(f"\nIntersection: {len(common_refs)} refs kept in all languages "
-          f"(dropped {len(relevant_refs) - len(common_refs)})")
-
-    for lang in langs:
-        kept_ordered = [kept_by_lang[lang][ref] for ref in common_refs]
-        (out_dir / f"{a.topic}.{lang}.json").write_text(
-            json.dumps(kept_ordered, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
-
-    # --- Report ---
-    for lang, lang_cfg in langs.items():
-        report += [
-            f"## {lang}: {lang_cfg['translation']}",
-            f"- relevant refs: {len(relevant_refs)}",
-            f"- kept after validation+retries: {len(kept_by_lang[lang])}",
-            f"- rejected: {len(rejected_by_lang[lang])}",
-            "",
-        ]
-        if rejected_by_lang[lang]:
-            report += [f"  - {r}: {w}" for r, w in rejected_by_lang[lang]]
-            report.append("")
-
-    dropped = [r for r in relevant_refs if r not in common_refs_set]
-    report += [
-        "## Intersection",
-        f"- kept in all languages: {len(common_refs)}",
-        f"- dropped (failed in ≥1 language): {len(dropped)}",
-        "",
-    ]
-    if dropped:
-        for code, c, v in sorted(dropped, key=lambda r: (code_order.get(r[0], 999), int(r[1]), int(r[2]))):
-            reasons = [f"{lg}: {rejected_keys_by_lang[lg][(code,c,v)]}"
-                       for lg in langs if (code, c, v) in rejected_keys_by_lang[lg]]
-            report.append(f"  - {code} {c}:{v} — {', '.join(reasons)}")
-        report.append("")
-
-    (out_dir / f"{a.topic}.report.md").write_text("\n".join(report), encoding="utf-8")
-    print("\n".join(report))
+    files = {lang: [built[lang][i][0] for i in kept] for lang in langs}
+    for lang, entries in files.items():
+        (out_dir / f"{a.topic}.{lang}.json").write_text(json.dumps(entries, ensure_ascii=False, indent=2),
+                                                        encoding="utf-8")
+    cross_errors = validate.check_cross_language(files)
+    report = build_report({
+        "topic": topic, "mode": a.mode, "langs": langs, "pivot": pivot, "disc": disc, "summary": summary,
+        "candidates": candidates, "absent": absent, "strongs_used": strongs_used, "versification": notes,
+        "plan": plan, "rules": rules, "built": built, "kept": kept, "dropped": dropped,
+        "cross_errors": cross_errors, "price_report": format_report(price_check)})
+    (out_dir / f"{a.topic}.report.md").write_text(report, encoding="utf-8")
+    print(report)
+    return 1 if cross_errors else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
