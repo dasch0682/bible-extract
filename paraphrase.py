@@ -36,8 +36,9 @@ import localize
 import validate
 from models import family
 
-GENERATION_VERSION = "paraphrase-gen-1"
-VERIFICATION_VERSION = "paraphrase-verify-1"
+GENERATION_VERSION = "paraphrase-gen-4"
+VERIFICATION_VERSION = "paraphrase-verify-3"
+TRIM_VERSION = "paraphrase-trim-1"
 RULES_PATH = Path(__file__).parent / "data" / "paraphrase_rules.yml"
 
 STYLES = ("close", "condensed", "free")          # also the tie-break order
@@ -84,12 +85,21 @@ def review_required(flags: list) -> bool:
 def _generation_prompt(excerpt_text: str, max_words: int, lang_cfg: dict, retry_hint: str = "") -> tuple:
     lang = lang_cfg["prompt_lang"]
     styles = "; ".join(f"{s}: {_STYLE_RULES[s]}" for s in STYLES)
+    prompt_max = max(int(max_words * 0.85), 5)
     system = (
         f"You paraphrase a Bible excerpt ({lang_cfg['translation']}) in {lang}. Rules shared by every candidate: "
         "keep the original genre (a speech stays a speech, for example 'Jesus declares that...'; a narrative stays "
-        "a narrative; a letter, a prayer or a parable stays one); write in the present tense; add NO information "
-        f"that is not in the excerpt; never use more than {max_words} words. Write three candidates that differ only "
-        f"in style, never in content, and do not reuse in one candidate the wording of another. Styles - {styles}. "
+        "a narrative; a letter, a prayer or a parable stays one); "
+        "write every verb in the present tense (historic present); avoid passé simple and imparfait; "
+        "passé composé is allowed only when the excerpt itself uses a completed past action (e.g. 'il est venu', "
+        "'ils ne l'ont pas reconnu') — in those cases keep the passé composé; "
+        "add NO information that is not in the excerpt — in particular, do NOT name a character who is not named in "
+        "the excerpt itself (if the excerpt uses a pronoun such as 'il', 'she', 'they', keep a pronoun or a generic "
+        "phrase, never substitute the person's name); converting direct speech to indirect speech (tu→il, je→il) "
+        "is not an addition; "
+        f"use at most {prompt_max} words (strict limit — count carefully). "
+        f"Write three candidates that differ only in style, never in content, and do not reuse in one candidate the "
+        f"wording of another. Styles - {styles}. "
         f"Also give the genre of the excerpt, one of: {', '.join(sorted(validate.GENRES))}. "
         'Answer with one JSON object: {"genre": string, "candidates": {"close": string, "condensed": string, '
         f'"free": string}}}}. Every text is in {lang}.'
@@ -158,8 +168,16 @@ def _verification_prompt(excerpt_text: str, shown: list, lang_cfg: dict, retry_h
         f"candidate paraphrases under the letters {', '.join(labels)}. Score each candidate from 1 to 5 on "
         "fidelity (5 = adds nothing that is not in the excerpt) and on completeness (5 = the central idea of the "
         "excerpt is fully kept). Report its problems with these codes: addition (information absent from the "
-        "excerpt), genre_changed (a speech is no longer a speech, a narrative no longer a narrative, and so on), "
-        "tense_not_present (the paraphrase is not in the present tense), other. Use an empty list when there is no "
+        "excerpt — note that: using a pronoun where the excerpt uses a name, or vice-versa, is NOT an addition; "
+        "converting direct speech to indirect speech and adjusting pronouns is NOT an addition), genre_changed (a speech is no longer a speech, a narrative no longer a narrative, and so on), "
+        "tense_not_present (ONLY flag when you see unambiguous passé simple such as 'il vint', 'ils vinrent', "
+        "'il fit', 'ils firent', 'il prit', 'ils prirent', 'il fut', 'ils furent', 'il alla', 'ils allèrent', "
+        "'il envoya', 'ils envoyèrent'; or imparfait ending in -ait/-aient/-ions/-iez. "
+        "Examples of what NOT to flag: 'il dit' = present indicative ✓; 'il vient' ✓; 'elle sait' ✓; "
+        "'ils disent' ✓; 'il est venu' = passé composé ✓; 'ils ne l'ont pas reconnu' ✓. "
+        "Examples of what TO flag: 'il vint' ✗; 'il dit' followed by 'il vit' (voir) ✗; 'ils dirent' ✗; "
+        "'il était' ✗), "
+        "other. Use an empty list when there is no "
         'problem. Answer with one JSON object keyed by the letters, for example {"A": {"fidelity": 5, '
         '"completeness": 4, "issues": []}}. Judge every candidate on its own.'
     )
@@ -167,6 +185,41 @@ def _verification_prompt(excerpt_text: str, shown: list, lang_cfg: dict, retry_h
     if retry_hint:
         user += f"\n\nIMPORTANT (previous answer rejected): {retry_hint}"
     return system, user
+
+
+# --- trim (targeted retry for too-long candidates) ---
+
+def _trim_prompt(text: str, current_wc: int, max_words: int, style: str, lang_cfg: dict) -> tuple:
+    lang = lang_cfg["prompt_lang"]
+    system = (
+        f"You shorten a Bible paraphrase ({lang_cfg['translation']}, {lang}). "
+        "Return ONLY the shortened text — no label, no explanation, no quotes."
+    )
+    user = (
+        f"This '{style}' paraphrase is {current_wc} words but must be at most {max_words} words.\n\n"
+        f"Text: {text}\n\n"
+        "Shorten it by removing or condensing one phrase. Keep the same tense (historic present), "
+        "genre and content. Return only the shortened text."
+    )
+    return system, user
+
+
+def _check_trim(raw, max_words: int):
+    if not raw or not raw.strip():
+        return None, "empty response"
+    t = raw.strip()
+    if validate.word_count(t) > max_words:
+        return None, f"still {validate.word_count(t)} words, limit is {max_words}"
+    return t, None
+
+
+def _trim_candidate(text: str, max_words: int, style: str, lang_cfg: dict,
+                    call, model: str, verse_ids: list, key: str, base: Path) -> str | None:
+    trim_key = hashlib.sha1(text.encode("utf-8")).hexdigest()[:10]
+    cf = base / f"{verse_ids[0]}-{key}.trim-{trim_key}.{TRIM_VERSION}.{localize.slug(model)}.json"
+    wc = validate.word_count(text)
+    return _ask(call, lambda _hint: _trim_prompt(text, wc, max_words, style, lang_cfg),
+                lambda raw: _check_trim(raw, max_words), (), cf)
 
 
 def check_verification(raw, labels: list):
@@ -297,6 +350,16 @@ def build_paraphrase(excerpt_text: str, verse_ids: list, lang: str, lang_cfg: di
                                          "completeness": None, "issues": []}})
     if any(h["code_checks"]["target_language"] is None for h in history):
         flags.append("language_unchecked")
+
+    # Trim too-long candidates before verification
+    for h in history:
+        if h["code_checks"].get("not_longer_than_excerpt") is False:
+            trimmed = _trim_candidate(h["text"], max_words, h["style"], lang_cfg,
+                                      gen_call, gen_model, verse_ids, key, base)
+            if trimmed:
+                h["text"] = trimmed
+                h["trimmed"] = True
+                h["code_checks"] = code_checks(trimmed, excerpt_text, lang, rules)
 
     sendable = [h for h in history if h["code_checks"]["non_empty"]]
     seed = None
