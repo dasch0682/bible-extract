@@ -1,0 +1,51 @@
+# Dated anchors: a second, independent source for dates (cahier, task 5).
+#
+# Each anchor cites a primary text that was READ at the source (not recalled).
+# `check_quote` is a verbatim excerpt (at most 40 words) of the pinned edition,
+# so anyone can check it with a search in that file.
+# `date_range: null` always carries a `reason`: here the ancient texts give a
+# relative dating (a reign, an interval), and no numeric year is taken from
+# memory. A numeric range will be added only with a source read for it.
+#
+# Numbering: Tacitus is cited by book and chapter. Josephus is cited by the
+# Perseus text part (`n`) of the file, with Whiston's own chapter and section.
+
+anchors:
+  - id: tacitus-annals-15-44
+    claim: Christ was executed under Tiberius by the procurator Pontius Pilate (Tacitus, on the Christians blamed by Nero).
+    kind: ancient_author
+    reference:
+      work: "Tacitus, Annals (translation by A. J. Church and W. J. Brodribb)"
+      location: "Book 15, chapter 44"
+      edition: "Perseus Digital Library, PerseusDL/canonical-latinLit, phi1351.phi005.perseus-eng1.xml, commit 5493c006cc4c6f4651b6ea7f5f063aa88649efe5"
+      url: "https://github.com/PerseusDL/canonical-latinLit/blob/5493c006cc4c6f4651b6ea7f5f063aa88649efe5/data/phi1351/phi005/phi1351.phi005.perseus-eng1.xml"
+    check_quote: "Christus, from whom the name had its origin, suffered the extreme penalty during the reign of Tiberius at the hands of one of our procurators, Pontius Pilatus"
+    date_range: null
+    reason: "The text dates the event by a reign (Tiberius), not by a year; the reign dates are not read from a source here."
+    verified_on: "2026-10-07"
+
+  - id: josephus-antiquities-18-gratus-caiaphas
+    claim: Valerius Gratus, sent by Tiberius as procurator of Judea, appointed Joseph Caiaphas high priest and stayed eleven years before Pilate succeeded him.
+    kind: ancient_author
+    reference:
+      work: "Josephus, Antiquities of the Jews (translation by W. Whiston)"
+      location: "Book 18, Perseus text part n=29 (Whiston chapter 2, section 2)"
+      edition: "Perseus Digital Library, PerseusDL/canonical-greekLit, tlg0526.tlg001.perseus-eng2.xml, commit 01b725d835e6e733062ffd79e0efdbae1ba06e5c"
+      url: "https://github.com/PerseusDL/canonical-greekLit/blob/01b725d835e6e733062ffd79e0efdbae1ba06e5c/data/tlg0526/tlg001/tlg0526.tlg001.perseus-eng2.xml"
+    check_quote: "when he had possessed that dignity no longer than a year, Joseph Caiaphas was made his successor. When Gratus had done those things, he went back to Rome, after he had tarried in Judea eleven years"
+    date_range: null
+    reason: "The text gives durations and a succession (Gratus eleven years, then Pilate), not calendar years."
+    verified_on: "2026-10-07"
+
+  - id: josephus-antiquities-18-pilate-ten-years
+    claim: Pilate stayed ten years in Judea and left for Rome; Tiberius was dead before he arrived.
+    kind: ancient_author
+    reference:
+      work: "Josephus, Antiquities of the Jews (translation by W. Whiston)"
+      location: "Book 18, Perseus text part n=88 (Whiston chapter 4, section 2)"
+      edition: "Perseus Digital Library, PerseusDL/canonical-greekLit, tlg0526.tlg001.perseus-eng2.xml, commit 01b725d835e6e733062ffd79e0efdbae1ba06e5c"
+      url: "https://github.com/PerseusDL/canonical-greekLit/blob/01b725d835e6e733062ffd79e0efdbae1ba06e5c/data/tlg0526/tlg001/tlg0526.tlg001.perseus-eng2.xml"
+    check_quote: "Pilate, when he had tarried ten years in Judea, made haste to Rome, and this in obedience to the orders of Vitellius, which he durst not contradict; but before he could get to Rome Tiberius was dead."
+    date_range: null
+    reason: "The text gives a duration (ten years) and a relative date (before Tiberius' death), not calendar years."
+    verified_on: "2026-10-07"

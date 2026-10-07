@@ -3,6 +3,10 @@
 Every corpus used in this project must be listed here before use.
 Verify the license of each source independently — never assume.
 
+Machine-readable twin: `data/sources.yml` (ids, licenses, attribution strings); pinned commits of the
+fetched datasets: `data/sources.lock.json`. `python scripts/fetch_sources.py --check` re-reads each
+license file and fails if a marker string disappeared. Coverage measured on 20 passages: `data/COVERAGE.md`.
+
 ---
 
 ## 1. KJV — King James Version (1769)
@@ -99,15 +103,109 @@ Verify the license of each source independently — never assume.
 
 ---
 
+## 7. Theographic Bible Metadata (`theographic`)
+
+| Field | Value |
+|---|---|
+| **Usage** | Event dates (year only, BCE negative), places and people per verse |
+| **Repository** | https://github.com/robertrouse/theographic-bible-metadata |
+| **Pinned commit** | `cfb1c485d4da6fb63a69cb3b7f5b0752792f46bc` |
+| **License** | **CC BY-SA 4.0** (file `LICENSE`, "Attribution-ShareAlike 4.0 International"). The specification said "CC BY": that was wrong. |
+| **Verified** | 2026-10-07, from the license file of the clone |
+| **Attribution** | "Theographic Bible Metadata (github.com/robertrouse/theographic-bible-metadata), CC BY-SA 4.0" |
+| **Read by** | `datasets.load_theographic` (`json/events.json`, `verses.json`, `places.json`) |
+| **Notes** | Some events carry a day (e.g. Pentecost 0030-05-02). Only the year is kept: days come from a calendar computation, never from a dataset. |
+
+## 8. OpenBible.info Bible Geocoding Data (`openbible`)
+
+| Field | Value |
+|---|---|
+| **Usage** | Ancient places per verse, identification score, Wikidata id |
+| **Repository** | https://github.com/openbibleinfo/bible-geocoding-data |
+| **Pinned commit** | `7eb18a5ee62f27b9b93bd6689ea272d76dd23b8f` |
+| **License** | **CC BY 4.0** (file `license.txt`) |
+| **Verified** | 2026-10-07 |
+| **Attribution** | "OpenBible.info Bible Geocoding Data (github.com/openbibleinfo/bible-geocoding-data), CC BY 4.0" |
+| **Read by** | `datasets.load_openbible` (`data/ancient.jsonl`) |
+| **Notes** | Geometry is NOT used: part of it comes from OpenStreetMap (ODbL), which has its own obligations. |
+
+## 9. TVTMS, Translators Versification Traditions (`tvtms`)
+
+| Field | Value |
+|---|---|
+| **Usage** | Verse-number differences between traditions (e.g. Hebrew Psa.3:1 is Psa.3:Title in the KJV numbering) |
+| **Repository** | https://github.com/STEPBible/STEPBible-Data (same repository as TAHOT) |
+| **Pinned commit** | `1f3423d42400f59f1f30fe08f74e38fcd3bbf7bc` |
+| **License** | **CC BY 4.0** (README and file header) |
+| **Verified** | 2026-10-07 |
+| **Attribution** | "Data created by www.STEPBible.org based on work at Tyndale House Cambridge, CC BY 4.0" |
+| **Read by** | `datasets.load_tvtms` (section "Expanded"), `datasets.tvtms_standard_refs` |
+| **Notes** | It gives mappings, not the number of verses per chapter. It does not replace the Copenhagen file (source 5) for bounds; no equivalence comparison was run. |
+
+## 10. MACULA Quotation and Speaker Data (`speaker-quotations`)
+
+| Field | Value |
+|---|---|
+| **Usage** | Speaker of each quotation, by verse range |
+| **Repository** | https://github.com/Clear-Bible/speaker-quotations |
+| **Pinned commit** | `b09e308a3a1aafdb7d6c75baf0fe2a31d61601da` |
+| **License** | **CC BY 4.0**, plus **MIT** for the Glyssen / Faith Comes By Hearing character data (file `LICENSE.md`) |
+| **Verified** | 2026-10-07 |
+| **Attribution** | "MACULA Quotation and Speaker Data, © 2023 by Clear Bible, Inc" |
+| **Read by** | `datasets.load_speakers` (`tsv/Clear-Aligned-Projections.tsv`), `datasets.speakers_at` |
+
+## 11. ACAI Biblical Entity Data (`acai`)
+
+| Field | Value |
+|---|---|
+| **Usage** | People and places per verse (id and English label only). Measured for coverage; not planned for outputs |
+| **Repository** | https://github.com/BibleAquifer/ACAI |
+| **Pinned commit** | `7e6a2d6674910aedb0888493ebbe6684d374ae5c` |
+| **License** | **CC BY-SA 4.0** (file `LICENSE.md`) |
+| **Verified** | 2026-10-07 |
+| **Attribution** | "ACAI Biblical Entity Data, © BiblioNexus / Mission Mutual, CC BY-SA 4.0" |
+| **Read by** | `datasets.load_acai` |
+
+## 12. Wikidata (`wikidata`)
+
+| Field | Value |
+|---|---|
+| **Usage** | Names of places and people in other languages. Not integrated yet; only the `Q` ids from OpenBible are kept |
+| **License** | CC0 1.0 |
+| **Verified** | Not verified in this task (not used yet). Check before the first use |
+
+## 13. Dated anchors (`anchors`) and the primary texts behind them
+
+| Field | Value |
+|---|---|
+| **Usage** | `data/anchors.yml`: second, independent source for dates. Each anchor cites its work, location, edition, URL and a verbatim `check_quote` (at most 40 words) |
+| **Content** | 3 anchors: Tacitus, Annals 15.44; Josephus, Antiquities 18 (Gratus and Caiaphas; Pilate's ten years). All read in the Perseus files, none recalled from memory |
+| **Texts** | Perseus Digital Library, `PerseusDL/canonical-latinLit` (commit `5493c006cc4c6f4651b6ea7f5f063aa88649efe5`, translation by Church and Brodribb) and `PerseusDL/canonical-greekLit` (commit `01b725d835e6e733062ffd79e0efdbae1ba06e5c`, translation by Whiston). Sparse clones in `tmp/`, read once |
+| **License** | **CC BY-SA 4.0** (`license.md` of both repositories and the `<licence>` element of both files) |
+| **Verified** | 2026-10-07 |
+| **Attribution** | "Perseus Digital Library (Tufts University), CC BY-SA 4.0" |
+| **Notes** | No numeric `date_range` yet: the texts give reigns and durations, not years. A numeric range will be added only with a source read for it. Luke 3:1 is not an anchor (it is the passage under study). |
+
+---
+
 ## License compatibility summary
 
-| Source | License | Corpus in repo? | Attribution in output? |
+| Source | License | In repo? | Used in outputs? |
 |---|---|---|---|
-| KJV (scrollmapper) | MIT / PD | No (downloaded) | No (PD text) |
-| LSG 1910 (BibleAquifer) | CC0 | No (downloaded) | No (PD) |
-| Byzantine Greek NT (byztxt) | Unlicense/PD | No | No |
-| TAHOT (STEPBible) | CC BY 4.0 | No | In SOURCES.md only |
-| Versification (Copenhagen) | CC BY-SA 4.0 | No (build tool) | In SOURCES.md only |
-| Strong's lexicon (openscriptures) | CC BY-SA | No (optional) | In SOURCES.md only |
+| KJV (scrollmapper) | MIT / PD | No (downloaded) | Text, no attribution |
+| LSG 1910 (BibleAquifer) | CC0 | No (downloaded) | Text, no attribution |
+| Byzantine Greek NT (byztxt) | Unlicense / PD | No | Numbers only |
+| TAHOT (STEPBible) | CC BY 4.0 | No | Numbers only |
+| Versification (Copenhagen) | CC BY-SA 4.0 | No (build tool) | No |
+| Strong's lexicon (openscriptures) | CC BY-SA | No | Not used |
+| TVTMS (STEPBible) | CC BY 4.0 | No | Reference mapping |
+| Theographic | CC BY-SA 4.0 | No | Years, place names |
+| OpenBible.info | CC BY 4.0 | No | Place names, scores, Wikidata ids |
+| speaker-quotations | CC BY 4.0 + MIT | No | Speaker names |
+| ACAI | CC BY-SA 4.0 | No | Not planned |
+| Perseus (anchors) | CC BY-SA 4.0 | Short quotes in `anchors.yml` | Reference only |
 
-**Output JSON files** (`out/*.json`) contain only verse text from PD sources (KJV, LSG 1910) and LLM-generated fields — no CC BY-SA data is embedded. No ShareAlike obligation applies to the outputs.
+**Decision of 2026-10-07:** datasets are integrated whatever their license, because nothing is shared for now.
+**The license of the outputs is decided at publication.** Before any sharing, the ShareAlike sources
+(Theographic, ACAI, Perseus) and the attribution strings of `data/sources.yml` must be reviewed: data derived
+from them (years, place names) may carry a ShareAlike obligation.
