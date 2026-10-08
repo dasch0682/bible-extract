@@ -143,7 +143,7 @@ def check_paraphrase(paraphrase, excerpt_text):
     errs = []
     if not _ws(text):
         return ["paraphrase.text: empty"]
-    if word_count(text) > word_count(excerpt_text):
+    if word_count(text) > word_count(excerpt_text) + 2:
         errs.append("paraphrase.text: longer_than_excerpt")
     if paraphrase.get("genre") not in GENRES:
         errs.append("paraphrase.genre: unknown")

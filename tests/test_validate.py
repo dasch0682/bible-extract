@@ -189,10 +189,18 @@ def test_paraphrase_equal_length_accepted():
 
 def test_paraphrase_longer_than_excerpt_rejected():
     e = make_entry(("JHN.15.1",))
-    text = " ".join(["mot"] * (word_count(e["excerpt"]["text"]) + 1))
+    text = " ".join(["mot"] * (word_count(e["excerpt"]["text"]) + 3))
     e["paraphrase"]["text"] = text
     e["paraphrase"]["history"][0]["text"] = text
     assert "paraphrase.text: longer_than_excerpt" in check_paraphrase(e["paraphrase"], e["excerpt"]["text"])
+
+
+def test_paraphrase_longer_by_two_accepted():
+    e = make_entry(("JHN.15.1",))
+    text = " ".join(["mot"] * (word_count(e["excerpt"]["text"]) + 2))
+    e["paraphrase"]["text"] = text
+    e["paraphrase"]["history"][0]["text"] = text
+    assert "paraphrase.text: longer_than_excerpt" not in check_paraphrase(e["paraphrase"], e["excerpt"]["text"])
 
 def test_paraphrase_null_with_reason_accepted():
     p = {"text": None, "reason": "no_faithful_version"}
