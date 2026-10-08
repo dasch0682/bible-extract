@@ -161,6 +161,61 @@ def test_french_and_english_contexts_pass_the_cross_language_check(tmp_path):
     assert files["fr"][0]["context"]["temporal"][0]["label"] != files["en"][0]["context"]["temporal"][0]["label"]
 
 
+# --- prefill_localize ---
+
+def multi_recording_model(calls):
+    """Records multi-lang calls; answers with the label echoed for each language."""
+    def call(system, user):
+        if "multiple languages" in system:
+            label = user.split("Label: ", 1)[1].split("\n")[0]
+            calls.append(label)
+            return json.dumps({lang: label for lang in ("fr", "en")}, ensure_ascii=False)
+        # Single-lang localize or literary: return something valid
+        label = user.split("\n")[0].removeprefix("Label: ")
+        return label
+    return call
+
+
+def test_prefill_localize_no_labels_makes_no_calls(tmp_path):
+    calls = []
+    mc = multi_recording_model(calls)
+    context.prefill_localize(["JHN.14.6"], LANGS, CORPORA, data(), RULES, REG,
+                              {"speaker": (mc, "m/s"), "context": (mc, "m/c")}, tmp_path)
+    assert calls == []
+
+
+def test_prefill_localize_place_and_event_each_trigger_one_multi_call(tmp_path):
+    calls = []
+    mc = multi_recording_model(calls)
+    context.prefill_localize(["JHN.14.6"], LANGS, CORPORA, data([], [], PENTECOST, ACHAIA), RULES, REG,
+                              {"speaker": (mc, "m/s"), "context": (mc, "m/c")}, tmp_path)
+    assert len(calls) == 2   # one place label + one event label
+
+
+def test_prefill_localize_speaker_label_triggers_one_multi_call(tmp_path):
+    calls = []
+    mc = multi_recording_model(calls)
+    context.prefill_localize(["JHN.14.6"], LANGS, CORPORA, data(JESUS, PEOPLE), RULES, REG,
+                              {"speaker": (mc, "m/s"), "context": (mc, "m/c")}, tmp_path)
+    assert len(calls) == 1   # speaker name only
+
+
+def test_prefill_localize_populates_cache_so_build_context_makes_no_localize_calls(tmp_path):
+    d = data(JESUS, PEOPLE, [], ACHAIA)
+    calls = []
+    mc = multi_recording_model(calls)
+    context.prefill_localize(["JHN.14.6"], LANGS, CORPORA, d, RULES, REG,
+                              {"speaker": (mc, "m/s"), "context": (mc, "m/c")}, tmp_path)
+    multi_calls_after_prefill = len(calls)
+
+    # build_context for each lang: localize hits cache, so no new multi-lang calls
+    for lang in ("fr", "en"):
+        mc2 = multi_recording_model(calls)
+        context.build_context(["JHN.14.6"], CORPORA[lang], lang, LANGS[lang], d, RULES, REG,
+                              {"speaker": (mc2, "m/s"), "context": (mc2, "m/c")}, tmp_path)
+    assert len(calls) == multi_calls_after_prefill   # no new multi-lang calls after prefill
+
+
 def test_day_candidate_texts_follow_the_language_but_not_the_dates(tmp_path):
     d = data(JESUS, PEOPLE, PENTECOST, ACHAIA)
     fr = build("fr", tmp_path, d)["context"]["temporal"][0]["day_candidates"]

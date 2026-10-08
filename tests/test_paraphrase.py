@@ -127,7 +127,7 @@ def test_the_generation_prompt_states_the_rules_and_the_word_limit(tmp_path):
     gen = Gen(gen_answer())
     run(gen, Ver(), tmp_path)
     system, user = gen.prompts[0]
-    assert "present tense" in system and "NO information" in system and "never use more than 21 words" in system
+    assert "present tense" in system and "NO information" in system and "use at most 17 words" in system
     assert all(s in system for s in pp.STYLES) and EXCERPT in user
 
 

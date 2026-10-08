@@ -385,7 +385,10 @@ def _neutral(entry):
              tuple((d.get("date"), d.get("method")) for d in t.get("day_candidates") or []))
             for t in ctx.get("temporal") or []),
         "place_ids": tuple(p.get("place_id") for p in ctx.get("places") or []),
-        "source_ids": tuple(sorted(s.get("id") for s in entry.get("sources") or [])),
+        "source_ids": tuple(sorted(
+            s.get("id") for s in entry.get("sources") or []
+            if s.get("type") != "bible_text"
+        )),
     }
 
 
