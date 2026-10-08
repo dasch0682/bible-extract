@@ -26,8 +26,8 @@ models:
     price_ref: {input: "0.68", output: "2.09"}
     price_ref_date: "2026-10-06"
   "~deepseek/deepseek-pro-latest":
-    price_ref: {input: "0.2917", output: "4.2"}
-    price_ref_date: "2026-10-07"
+    price_ref: {input: "0.15", output: "3.4"}
+    price_ref_date: "2026-10-08"
 
 roles:
   relevance: "deepseek/deepseek-v4.1-flash"
