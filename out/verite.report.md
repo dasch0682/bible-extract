@@ -1,7 +1,7 @@
 # Report: la vérité
 
 ## Price check
-- Checked at: 2026-10-08T07:11:07Z (source: https://openrouter.ai/api/v1/models)
+- Checked at: 2026-10-08T14:49:00Z (source: https://openrouter.ai/api/v1/models)
 - Result: OK
 
 | Model | Ref in | Ref out | Now in | Now out | Status |
@@ -12,7 +12,7 @@
 Prices in USD per 1M tokens.
 
 ## Discovery
-- Mode: rules
+- Mode: model
 - Labels: fr="la vérité", en="truth"
 - Strong's numbers: ['G225', 'G227', 'G228', 'G230']
 - Refs by Strong's: 162
@@ -125,54 +125,72 @@ Prices in USD per 1M tokens.
 - TVTMS has a rule for 1 candidate verse(s); nothing is remapped.
   - JHN.6.55: [{'traditions': ['Eng-KJV', 'Greek'], 'standard_ref': 'Jhn.6:55', 'action': 'Keep verse'}, {'traditions': ['Latin'], 'standard_ref': 'Jhn.6:54', 'action': 'Renumber verse'}]
 
+## Relevance judgement (pivot language: fr)
+- Candidates judged: 50
+- Relevant: 25
+- Not relevant: 25
+- No valid verdict (not kept): 0
+
+### Not relevant
+  - MAT.9.37
+  - MAT.15.27
+  - MAT.17.11
+  - MAT.20.23
+  - MAT.26.73
+  - MAT.27.54
+  - MRK.10.39
+  - MRK.14.38
+  - MRK.14.70
+  - MRK.15.39
+  - LUK.4.25
+  - LUK.9.27
+  - LUK.10.2
+  - LUK.11.48
+  - LUK.12.44
+  - LUK.16.11
+  - LUK.21.3
+  - LUK.22.22
+  - LUK.22.59
+  - LUK.24.22
+  - JHN.1.47
+  - JHN.6.14
+  - JHN.6.55
+  - JHN.7.26
+  - JHN.7.40
+
 ## Excerpts
-- Excerpts: 46 (window of rules mode: 2)
+- Excerpts: 20 (window of rules mode: 2)
 - Merged because they overlapped: 3
-  - JHN.4.21 to JHN.4.24: 2 candidates
-  - JHN.5.29 to JHN.5.35: 3 candidates
-  - JHN.8.14 to JHN.8.18: 2 candidates
+  - JHN.1.14 to JHN.1.18: 2 candidates
+  - JHN.5.31 to JHN.5.33: 3 candidates
+  - JHN.8.13 to JHN.8.18: 3 candidates
 
 ## fr: Louis Segond 1910
-- excerpts: 46
-- valid: 46
+- excerpts: 20
+- valid: 20
 - rejected: 0
 
 ## en: King James Version (1769)
-- excerpts: 46
-- valid: 46
+- excerpts: 20
+- valid: 20
 - rejected: 0
 
 ## Intersection
-- kept in all languages: 46
+- kept in all languages: 20
 - dropped (invalid in at least one language): 0
 
 ## Review
-- entries that must go through the review page: 22
+- entries that must go through the review page: 7
 
   - MAT.14.33 to MAT.14.33 (review required): genre_conflict:speaker:narrative
-  - MAT.17.11 to MAT.17.12 (review required): paraphrase_failed
-  - MAT.20.23 to MAT.20.23 (review required): paraphrase_failed
-  - MAT.26.73 to MAT.26.73 (review required): genre_conflict:speaker:narrative
-  - MAT.27.54 to MAT.27.54 (review required): genre_conflict:speaker:narrative, paraphrase_failed
-  - MRK.5.33 to MRK.5.33 (review required): paraphrase_failed, speaker_not_identified
-  - MRK.12.14 to MRK.12.15 (review required): speaker_ambiguous
-  - MRK.14.36 to MRK.14.38 (review required): paraphrase_failed
-  - MRK.14.70 to MRK.14.70 (review required): genre_conflict:speaker:narrative, paraphrase_failed
-  - MRK.15.39 to MRK.15.39 (review required): genre_conflict:speaker:narrative
-  - LUK.11.46 to LUK.11.50 (review required): paraphrase_failed
-  - LUK.12.42 to LUK.12.46 (review required): paraphrase_failed
-  - LUK.16.9 to LUK.16.13 (review required): paraphrase_failed
-  - LUK.22.59 to LUK.22.59 (review required): genre_conflict:speaker:narrative
-  - LUK.24.20 to LUK.24.24 (review required): paraphrase_failed
+  - MAT.22.16 to MAT.22.16 (review required): genre_conflict:speaker:narrative
+  - MRK.5.33 to MRK.5.33: speaker_not_identified
+  - MRK.12.29 to MRK.12.34 (review required): paraphrase_failed, speaker_ambiguous
   - JHN.1.9 to JHN.1.9: speaker_not_identified
-  - JHN.1.14 to JHN.1.14 (review required): paraphrase_failed, speaker_not_identified
-  - JHN.1.17 to JHN.1.17: speaker_not_identified
-  - JHN.1.47 to JHN.1.48 (review required): speaker_ambiguous
-  - JHN.4.21 to JHN.4.24 (review required): paraphrase_failed
-  - JHN.4.42 to JHN.4.42 (review required): paraphrase_failed
-  - JHN.5.29 to JHN.5.35 (review required): paraphrase_failed
-  - JHN.6.14 to JHN.6.14 (review required): genre_conflict:speaker:narrative, paraphrase_failed
-  - JHN.7.40 to JHN.7.40 (review required): genre_conflict:speaker:narrative
+  - JHN.1.14 to JHN.1.18 (review required): genre_conflict:speaker:narrative, speaker_partial_coverage
+  - JHN.5.31 to JHN.5.33 (review required): paraphrase_failed
+  - JHN.6.32 to JHN.6.33 (review required): paraphrase_failed
+  - JHN.8.13 to JHN.8.18 (review required): speaker_ambiguous
 
 ## Cross-language check
 - neutral fields identical in every language file

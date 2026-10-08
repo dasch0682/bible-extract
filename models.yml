@@ -21,7 +21,7 @@
 models:
   "deepseek/deepseek-v4.1-flash":
     price_ref: {input: "0.3", output: "1.2"}
-    price_ref_date: "2026-10-07"
+    price_ref_date: "2026-10-08"
   "mistralai/mistral-large-4-0":
     price_ref: {input: "0.68", output: "2.09"}
     price_ref_date: "2026-10-06"

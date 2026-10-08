@@ -7,18 +7,31 @@ import paraphrase as pp
 import validate
 
 FR = {"prompt_lang": "French", "translation": "Louis Segond 1910"}
-EXCERPT = "Jésus lui dit : Je suis le chemin, la vérité, et la vie. Nul ne vient au Père que par moi."  # 21 words (the colon counts, like validate.word_count)
 VERSES = ["JHN.14.6"]
 RULES = pp.load_rules()
 GEN, VER = "deepseek/gen-model", "mistralai/ver-model"
 
-CLOSE = "Jésus déclare qu'il est le chemin, la vérité et la vie, et que nul ne va au Père sans lui."
-CONDENSED = "Jésus affirme qu'il est le seul chemin vers le Père."
-FREE = "Pour aller au Père, il faut passer par Jésus, qui est la voie, la vérité et la vie."
+# Short excerpt (13 words, <= free_max_words=20): all three styles are generated.
+EXCERPT_SHORT = "Jésus lui dit : Je suis le chemin, la vérité et la vie."
+# Long excerpt (21 words, > free_max_words=20): only close and condensed are generated.
+EXCERPT_LONG = "Jésus lui dit : Je suis le chemin, la vérité, et la vie. Nul ne vient au Père que par moi."
+EXCERPT = EXCERPT_SHORT   # default for most tests
+
+CLOSE = "Jésus dit qu'il est le chemin, la vérité et la vie."           # 12 words
+CONDENSED = "Jésus est le seul chemin vers le Père."                    # 8 words
+FREE = "Par Jésus seul on accède au chemin, à la vérité et à la vie."   # 13 words
+
+CLOSE_LONG = "Jésus déclare qu'il est le chemin, la vérité et la vie, et que nul ne va au Père sans lui."
+CONDENSED_LONG = "Jésus affirme qu'il est le seul chemin vers le Père."
 
 
 def gen_answer(close=CLOSE, condensed=CONDENSED, free=FREE, genre="discourse"):
     return json.dumps({"genre": genre, "candidates": {"close": close, "condensed": condensed, "free": free}},
+                      ensure_ascii=False)
+
+
+def gen_answer_long(close=CLOSE_LONG, condensed=CONDENSED_LONG, genre="discourse"):
+    return json.dumps({"genre": genre, "candidates": {"close": close, "condensed": condensed}},
                       ensure_ascii=False)
 
 
@@ -38,22 +51,25 @@ class Gen:
 
 
 class Ver(Gen):
-    """Fake verifier: `by_style` maps a style to its score; it reads the letters from the prompt it receives."""
+    """Fake verifier: `by_style` maps a style to its score; it reads the letters from the prompt it receives.
 
-    def __init__(self, by_style=None, raws=()):
+    text_to_style: explicit {text: style} map used to resolve labels; defaults to the 3-style map.
+    """
+
+    def __init__(self, by_style=None, raws=(), text_to_style=None):
         super().__init__(*raws)
         self.by_style = by_style
+        self.text_to_style = text_to_style or {CLOSE: "close", CONDENSED: "condensed", FREE: "free"}
 
     def __call__(self, system, user):
         self.prompts.append((system, user))
         if self.raws:
             return self.raws.pop(0)
-        texts = {t: s for s, t in zip(pp.STYLES, [CLOSE, CONDENSED, FREE])}
         out = {}
         block = user.split("Candidates:\n", 1)[1].split("\n\n", 1)[0]
         for line in block.splitlines():
             label, text = line.split(": ", 1)
-            style = texts.get(text)
+            style = self.text_to_style.get(text)
             out[label] = (self.by_style or {}).get(style, score())
         return json.dumps(out)
 
@@ -106,6 +122,13 @@ def test_generation_accepts_text_around_the_json():
     assert problem is None and answer["candidates"]["close"] == CLOSE
 
 
+def test_generation_format_two_styles():
+    answer, problem = pp.check_generation(gen_answer_long(), ("close", "condensed"))
+    assert problem is None and set(answer["candidates"]) == {"close", "condensed"}
+    _, prob = pp.check_generation(gen_answer(), ("close", "condensed"))
+    assert prob is not None and "exactly close, condensed" in prob
+
+
 def test_generation_is_retried_once_with_the_reason(tmp_path):
     gen = Gen("garbage", gen_answer())
     res = run(gen, Ver(), tmp_path)
@@ -127,18 +150,35 @@ def test_the_generation_prompt_states_the_rules_and_the_word_limit(tmp_path):
     gen = Gen(gen_answer())
     run(gen, Ver(), tmp_path)
     system, user = gen.prompts[0]
-    assert "present tense" in system and "NO information" in system and "use at most 17 words" in system
+    assert "present tense" in system and "NO information" in system and "use at most 11 words" in system
     assert all(s in system for s in pp.STYLES) and EXCERPT in user
+
+
+def test_long_excerpt_excludes_free_style(tmp_path):
+    gen = Gen(gen_answer_long())
+    ver = Ver(text_to_style={CLOSE_LONG: "close", CONDENSED_LONG: "condensed"})
+    res = run(gen, ver, tmp_path, excerpt=EXCERPT_LONG)
+    system = gen.prompts[0][0]
+    styles_section = system.split("Styles - ", 1)[1]
+    assert "free" not in styles_section   # free style rule absent from Styles section
+    assert "Write 2 candidates" in system
+    assert [h["style"] for h in res["paraphrase"]["history"]] == ["close", "condensed"]
 
 
 # --- code checks ---
 
 def test_code_checks():
     ok = pp.code_checks(CLOSE, EXCERPT, "fr", RULES)
-    assert ok == {"non_empty": True, "not_longer_than_excerpt": True, "target_language": True}
+    assert ok == {"non_empty": True, "not_longer_than_excerpt": True, "target_language": True, "tense_present": True}
     assert pp.code_checks("  ", EXCERPT, "fr", RULES)["non_empty"] is False
     assert pp.code_checks(EXCERPT + " et encore un mot", EXCERPT, "fr", RULES)["not_longer_than_excerpt"] is False
     assert pp.code_checks("Jesus says that he is the way and the truth.", EXCERPT, "fr", RULES)["target_language"] is False
+    assert pp.code_checks("Il vint à Jérusalem.", EXCERPT, "fr", RULES)["tense_present"] is False
+    assert pp.code_checks("Il vient à Jérusalem.", EXCERPT, "fr", RULES)["tense_present"] is True
+    assert pp.code_checks("Ils ne l'ont pas reconnu.", EXCERPT, "fr", RULES)["tense_present"] is True
+    assert pp.code_checks("D'autres travaillaient dans ce champ.", EXCERPT, "fr", RULES)["tense_present"] is False
+    assert pp.code_checks("Il fait la vérité.", EXCERPT, "fr", RULES)["tense_present"] is True
+    assert pp.code_checks("tense check skipped for en", EXCERPT, "en", RULES)["tense_present"] is None
 
 
 def test_a_paraphrase_as_long_as_the_excerpt_passes():
@@ -175,6 +215,13 @@ def test_the_verifier_sees_shuffled_neutral_letters_and_no_style(tmp_path):
     assert EXCERPT in user
 
 
+def test_the_verifier_sees_two_labels_for_long_excerpt(tmp_path):
+    ver = Ver(text_to_style={CLOSE_LONG: "close", CONDENSED_LONG: "condensed"})
+    run(Gen(gen_answer_long()), ver, tmp_path, excerpt=EXCERPT_LONG)
+    block = ver.prompts[0][1].split("Candidates:\n", 1)[1]
+    assert [line.split(": ", 1)[0] for line in block.splitlines()] == ["A", "B"]
+
+
 def test_shuffle_is_reproducible_and_covers_all_styles():
     seed = pp.shuffle_seed(VERSES, "fr", [CLOSE, CONDENSED, FREE])
     a, b = pp.shuffled_labels(list(pp.STYLES), seed), pp.shuffled_labels(list(pp.STYLES), seed)
@@ -203,7 +250,7 @@ def test_verification_failing_gives_null_and_review(tmp_path):
 
 def hist(style, fidelity=5, completeness=4, issues=(), words=5, checks=None, verdict="pass", attempt=None):
     return {"attempt": attempt or pp.STYLES.index(style) + 1, "style": style, "text": " ".join(["mot"] * words),
-            "code_checks": checks or {"non_empty": True, "not_longer_than_excerpt": True, "target_language": True},
+            "code_checks": checks or {"non_empty": True, "not_longer_than_excerpt": True, "target_language": True, "tense_present": True},
             "verification": {"verdict": verdict, "fidelity": fidelity, "completeness": completeness,
                              "issues": list(issues)}}
 
@@ -220,13 +267,24 @@ def test_tie_goes_to_the_shortest_then_to_close():
 
 
 def test_failed_check_problem_low_fidelity_and_unverified_are_dropped():
-    bad = {"non_empty": True, "not_longer_than_excerpt": False, "target_language": True}
+    bad = {"non_empty": True, "not_longer_than_excerpt": False, "target_language": True, "tense_present": True}
     n, _ = pp.arbitrate([hist("close", 5, 5, checks=bad), hist("condensed", 5, 5, ["addition"], verdict="fail"),
                          hist("free", 3, 5)], 4)
     assert n is None
     n, reason = pp.arbitrate([hist("close", 5, 5, checks=bad), hist("condensed", 5, 2), hist("free", 5, 5,
                                                                                             verdict="not_verified")], 4)
     assert n == 2 and "condensed selected" in reason
+
+
+def test_other_issue_alone_is_not_blocking():
+    n, reason = pp.arbitrate([hist("close", 4, 4, ["other"], verdict="pass"),
+                               hist("condensed", 5, 5, ["addition"], verdict="fail")], 4)
+    assert n == 1 and "close selected" in reason
+
+
+def test_other_issue_with_blocking_issue_is_still_dropped():
+    n, _ = pp.arbitrate([hist("close", 4, 4, ["addition", "other"], verdict="fail")], 4)
+    assert n is None
 
 
 def test_unchecked_language_does_not_discard():
@@ -246,7 +304,8 @@ def test_selected_candidate_and_full_history(tmp_path):
     res = run(Gen(gen_answer()), ver, tmp_path)
     p = res["paraphrase"]
     assert p["text"] == CONDENSED and p["genre"] == "discourse" and p["genre_by"] == "model"
-    assert [h["style"] for h in p["history"]] == list(pp.STYLES) and [h["attempt"] for h in p["history"]] == [1, 2, 3]
+    assert [h["style"] for h in p["history"]] == list(pp.STYLES)
+    assert [h["attempt"] for h in p["history"]] == [1, 2, 3]
     assert p["arbitration"]["selected_attempt"] == 2 and "condensed selected" in p["arbitration"]["reason"]
     assert isinstance(p["arbitration"]["shuffle_seed"], int)
     h = p["history"][1]
@@ -287,7 +346,7 @@ def test_every_candidate_rejected_gives_null_with_the_history_kept(tmp_path):
 
 
 def test_all_candidates_in_the_wrong_language_give_null(tmp_path):
-    en = "Jesus says that he is the way and the truth and the life."
+    en = "Jesus says that he is the way."
     res = run(Gen(gen_answer(en, en + " Yes.", en + " Indeed.")), Ver(), tmp_path)
     assert res["paraphrase"]["text"] is None
     assert all(h["code_checks"]["target_language"] is False for h in res["paraphrase"]["history"])

@@ -36,13 +36,13 @@ import localize
 import validate
 from models import family
 
-GENERATION_VERSION = "paraphrase-gen-5"
-VERIFICATION_VERSION = "paraphrase-verify-4"
+GENERATION_VERSION = "paraphrase-gen-9"
+VERIFICATION_VERSION = "paraphrase-verify-7"
 TRIM_VERSION = "paraphrase-trim-1"
 RULES_PATH = Path(__file__).parent / "data" / "paraphrase_rules.yml"
 
 STYLES = ("close", "condensed", "free")          # also the tie-break order
-ISSUES = ("addition", "genre_changed", "tense_not_present", "other")
+ISSUES = ("addition", "genre_changed", "other")
 SCORE_RANGE = range(1, 6)
 LABELS = "ABC"
 # Flags that force the entry through the review page (the others are information for the reviewer).
@@ -50,6 +50,15 @@ REVIEW_REQUIRED = ("paraphrase_failed", "genre_conflict")
 
 _JSON = re.compile(r"\{.*\}", re.S)
 _WORD = re.compile(r"[^\W\d_]+")
+# Unambiguous passé simple and imparfait forms; passé composé is intentionally excluded.
+_PAST_TENSE_FR = re.compile(
+    r"\b\w+aient\b"                                                        # imparfait/cond. 3rd plural
+    r"|\b\w+(?:irent|èrent|urent)\b"                                       # passé simple 3rd plural
+    r"|\b(?:vint|fit|prit|fut|alla|envoya|répondit|mourut|sortit|entra)\b"  # passé simple 3rd singular
+    r"|\b(?:était|avait|faisait|disait|venait|prenait|allait|savait"        # imparfait 3rd singular
+    r"|voyait|pouvait|voulait|devait)\b",
+    re.I,
+)
 _STYLE_RULES = {
     "close": "stay close to the text: follow the order and structure of the excerpt, only simplify the vocabulary",
     "condensed": "keep only the central idea, in one sentence",
@@ -67,13 +76,16 @@ def load_rules(path=RULES_PATH) -> dict:
     mf = rules.get("min_fidelity")
     if isinstance(mf, bool) or mf not in SCORE_RANGE:
         raise RulesError("min_fidelity: an integer from 1 to 5 is required")
+    fmw = rules.get("free_max_words")
+    if fmw is not None and (isinstance(fmw, bool) or not isinstance(fmw, int) or fmw < 1):
+        raise RulesError("free_max_words: a positive integer is required")
     raw = rules.get("language_markers")
     if not isinstance(raw, dict) or not all(isinstance(v, list) and v and all(isinstance(w, str) for w in v)
                                             for v in raw.values()):
         raise RulesError("language_markers: a dict of non-empty word lists is required")
     sets = {lang: {w.lower() for w in words} for lang, words in raw.items()}
     shared = {w for lang, s in sets.items() for other, o in sets.items() if other != lang for w in s & o}
-    return {"min_fidelity": mf, "markers": {lang: s - shared for lang, s in sets.items()}}
+    return {"min_fidelity": mf, "free_max_words": fmw, "markers": {lang: s - shared for lang, s in sets.items()}}
 
 
 def review_required(flags: list) -> bool:
@@ -82,28 +94,33 @@ def review_required(flags: list) -> bool:
 
 # --- generation ---
 
-def _generation_prompt(excerpt_text: str, max_words: int, lang_cfg: dict, retry_hint: str = "") -> tuple:
+def _generation_prompt(excerpt_text: str, max_words: int, lang_cfg: dict,
+                       active_styles: tuple, retry_hint: str = "") -> tuple:
     lang = lang_cfg["prompt_lang"]
-    styles = "; ".join(f"{s}: {_STYLE_RULES[s]}" for s in STYLES)
+    styles = "; ".join(f"{s}: {_STYLE_RULES[s]}" for s in active_styles)
     prompt_max = max(int(max_words * 0.85), 5)
+    n_candidates = len(active_styles)
+    candidates_json = ", ".join(f'"{s}": string' for s in active_styles)
     system = (
         f"You paraphrase a Bible excerpt ({lang_cfg['translation']}) in {lang}. Rules shared by every candidate: "
         "keep the original genre (a speech stays a speech, for example 'Jesus declares that...'; a narrative stays "
         "a narrative; a letter, a prayer or a parable stays one); "
-        "write every verb in the present tense (historic present); avoid passé simple and imparfait; "
-        "passé composé is allowed only when the excerpt itself uses a completed past action (e.g. 'il est venu', "
-        "'ils ne l'ont pas reconnu') — in those cases keep the passé composé; "
+        "write every verb in the present tense (historic present), even when the excerpt is in past tense — "
+        "convert all past narration to historic present (e.g. 'la parole a été faite chair' → 'la parole devient chair'; "
+        "'Je vous ai envoyés moissonner' → 'il les envoie moissonner'; 'ils ne l'ont pas reconnu' → 'ils ne le reconnaissent pas'; "
+        "'d'autres ont travaillé' → 'd'autres travaillent'; 'elle a habité parmi nous' → 'elle habite parmi nous'); "
+        "avoid passé simple, imparfait and passé composé; "
         "add NO information that is not in the excerpt — this applies to every style including free: never add "
         "a character name, detail, interpretation, implied context or consequence absent from the excerpt text; "
         "in particular, do NOT name a character who is not named in the excerpt itself (if the excerpt uses a "
         "pronoun such as 'il', 'she', 'they', keep a pronoun or a generic phrase, never substitute the person's "
         "name); converting direct speech to indirect speech (tu→il, je→il) is not an addition; "
         f"use at most {prompt_max} words (strict limit — count carefully). "
-        f"Write three candidates that differ only in style, never in content, and do not reuse in one candidate the "
-        f"wording of another. Styles - {styles}. "
+        f"Write {n_candidates} candidates that differ only in style, never in content, and do not reuse in one "
+        f"candidate the wording of another. Styles - {styles}. "
         f"Also give the genre of the excerpt, one of: {', '.join(sorted(validate.GENRES))}. "
-        'Answer with one JSON object: {"genre": string, "candidates": {"close": string, "condensed": string, '
-        f'"free": string}}}}. Every text is in {lang}.'
+        f'Answer with one JSON object: {{"genre": string, "candidates": {{{candidates_json}}}}}. '
+        f"Every text is in {lang}."
     )
     user = f"Excerpt:\n{excerpt_text}"
     if retry_hint:
@@ -111,7 +128,7 @@ def _generation_prompt(excerpt_text: str, max_words: int, lang_cfg: dict, retry_
     return system, user
 
 
-def check_generation(raw):
+def check_generation(raw, active_styles: tuple = STYLES):
     """(answer, problem): {'genre', 'candidates': {style: text}} when the format is exact, else None and the reason."""
     m = _JSON.search(raw) if isinstance(raw, str) else None
     if not m:
@@ -125,9 +142,9 @@ def check_generation(raw):
     if a["genre"] not in validate.GENRES:
         return None, f"genre must be one of {', '.join(sorted(validate.GENRES))}"
     c = a["candidates"]
-    if not isinstance(c, dict) or set(c) != set(STYLES) or not all(isinstance(c[s], str) for s in STYLES):
-        return None, "candidates must have exactly close, condensed and free, as strings"
-    return {"genre": a["genre"], "candidates": {s: c[s].strip() for s in STYLES}}, None
+    if not isinstance(c, dict) or set(c) != set(active_styles) or not all(isinstance(c[s], str) for s in active_styles):
+        return None, f"candidates must have exactly {', '.join(active_styles)}, as strings"
+    return {"genre": a["genre"], "candidates": {s: c[s].strip() for s in active_styles}}, None
 
 
 # --- code checks ---
@@ -146,12 +163,19 @@ def language_check(text: str, lang: str, markers: dict):
     return other <= mine
 
 
+def tense_check_fr(text: str) -> bool:
+    """True when no unambiguous passé simple or imparfait form is found."""
+    return not bool(_PAST_TENSE_FR.search(text))
+
+
 def code_checks(text: str, excerpt_text: str, lang: str, rules: dict) -> dict:
-    """The three checks of the specification; a check is True (passes), False, or None (not checked)."""
+    """The code checks; a check is True (passes), False (fails), or None (not checked)."""
+    tense = tense_check_fr(text) if lang == "fr" else None
     return {
         "non_empty": bool(validate._ws(text)),
         "not_longer_than_excerpt": validate.word_count(text) <= validate.word_count(excerpt_text) + 2,
         "target_language": language_check(text, lang, rules["markers"]),
+        "tense_present": tense,
     }
 
 
@@ -171,16 +195,6 @@ def _verification_prompt(excerpt_text: str, shown: list, lang_cfg: dict, retry_h
         "excerpt is fully kept). Report its problems with these codes: addition (information absent from the "
         "excerpt — note that: using a pronoun where the excerpt uses a name, or vice-versa, is NOT an addition; "
         "converting direct speech to indirect speech and adjusting pronouns is NOT an addition), genre_changed (a speech is no longer a speech, a narrative no longer a narrative, and so on), "
-        "tense_not_present (ONLY flag when you see unambiguous passé simple such as 'il vint', 'ils vinrent', "
-        "'il fit', 'ils firent', 'il prit', 'ils prirent', 'il fut', 'ils furent', 'il alla', 'ils allèrent', "
-        "'il envoya', 'ils envoyèrent'; or imparfait ending in -ait/-aient/-ions/-iez. "
-        "Passé composé (avoir or être + past participle, e.g. 'il a dit', 'il est venu', 'ils ont entendu', "
-        "'elle est venue', 'ils ne l'ont pas reconnu', 'tu as dit', 'nous l'avons entendu') is ALWAYS "
-        "acceptable — NEVER flag it as tense_not_present. "
-        "Examples of what NOT to flag: 'il dit' = present indicative ✓; 'il vient' ✓; 'elle sait' ✓; "
-        "'ils disent' ✓; 'il est venu' ✓; 'ils ont entendu' ✓; 'tu as dit' ✓; 'nous l'avons entendu' ✓. "
-        "Examples of what TO flag: 'il vint' ✗; 'il vit' (voir, passé simple) ✗; 'ils dirent' ✗; "
-        "'il était' ✗; 'ils parlaient' ✗), "
         "other. Use an empty list when there is no "
         'problem. Answer with one JSON object keyed by the letters, for example {"A": {"fidelity": 5, '
         '"completeness": 4, "issues": []}}. Judge every candidate on its own.'
@@ -276,7 +290,7 @@ def arbitrate(history: list, min_fidelity: int):
             why = "failed a code check"
         elif v["verdict"] == "not_verified":
             why = "not verified"
-        elif v["issues"]:
+        elif [i for i in v["issues"] if i != "other"]:
             why = "problem reported: " + ", ".join(v["issues"])
         elif v["fidelity"] < min_fidelity:
             why = f"fidelity {v['fidelity']} below {min_fidelity}"
@@ -333,11 +347,14 @@ def build_paraphrase(excerpt_text: str, verse_ids: list, lang: str, lang_cfg: di
     if family(gen_model) == family(ver_model):
         raise ValueError("the verification model must come from another family than the generator")
     max_words = validate.word_count(excerpt_text)
+    fmw = rules.get("free_max_words")
+    active_styles = STYLES if (fmw is None or max_words <= fmw) else tuple(s for s in STYLES if s != "free")
     key = hashlib.sha1("|".join(verse_ids).encode("utf-8")).hexdigest()[:10]
     base = Path(cache_dir) / "paraphrase" / lang
 
-    gen = _ask(gen_call, lambda hint: _generation_prompt(excerpt_text, max_words, lang_cfg, hint),
-               check_generation, (), base / f"{verse_ids[0]}-{key}.gen.{GENERATION_VERSION}.{localize.slug(gen_model)}.json")
+    gen = _ask(gen_call, lambda hint: _generation_prompt(excerpt_text, max_words, lang_cfg, active_styles, hint),
+               check_generation, (active_styles,),
+               base / f"{verse_ids[0]}-{key}.gen.{GENERATION_VERSION}.{localize.slug(gen_model)}.json")
     if gen is None:
         return {"paraphrase": {"text": None, "reason": "no_faithful_version", "history": [],
                                "arbitration": {"selected_attempt": None, "reason": "generation failed after one retry"}},
@@ -345,7 +362,7 @@ def build_paraphrase(excerpt_text: str, verse_ids: list, lang: str, lang_cfg: di
 
     flags = []
     history = []
-    for n, style in enumerate(STYLES, start=1):
+    for n, style in enumerate(active_styles, start=1):
         text = gen["candidates"][style]
         history.append({"attempt": n, "style": style, "text": text, "model": gen_model,
                         "prompt_version": GENERATION_VERSION,
