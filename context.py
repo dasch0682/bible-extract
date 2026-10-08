@@ -84,3 +84,56 @@ def build_context(verse_ids: list, corpus: dict, lang: str, lang_cfg: dict, data
         "speaker_candidates": spk["candidates"],
         "review_required": review_required(flags),
     }
+
+
+def prefill_localize(verse_ids: list, langs: dict, corpora: dict, data: dict, rules: dict,
+                     registry: dict, calls: dict, cache_dir) -> None:
+    """Pre-fill localize caches for all languages with one call per unique label (--mutualize-langs).
+
+    Runs code-only discovery of labels (places, events, speaker) via collecting callbacks, then
+    calls localize_multi for each unique label. Subsequent build_context() calls hit cache for all
+    localize calls, reducing total model calls from N_labels × N_langs to N_labels.
+    """
+    c_call, c_model = calls["context"]
+    s_call, s_model = calls["speaker"]
+    book, chapter, _ = verse_ids[0].split(".")
+    context_by_lang = {
+        lang: [f"{v}: {corpora[lang][book][chapter][v.split('.')[2]]}" for v in verse_ids]
+        for lang in langs
+    }
+    place_labels, event_labels = [], []
+    places.build_places(verse_ids, data["openbible"], rules["places"], registry,
+                        localize_name=lambda t: place_labels.append(t) or None)
+    dating.build_temporal(verse_ids, data["theographic"], data["anchors"], rules["dates"], registry,
+                          localize_label=lambda t: event_labels.append(t) or None)
+    ident = speaker.identify(verse_ids, data["speakers"], data["acai"])
+    for label in dict.fromkeys(place_labels):
+        localize.localize_multi("place-name", label, "name of a place of the Bible",
+                                langs, context_by_lang, c_call, c_model, cache_dir, PLACE_NAME_PROMPT_VERSION)
+    for label in dict.fromkeys(event_labels):
+        localize.localize_multi("event-label", label, "label of a historical event",
+                                langs, context_by_lang, c_call, c_model, cache_dir, EVENT_LABEL_PROMPT_VERSION)
+    if ident["label"]:
+        book_code = verse_ids[0].split(".")[0]
+        extra = (f"A label such as narrator-XXX means 'the narrator' of the book {book_code}: "
+                 "answer with the usual word for it.")
+        localize.localize_multi("speaker-name", ident["label"], "name of a biblical speaker",
+                                langs, context_by_lang, s_call, s_model, cache_dir,
+                                speaker.NAME_PROMPT_VERSION, extra=extra)
+
+
+def prefill_localize_all(ranges: list, langs: dict, corpora: dict, data: dict, rules: dict,
+                         registry: dict, calls: dict, cache_dir, workers: int = 4) -> None:
+    """Run prefill_localize for all ranges concurrently (--mutualize-langs)."""
+    import sys
+    from concurrent.futures import ThreadPoolExecutor
+
+    def work(rng):
+        try:
+            prefill_localize(rng["verses"], langs, corpora, data, rules, registry, calls, cache_dir)
+        except Exception as e:  # noqa: BLE001
+            print(f"[warn] prefill_localize failed for {rng['verses'][0]}: {type(e).__name__}: {e}",
+                  file=sys.stderr)
+
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        list(ex.map(work, ranges))

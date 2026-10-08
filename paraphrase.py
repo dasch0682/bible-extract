@@ -396,3 +396,17 @@ def build_paraphrase(excerpt_text: str, verse_ids: list, lang: str, lang_cfg: di
     chosen = history[selected - 1]
     return {"paraphrase": {"text": chosen["text"], "genre": gen["genre"], "genre_by": "model",
                            "history": history, "arbitration": arbitration}, "flags": flags}
+
+
+def apply_genre_conflict(para: dict, speaker_role: str | None) -> None:
+    """Append genre_conflict flag when genre contradicts speaker_role.
+
+    Call this after build_paraphrase(speaker_role=None) when the role was not yet known at call time
+    (e.g. context and paraphrase ran concurrently).
+    """
+    if not speaker_role or para["paraphrase"] is None:
+        return
+    genre = para["paraphrase"].get("genre")
+    if (speaker_role == "narrator" and genre == "discourse") or \
+            (speaker_role == "speaker" and genre == "narrative"):
+        para["flags"].append(f"genre_conflict:{speaker_role}:{genre}")

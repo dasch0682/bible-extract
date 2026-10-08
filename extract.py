@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Usage: python extract.py --topic verite [--lang fr,en] [--mode rules|model] [--dry-run] [--limit N]
-                            [--workers N] [--strongs-dir DIR] [--data-dir DIR]
+                            [--workers N] [--workers-inner N] [--strongs-dir DIR] [--data-dir DIR]
 
 The whole pipeline of the specification, schema 2:
   discovery (Strong's + word patterns, then rules or model mode) -> excerpt bounds -> speaker and context
@@ -183,16 +183,32 @@ def range_steps(rng: dict, disc: dict, lang: str, mode: str, verdicts: dict, cod
 
 
 def build_entry(verse_ids: list, steps: list, mode: str, lang: str, lang_cfg: dict, corpus: dict, shared: dict,
-                calls: dict, cache_dir) -> dict:
-    """One schema-2 entry of language `lang` for an excerpt (the caller validates it)."""
+                calls: dict, cache_dir, workers_inner: int = 1) -> dict:
+    """One schema-2 entry of language `lang` for an excerpt (the caller validates it).
+
+    When workers_inner >= 2, context.build_context and paraphrase.build_paraphrase run concurrently
+    (paraphrase is called without the speaker role; apply_genre_conflict is called after both complete).
+    """
     registry = shared["registry"]
-    built = context.build_context(verse_ids, corpus, lang, lang_cfg, shared["data"], shared["rules"], registry,
-                                  calls, cache_dir)
     text = excerpt_text(corpus, verse_ids)
-    spk = built["speaker"]
-    role = spk.get("role") if spk.get("value") is not None else None
-    para = paraphrase.build_paraphrase(text, verse_ids, lang, lang_cfg, calls, cache_dir,
-                                       shared["paraphrase_rules"], role)
+    if workers_inner >= 2:
+        with ThreadPoolExecutor(max_workers=2) as ex:
+            fut_ctx = ex.submit(context.build_context, verse_ids, corpus, lang, lang_cfg,
+                                shared["data"], shared["rules"], registry, calls, cache_dir)
+            fut_para = ex.submit(paraphrase.build_paraphrase, text, verse_ids, lang, lang_cfg,
+                                 calls, cache_dir, shared["paraphrase_rules"])
+            built = fut_ctx.result()
+            para = fut_para.result()
+        spk = built["speaker"]
+        role = spk.get("role") if spk.get("value") is not None else None
+        paraphrase.apply_genre_conflict(para, role)
+    else:
+        built = context.build_context(verse_ids, corpus, lang, lang_cfg, shared["data"], shared["rules"], registry,
+                                      calls, cache_dir)
+        spk = built["speaker"]
+        role = spk.get("role") if spk.get("value") is not None else None
+        para = paraphrase.build_paraphrase(text, verse_ids, lang, lang_cfg, calls, cache_dir,
+                                           shared["paraphrase_rules"], role)
     numbers = sorted({n for s in steps if s["step"] == "strongs" for n in s["numbers"]}, key=lambda n: int(n[1:]))
     sources = provenance.merge_sources(
         [provenance.verse_source(v, lang_cfg["dataset"], registry) for v in verse_ids],
@@ -218,7 +234,7 @@ def build_entry(verse_ids: list, steps: list, mode: str, lang: str, lang_cfg: di
 
 
 def produce(plan: dict, disc: dict, mode: str, langs: dict, corpora: dict, shared: dict, calls: dict, cache_dir,
-            codes: list, workers: int = 2) -> dict:
+            codes: list, workers: int = 4, workers_inner: int = 1) -> dict:
     """{lang: [(entry | None, [errors]) per range]}; an entry is valid when its error list is empty."""
     known = provenance.known_datasets(shared["registry"])
     jobs = [(i, lang) for i in range(len(plan["ranges"])) for lang in langs]
@@ -228,7 +244,7 @@ def produce(plan: dict, disc: dict, mode: str, langs: dict, corpora: dict, share
         rng = plan["ranges"][i]
         try:
             entry = build_entry(rng["verses"], range_steps(rng, disc, lang, mode, plan["verdicts"], codes), mode,
-                                lang, langs[lang], corpora[lang], shared, calls, cache_dir)
+                                lang, langs[lang], corpora[lang], shared, calls, cache_dir, workers_inner)
             return job, entry, validate.validate_entry(entry, corpora[lang], known)
         except Exception as e:  # noqa: BLE001 - one failed entry must not lose the batch (answers are cached)
             return job, None, [f"exception: {type(e).__name__}: {e}"]
@@ -352,7 +368,12 @@ def main(argv=None) -> int:
                     help="discovery mode: the code decides (rules) or the language model judges relevance (model)")
     ap.add_argument("--dry-run", action="store_true", help="discovery and bounds only, no model call")
     ap.add_argument("--limit", type=int, help="keep only the first N candidates")
-    ap.add_argument("--workers", type=int, default=int(os.getenv("WORKERS", "2")))
+    ap.add_argument("--workers", type=int, default=int(os.getenv("WORKERS", "4")),
+                    help="outer parallelism: how many (range × lang) entries build concurrently (default 4)")
+    ap.add_argument("--workers-inner", type=int, default=int(os.getenv("WORKERS_INNER", "1")),
+                    help="inner parallelism per entry: context and paraphrase run concurrently when >= 2 (default 1)")
+    ap.add_argument("--mutualize-langs", action="store_true",
+                    help="one localize call per label for all languages instead of one per language (default off)")
     ap.add_argument("--strongs-dir", default=os.getenv("STRONGS_DIR", "tmp/byztxt"))
     ap.add_argument("--data-dir", default=os.getenv("DATA_DIR", "tmp"))
     ap.add_argument("--base-url", default=os.getenv("BASE_URL", "https://openrouter.ai/api/v1"))
@@ -440,7 +461,11 @@ def main(argv=None) -> int:
                       if all(in_every_corpus(corpora, v) for v in r["verses"])]
     print(f"Excerpts: {len(plan['ranges'])} from {len(candidates)} candidates")
 
-    built = produce(plan, disc, a.mode, langs, corpora, shared, calls, cache_dir, codes, a.workers)
+    if a.mutualize_langs:
+        print(f"Pre-filling localize caches ({len(plan['ranges'])} ranges × {len(langs)} languages)...")
+        context.prefill_localize_all(plan["ranges"], langs, corpora, shared["data"], shared["rules"],
+                                     shared["registry"], calls, cache_dir, a.workers)
+    built = produce(plan, disc, a.mode, langs, corpora, shared, calls, cache_dir, codes, a.workers, a.workers_inner)
     kept, dropped = intersect(plan, built)
     out_dir = ROOT / "out"
     out_dir.mkdir(exist_ok=True)
