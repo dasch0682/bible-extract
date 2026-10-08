@@ -438,7 +438,8 @@ def main(argv=None) -> int:
         return 0
 
     # --- price check: first step of any batch that calls a model. In doubt, stop. ---
-    price_check = run_check()
+    active_roles = set(CALL_ROLES) if a.mode == "model" else set(CALL_ROLES) - {"relevance"}
+    price_check = run_check(roles=active_roles)
     print(format_report(price_check))
     if not price_check.ok:
         sys.exit("Price check failed: no model call was made. "

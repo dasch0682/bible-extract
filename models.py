@@ -166,10 +166,16 @@ def fetch_published(get=requests.get, url: str = PRICES_URL, timeout: int = 30) 
 
 # --- the check ---
 
-def check_prices(config: Config, published: dict, now: str | None = None) -> CheckResult:
-    """Pure comparison: any rise, missing model or unreadable price stops the batch."""
+def check_prices(config: Config, published: dict, now: str | None = None,
+                 active_models: set | None = None) -> CheckResult:
+    """Pure comparison: any rise, missing model or unreadable price stops the batch.
+
+    active_models: set of model IDs to check; None means check all models in config.
+    """
     res = CheckResult(ok=True, checked_at=now or dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
-    for mid, ref in config.models.items():
+    models_to_check = {mid: ref for mid, ref in config.models.items()
+                       if active_models is None or mid in active_models}
+    for mid, ref in models_to_check.items():
         pub = published.get(mid)
         row = {"model": mid, "ref_in": ref.price_in, "ref_out": ref.price_out,
                "now_in": None, "now_out": None, "status": "ok"}
@@ -202,13 +208,20 @@ def check_prices(config: Config, published: dict, now: str | None = None) -> Che
     return res
 
 
-def run_check(path=MODELS_PATH, fetch=fetch_published, now: str | None = None) -> CheckResult:
-    """Never raises: any failure is a 'stop' result (in doubt, no call is made)."""
+def run_check(path=MODELS_PATH, fetch=fetch_published, now: str | None = None,
+              roles: set | None = None) -> CheckResult:
+    """Never raises: any failure is a 'stop' result (in doubt, no call is made).
+
+    roles: set of role names to check; None means check all models.
+    """
     stamp = now or dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     try:
         config = load_models(path)
     except ConfigError as e:
         return CheckResult(ok=False, checked_at=stamp, problems=[f"models.yml: {e}"])
+    active_models = None
+    if roles is not None:
+        active_models = {config.roles[r] for r in roles if r in config.roles}
     try:
         published = fetch()
     except PriceReadError as e:
@@ -216,7 +229,7 @@ def run_check(path=MODELS_PATH, fetch=fetch_published, now: str | None = None) -
     except Exception as e:  # noqa: BLE001 - in doubt, stop
         return CheckResult(ok=False, checked_at=stamp,
                            problems=[f"prices unreadable: {type(e).__name__}"])
-    return check_prices(config, published, now=stamp)
+    return check_prices(config, published, now=stamp, active_models=active_models)
 
 
 def format_report(res: CheckResult) -> str:
