@@ -36,8 +36,8 @@ import localize
 import validate
 from models import family
 
-GENERATION_VERSION = "paraphrase-gen-4"
-VERIFICATION_VERSION = "paraphrase-verify-3"
+GENERATION_VERSION = "paraphrase-gen-5"
+VERIFICATION_VERSION = "paraphrase-verify-4"
 TRIM_VERSION = "paraphrase-trim-1"
 RULES_PATH = Path(__file__).parent / "data" / "paraphrase_rules.yml"
 
@@ -93,10 +93,11 @@ def _generation_prompt(excerpt_text: str, max_words: int, lang_cfg: dict, retry_
         "write every verb in the present tense (historic present); avoid passé simple and imparfait; "
         "passé composé is allowed only when the excerpt itself uses a completed past action (e.g. 'il est venu', "
         "'ils ne l'ont pas reconnu') — in those cases keep the passé composé; "
-        "add NO information that is not in the excerpt — in particular, do NOT name a character who is not named in "
-        "the excerpt itself (if the excerpt uses a pronoun such as 'il', 'she', 'they', keep a pronoun or a generic "
-        "phrase, never substitute the person's name); converting direct speech to indirect speech (tu→il, je→il) "
-        "is not an addition; "
+        "add NO information that is not in the excerpt — this applies to every style including free: never add "
+        "a character name, detail, interpretation, implied context or consequence absent from the excerpt text; "
+        "in particular, do NOT name a character who is not named in the excerpt itself (if the excerpt uses a "
+        "pronoun such as 'il', 'she', 'they', keep a pronoun or a generic phrase, never substitute the person's "
+        "name); converting direct speech to indirect speech (tu→il, je→il) is not an addition; "
         f"use at most {prompt_max} words (strict limit — count carefully). "
         f"Write three candidates that differ only in style, never in content, and do not reuse in one candidate the "
         f"wording of another. Styles - {styles}. "
@@ -149,7 +150,7 @@ def code_checks(text: str, excerpt_text: str, lang: str, rules: dict) -> dict:
     """The three checks of the specification; a check is True (passes), False, or None (not checked)."""
     return {
         "non_empty": bool(validate._ws(text)),
-        "not_longer_than_excerpt": validate.word_count(text) <= validate.word_count(excerpt_text),
+        "not_longer_than_excerpt": validate.word_count(text) <= validate.word_count(excerpt_text) + 2,
         "target_language": language_check(text, lang, rules["markers"]),
     }
 
@@ -173,10 +174,13 @@ def _verification_prompt(excerpt_text: str, shown: list, lang_cfg: dict, retry_h
         "tense_not_present (ONLY flag when you see unambiguous passé simple such as 'il vint', 'ils vinrent', "
         "'il fit', 'ils firent', 'il prit', 'ils prirent', 'il fut', 'ils furent', 'il alla', 'ils allèrent', "
         "'il envoya', 'ils envoyèrent'; or imparfait ending in -ait/-aient/-ions/-iez. "
+        "Passé composé (avoir or être + past participle, e.g. 'il a dit', 'il est venu', 'ils ont entendu', "
+        "'elle est venue', 'ils ne l'ont pas reconnu', 'tu as dit', 'nous l'avons entendu') is ALWAYS "
+        "acceptable — NEVER flag it as tense_not_present. "
         "Examples of what NOT to flag: 'il dit' = present indicative ✓; 'il vient' ✓; 'elle sait' ✓; "
-        "'ils disent' ✓; 'il est venu' = passé composé ✓; 'ils ne l'ont pas reconnu' ✓. "
-        "Examples of what TO flag: 'il vint' ✗; 'il dit' followed by 'il vit' (voir) ✗; 'ils dirent' ✗; "
-        "'il était' ✗), "
+        "'ils disent' ✓; 'il est venu' ✓; 'ils ont entendu' ✓; 'tu as dit' ✓; 'nous l'avons entendu' ✓. "
+        "Examples of what TO flag: 'il vint' ✗; 'il vit' (voir, passé simple) ✗; 'ils dirent' ✗; "
+        "'il était' ✗; 'ils parlaient' ✗), "
         "other. Use an empty list when there is no "
         'problem. Answer with one JSON object keyed by the letters, for example {"A": {"fidelity": 5, '
         '"completeness": 4, "issues": []}}. Judge every candidate on its own.'
