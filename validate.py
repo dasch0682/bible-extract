@@ -192,6 +192,25 @@ def check_speaker(speaker):
     return errs
 
 
+def _check_narrative(narr):
+    """context.narrative is optional; when present, either a null with reason or three sourced fields."""
+    if narr is None:
+        return []
+    if not isinstance(narr, dict):
+        return ["context.narrative: malformed"]
+    if "situation" not in narr:
+        return [] if narr.get("reason") in NULL_REASONS else ["context.narrative.reason: missing_or_unknown"]
+    errs = []
+    for field in ("situation", "place", "arc_position"):
+        if not _filled(narr.get(field)):
+            errs.append(f"context.narrative.{field}: empty")
+    if narr.get("confidence") not in LITERARY_CONFIDENCE:
+        errs.append("context.narrative.confidence: invalid")
+    if not _sources_ok(narr):
+        errs.append("context.narrative.sources: missing")
+    return errs
+
+
 def _check_literary(lit):
     if not isinstance(lit, dict):
         return ["context.literary: missing"]
@@ -254,7 +273,8 @@ def _check_temporal_item(i, t):
 def check_context(context):
     if not isinstance(context, dict):
         return ["context: missing"]
-    errs = _check_literary(context.get("literary"))
+    errs = _check_narrative(context.get("narrative"))
+    errs += _check_literary(context.get("literary"))
     temporal = context.get("temporal")
     if not isinstance(temporal, list):
         errs.append("context.temporal: must_be_list")
@@ -301,7 +321,7 @@ def _cited_ids(entry):
     cited = list((entry.get("excerpt") or {}).get("verses") or [])
     sp = entry.get("speaker")
     ctx = entry.get("context") if isinstance(entry.get("context"), dict) else {}
-    objs = [sp, ctx.get("literary")]
+    objs = [sp, ctx.get("literary"), ctx.get("narrative")]
     for t in ctx.get("temporal") or []:
         objs.append(t)
         objs += (t.get("day_candidates") or []) if isinstance(t, dict) else []

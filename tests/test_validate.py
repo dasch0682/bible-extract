@@ -4,6 +4,7 @@ import copy
 from validate import (
     norm, build_link, word_count, check_excerpt, check_paraphrase, check_speaker,
     check_context, check_discovery, check_sources, validate_entry, check_cross_language,
+    _check_narrative,
 )
 
 CORPUS = {
@@ -383,6 +384,86 @@ def test_place_needs_sources():
     ctx = make_entry()["context"]
     ctx["places"][0]["sources"] = []
     assert "context.places[0].sources: missing" in check_context(ctx)
+
+
+# --- narrative (optional field) ---
+
+def _narrative():
+    return {"situation": "Jésus répond à Thomas.", "place": "Salle haute, Jérusalem.",
+            "arc_position": "Après l'annonce du reniement de Pierre.",
+            "sources": ["JHN.14.6"], "confidence": "high", "confidence_by": "model",
+            "model": "m/x", "prompt_version": "narrative-1"}
+
+
+def test_narrative_absent_is_valid():
+    ctx = make_entry()["context"]
+    assert _check_narrative(None) == []
+    assert check_context(ctx) == []
+
+
+def test_narrative_valid():
+    assert _check_narrative(_narrative()) == []
+
+
+def test_narrative_valid_in_full_context():
+    ctx = make_entry()["context"]
+    ctx["narrative"] = _narrative()
+    assert check_context(ctx) == []
+
+
+def test_narrative_null_with_reason():
+    assert _check_narrative({"text": None, "reason": "no_source"}) == []
+
+
+def test_narrative_null_bad_reason():
+    errs = _check_narrative({"text": None, "reason": "unknown_reason"})
+    assert "context.narrative.reason: missing_or_unknown" in errs
+
+
+def test_narrative_empty_situation():
+    n = {**_narrative(), "situation": ""}
+    assert "context.narrative.situation: empty" in _check_narrative(n)
+
+
+def test_narrative_empty_place():
+    n = {**_narrative(), "place": "  "}
+    assert "context.narrative.place: empty" in _check_narrative(n)
+
+
+def test_narrative_empty_arc_position():
+    n = {**_narrative(), "arc_position": ""}
+    assert "context.narrative.arc_position: empty" in _check_narrative(n)
+
+
+def test_narrative_invalid_confidence():
+    n = {**_narrative(), "confidence": "probable"}
+    assert "context.narrative.confidence: invalid" in _check_narrative(n)
+
+
+def test_narrative_missing_sources():
+    n = {**_narrative(), "sources": []}
+    assert "context.narrative.sources: missing" in _check_narrative(n)
+
+
+def test_narrative_not_a_dict():
+    assert "context.narrative: malformed" in _check_narrative("string")
+
+
+def test_narrative_sources_cited_in_entry(tmp_path):
+    """Sources cited by narrative must appear in entry top-level sources."""
+    import copy
+    e = make_entry()
+    e["context"]["narrative"] = _narrative()
+    # JHN.14.6 is already in sources; entry must pass
+    assert validate_entry(e, CORPUS, KNOWN) == []
+
+
+def test_narrative_sources_missing_from_entry_sources():
+    import copy, validate as vv
+    e = make_entry()
+    e["context"]["narrative"] = {**_narrative(), "sources": ["JHN.14.5"]}
+    errs = validate_entry(e, CORPUS, KNOWN)
+    assert any("cited_but_not_listed:JHN.14.5" in err for err in errs)
 
 
 # --- discovery ---

@@ -72,8 +72,11 @@ specification wins.
   with `prompt_version`.
 
 ## Context, dates and speaker
-- Context has `literary`, `temporal` and `places` parts, each sourced and
-  given a confidence level.
+- Context has `narrative`, `literary`, `temporal` and `places` parts, each sourced and
+  given a confidence level. `narrative` (optional) has three fields: `situation` (what
+  is happening around the excerpt), `place` (scene location), `arc_position` (position
+  in the book's arc). It is produced by `narrative.py`, which uses a chapter-level
+  pericope summary (`pericope.py`, cached once per chapter) as background context.
 - Dates: one entry per source, never an average or a merge. Keep only the year
   of a dataset date and turn it into a range; the margin lives in a rules file,
   not in code. Confidence levels (certain, probable, approximate, disputed) are
@@ -87,9 +90,11 @@ specification wins.
 - Code map (task 6): `context.build_context` assembles `speaker` and `context` from
   `speaker.py` (speaker-quotations + ACAI cross-check), `dating.py` (one entry per source, levels from
   `data/date_rules.yml`), `day_candidates.py` + `calendar_calc.py` (Passion and Pentecost candidates from
-  `data/calendar_rules.yml`, explicit hypotheses), `places.py` (OpenBible, `data/place_rules.yml`) and
-  `literary.py` (model within code limits). `provenance.py` builds the `sources` records from
-  `data/sources.yml`. Short texts (names, labels) are written by a model through `localize.py` and cached.
+  `data/calendar_rules.yml`, explicit hypotheses), `places.py` (OpenBible, `data/place_rules.yml`),
+  `literary.py` (model within code limits), `pericope.py` (chapter-level summary, cached, from
+  `data/narrative_rules.yml`) and `narrative.py` (per-excerpt situation/place/arc_position, uses
+  pericope summary). `provenance.py` builds the `sources` records from `data/sources.yml`. Short texts
+  (names, labels) are written by a model through `localize.py` and cached.
 - Code map (task 7): `paraphrase.build_paraphrase` writes the `paraphrase` field from the excerpt text, with injected calls
   `calls = {"paraphrase_generation": (call, model_id), "paraphrase_verification": (call, model_id)}` and the rules in
   `data/paraphrase_rules.yml` (`min_fidelity`, language markers). It returns the field and flags; `paraphrase.review_required`

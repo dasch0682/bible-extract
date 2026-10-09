@@ -31,8 +31,17 @@ NAMES = {"fr": {"Jesus": "Jésus", "The Holy Spirit comes": "Le Saint-Esprit vie
 
 
 def model(lang):
-    """A fake model: translates labels from NAMES, answers the literary prompt with a cited verse."""
+    """A fake model: answers literary, pericope and narrative prompts; translates localize labels."""
     def call(system, user):
+        if "summarize the narrative context of a Bible chapter" in system:
+            return json.dumps({"narrative_arc": "Jesus speaks to his disciples.",
+                               "scene_location": "Upper room, Jerusalem.",
+                               "book_position": "Before the passion narrative."})
+        if "describe the narrative context of a Bible excerpt" in system:
+            return json.dumps({"situation": "Jesus answers Thomas's question about the way.",
+                               "place": "Upper room, Jerusalem.",
+                               "arc_position": "Before the passion narrative.",
+                               "cited_verses": ["JHN.14.5"], "confidence": "high"})
         if "literary context" in system:
             return json.dumps({"text": "Jésus répond à Thomas." if lang == "fr" else "Jesus answers Thomas.",
                                "cited_verses": ["JHN.14.5"], "confidence": "high"}, ensure_ascii=False)
@@ -97,6 +106,15 @@ def test_full_context_of_john_14_6_validates_as_a_whole_entry(tmp_path):
     assert t["label"] == "Le Saint-Esprit vient" and t["day_candidates"] and t["confidence"] == "disputed"
     assert [p["name"] for p in ctx["places"]] == ["Achaïe"]
     assert built["flags"] == [] and built["review_required"] is False
+    assert validate.validate_entry(entry("fr", built), CORPORA["fr"], KNOWN) == []
+
+
+def test_narrative_field_is_present_and_validates(tmp_path):
+    built = build("fr", tmp_path, data(JESUS, PEOPLE))
+    narr = built["context"]["narrative"]
+    assert narr["situation"] and narr["place"] and narr["arc_position"]
+    assert narr["confidence_by"] == "model"
+    assert validate._check_narrative(narr) == []
     assert validate.validate_entry(entry("fr", built), CORPORA["fr"], KNOWN) == []
 
 
@@ -227,7 +245,7 @@ def test_day_candidate_texts_follow_the_language_but_not_the_dates(tmp_path):
 # --- rules and data loaders ---
 
 def test_rule_files_load_together():
-    assert set(RULES) == {"dates", "calendar", "places"}
+    assert set(RULES) == {"dates", "calendar", "places", "pericope", "narrative"}
 
 
 real = pytest.mark.skipif(not all((ROOT / "tmp" / d).exists()

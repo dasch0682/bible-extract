@@ -16,6 +16,8 @@ import dating
 import day_candidates
 import literary
 import localize
+import narrative
+import pericope
 import places
 import speaker
 from provenance import merge_sources
@@ -38,8 +40,10 @@ def load_data(tmp=ds.TMP) -> dict:
 
 
 def load_rules() -> dict:
-    """The rule files, checked: dates, calendar (day candidates) and places."""
-    return {"dates": dating.load_rules(), "calendar": day_candidates.load_rules(), "places": places.load_rules()}
+    """The rule files, checked: dates, calendar (day candidates), places, pericope and narrative."""
+    return {"dates": dating.load_rules(), "calendar": day_candidates.load_rules(),
+            "places": places.load_rules(), "pericope": pericope.load_rules(),
+            "narrative": narrative.load_rules()}
 
 
 def review_required(flags: list) -> bool:
@@ -74,12 +78,18 @@ def build_context(verse_ids: list, corpus: dict, lang: str, lang_cfg: dict, data
                                      localize_label=label, day_rules=rules["calendar"], lang=lang)
     plc = places.build_places(verse_ids, data["openbible"], rules["places"], registry, localize_name=place_name)
     lit = literary.literary_context(verse_ids, corpus, lang, lang_cfg, c_call, c_model, cache_dir, registry)
+    peri = pericope.build_pericope(verse_ids, corpus, lang, lang_cfg, c_call, c_model, cache_dir,
+                                   rules["pericope"])
+    narr = narrative.build_narrative(verse_ids, corpus, lang, lang_cfg, c_call, c_model, cache_dir, registry,
+                                     rules["narrative"], pericope_summary=peri)
 
-    flags = spk["flags"] + temporal["flags"] + plc["flags"] + lit["flags"]
+    flags = spk["flags"] + temporal["flags"] + plc["flags"] + lit["flags"] + narr["flags"]
     return {
         "speaker": spk["speaker"],
-        "context": {"literary": lit["literary"], "temporal": temporal["temporal"], "places": plc["places"]},
-        "sources": merge_sources(spk["sources"], temporal["sources"], plc["sources"], lit["sources"]),
+        "context": {"narrative": narr["narrative"], "literary": lit["literary"],
+                    "temporal": temporal["temporal"], "places": plc["places"]},
+        "sources": merge_sources(spk["sources"], temporal["sources"], plc["sources"],
+                                 lit["sources"], narr["sources"]),
         "flags": flags,
         "speaker_candidates": spk["candidates"],
         "review_required": review_required(flags),
