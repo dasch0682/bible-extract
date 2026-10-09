@@ -17,14 +17,14 @@
       ]
     },
     "paraphrase": {
-      "text": "He told his disciples the harvest is plentiful but workers few; pray the Lord of the harvest to send workers.",
+      "text": "He then said to his disciples: the harvest is indeed plentiful, but the workers are few; pray therefore to the Lord of the harvest to send workers into his harvest.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "He told his disciples the harvest is plentiful but workers few; pray the Lord of the harvest to send workers.",
+          "text": "He then said to his disciples: the harvest is indeed plentiful, but the workers are few; pray therefore to the Lord of the harvest to send workers into his harvest.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -44,7 +44,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "He said the harvest is abundant but laborers are scarce, so ask the Lord to send workers.",
+          "text": "He told his disciples the harvest is plentiful but workers few, so pray the Lord sends workers.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -58,7 +58,7 @@
             "fidelity": 4,
             "completeness": 4,
             "issues": [
-              "addition"
+              "other"
             ],
             "prompt_version": "paraphrase-verify-7"
           }
@@ -66,8 +66,8 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 20 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2610497533
+        "reason": "close selected: fidelity 5 + completeness 5, 30 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 2561228290
       }
     },
     "speaker": {
@@ -82,10 +82,9 @@
     },
     "context": {
       "literary": {
-        "text": "Jesus, moved with compassion when he saw the multitudes fainting and scattered like sheep without a shepherd, tells his disciples that the harvest is plenteous but the labourers are few, and bids them pray to the Lord of the harvest to send forth labourers.",
+        "text": "Jesus speaks to his disciples, telling them that the harvest is plentiful but the labourers are few, and urging them to pray that the Lord of the harvest will send forth labourers.",
         "confidence": "high",
         "sources": [
-          "MAT.9.36",
           "MAT.9.37",
           "MAT.9.38"
         ],
@@ -96,7 +95,7 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "The harvest truly is plenteous, but the labourers are few",
+          "label": "3rd Tour of Galilee",
           "date_range": {
             "from": 27,
             "to": 31,
@@ -160,12 +159,6 @@
         "type": "event_data",
         "dataset": "theographic",
         "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "MAT.9.36",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
       }
     ]
   },
@@ -213,7 +206,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Those in the ship worshipped him, saying he was truly the Son of God.",
+          "text": "Those in the ship worshipped him, saying he truly was the Son of God.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -223,10 +216,12 @@
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
+            "verdict": "fail",
             "fidelity": 5,
             "completeness": 4,
-            "issues": [],
+            "issues": [
+              "other"
+            ],
             "prompt_version": "paraphrase-verify-7"
           }
         }
@@ -234,7 +229,7 @@
       "arbitration": {
         "selected_attempt": 1,
         "reason": "close selected: fidelity 5 + completeness 5, 17 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2341422740
+        "shuffle_seed": 964671744
       }
     },
     "speaker": {
@@ -248,9 +243,10 @@
     },
     "context": {
       "literary": {
-        "text": "After Jesus and Peter came into the ship and the wind ceased, those in the ship came and worshipped Jesus, saying, \"Of a truth thou art the Son of God.\"",
+        "text": "After Jesus caught the sinking man and they came into the ship, those in the ship came and worshipped him, saying he is truly the Son of God.",
         "confidence": "high",
         "sources": [
+          "MAT.14.31",
           "MAT.14.32",
           "MAT.14.33"
         ],
@@ -338,6 +334,12 @@
         "license": "CC-BY-SA-4.0"
       },
       {
+        "id": "MAT.14.31",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
         "id": "MAT.14.32",
         "type": "bible_text",
         "dataset": "kjv",
@@ -362,14 +364,14 @@
       ]
     },
     "paraphrase": {
-      "text": "She said: true, Lord, but dogs eat crumbs falling from their masters' table.",
+      "text": "She said: Yes, Lord, but the dogs eat the crumbs falling from their masters' table.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "She said: true, Lord, but dogs eat crumbs falling from their masters' table.",
+          "text": "She said: Yes, Lord, but the dogs eat the crumbs falling from their masters' table.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -411,7 +413,7 @@
         {
           "attempt": 3,
           "style": "free",
-          "text": "The crumbs from the master's table still feed the dogs, she said.",
+          "text": "Still, the little dogs eat what drops from the table of their owners, she replied.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -425,8 +427,7 @@
             "fidelity": 4,
             "completeness": 4,
             "issues": [
-              "addition",
-              "genre_changed"
+              "addition"
             ],
             "prompt_version": "paraphrase-verify-7"
           }
@@ -434,12 +435,12 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 13 words; 2 other candidate(s) not selected",
-        "shuffle_seed": 583331329
+        "reason": "close selected: fidelity 5 + completeness 5, 15 words; 2 other candidate(s) not selected",
+        "shuffle_seed": 1527226233
       }
     },
     "speaker": {
-      "value": "Canaanite mother of possessed girl",
+      "value": "The woman",
       "role": "speaker",
       "confidence": "medium",
       "sources": [
@@ -449,9 +450,10 @@
     },
     "context": {
       "literary": {
-        "text": "A woman answers Jesus, replying to his saying that it is not meet to take the children's bread and cast it to dogs, by saying that the dogs eat the crumbs falling from their masters' table.",
+        "text": "A woman came to Jesus asking for help, and after he spoke of not taking the children's bread and casting it to dogs, she replied that the dogs eat the crumbs from their masters' table.",
         "confidence": "high",
         "sources": [
+          "MAT.15.25",
           "MAT.15.26",
           "MAT.15.27"
         ],
@@ -462,7 +464,7 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "Healing of the Canaanite Woman's Daughter",
+          "label": "Healing of the Canaanite daughter",
           "date_range": {
             "from": 27,
             "to": 31,
@@ -522,6 +524,12 @@
         "license": "CC-BY-SA-4.0"
       },
       {
+        "id": "MAT.15.25",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
         "id": "MAT.15.26",
         "type": "bible_text",
         "dataset": "kjv",
@@ -547,14 +555,14 @@
       ]
     },
     "paraphrase": {
-      "text": "And Jesus answered and said to them, Elijah truly will first come and restore all things. But I say to you, that Elijah has come already, and they did not know him, but did to him whatever they wanted. Likewise the Son of man will also suffer from them.",
+      "text": "And Jesus answered them, Elias truly will first come and restore all things. But I say to you, Elias has come already, and they did not know him, but did to him whatever they wished. Likewise the Son of man will also suffer from them.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "And Jesus answered and said to them, Elijah truly will first come and restore all things. But I say to you, that Elijah has come already, and they did not know him, but did to him whatever they wanted. Likewise the Son of man will also suffer from them.",
+          "text": "And Jesus answered them, Elias truly will first come and restore all things. But I say to you, Elias has come already, and they did not know him, but did to him whatever they wished. Likewise the Son of man will also suffer from them.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -574,7 +582,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Jesus said Elijah has already come and was unrecognized, and the Son of man will likewise suffer.",
+          "text": "Jesus said Elias has already come unrecognized and suffered as they wished, and likewise the Son of man will suffer from them.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -586,7 +594,7 @@
             "model": "mistralai/mistral-large-4-0",
             "verdict": "fail",
             "fidelity": 4,
-            "completeness": 3,
+            "completeness": 4,
             "issues": [
               "addition"
             ],
@@ -596,8 +604,8 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 49 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1584774350
+        "reason": "close selected: fidelity 5 + completeness 5, 45 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 3086012591
       }
     },
     "speaker": {
@@ -612,9 +620,10 @@
     },
     "context": {
       "literary": {
-        "text": "Jesus answers his disciples' question about why the scribes say Elias must first come, telling them that Elias has already come and was not recognized, and that the Son of man will likewise suffer.",
+        "text": "Jesus answers his disciples' question about why the scribes say Elias must first come. He tells them that Elias has already come and was not recognized, and that the Son of man will likewise suffer.",
         "confidence": "high",
         "sources": [
+          "MAT.17.10",
           "MAT.17.11",
           "MAT.17.12"
         ],
@@ -625,7 +634,7 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "The Transfiguation",
+          "label": "The Transfiguration",
           "date_range": {
             "from": 27,
             "to": 31,
@@ -690,6 +699,12 @@
         "type": "event_data",
         "dataset": "theographic",
         "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "MAT.17.10",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
       }
     ]
   },
@@ -710,14 +725,14 @@
       ]
     },
     "paraphrase": {
-      "text": "He told them they would indeed drink his cup and be baptized with his baptism, but to sit at his right and left is not his to give, but for those for whom his Father prepared it.",
+      "text": "He tells them they will drink his cup and share his baptism, though the places at his right and left are not his to grant but belong to those for whom his Father has prepared them.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "He told them they would indeed drink his cup and be baptized with his baptism, but to sit at his right and left is not his to give, but for those for whom his Father prepared it.",
+          "text": "And he says to them, You will indeed drink of my cup, and be baptized with the baptism I am baptized with; but to sit at my right hand and my left is not mine to give, but it shall be given to those for whom it is prepared by my Father.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -737,7 +752,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "He said they would share his cup and baptism, but seats at his right and left belong to those his Father has prepared them for.",
+          "text": "He tells them they will drink his cup and share his baptism, though the places at his right and left are not his to grant but belong to those for whom his Father has prepared them.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -747,20 +762,18 @@
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
+            "verdict": "pass",
+            "fidelity": 5,
             "completeness": 5,
-            "issues": [
-              "addition"
-            ],
+            "issues": [],
             "prompt_version": "paraphrase-verify-7"
           }
         }
       ],
       "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 37 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2912456705
+        "selected_attempt": 2,
+        "reason": "condensed selected: fidelity 5 + completeness 5, 36 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 2474418422
       }
     },
     "speaker": {
@@ -775,7 +788,7 @@
     },
     "context": {
       "literary": {
-        "text": "The mother of Zebedee's sons asked Jesus to let her two sons sit at his right and left in his kingdom. Jesus told them they would drink his cup and share his baptism, but that such places are given by his Father.",
+        "text": "Jesus speaks to the two sons of Zebedee, answering the request made by their mother that they sit at his right and left hand in his kingdom, telling them that places of honour are given by his Father.",
         "confidence": "high",
         "sources": [
           "MAT.20.20",
@@ -887,14 +900,14 @@
       ]
     },
     "paraphrase": {
-      "text": "They sent their disciples with the Herodians to him, saying, Teacher, we know you are true and teach God's way truthfully, and do not care for any man, for you do not regard men's persons. Tell us then, what do you think? Is it lawful to give tribute to Caesar or not?",
-      "genre": "discourse",
+      "text": "They sent their disciples with the Herodians to him, saying, Master, we know you are true and teach God's way in truth, and do not care for any man, for you do not regard men's persons. Tell us, what do you think? Is it lawful to give tribute to Caesar or not?",
+      "genre": "narrative",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "They sent their disciples with the Herodians to him, saying, Teacher, we know you are true and teach God's way truthfully, and do not care for any man, for you do not regard men's persons. Tell us then, what do you think? Is it lawful to give tribute to Caesar or not?",
+          "text": "They sent their disciples with the Herodians to him, saying, Master, we know you are true and teach God's way in truth, and do not care for any man, for you do not regard men's persons. Tell us, what do you think? Is it lawful to give tribute to Caesar or not?",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -914,7 +927,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "They asked him whether it is lawful to give tribute to Caesar.",
+          "text": "They sent their disciples with the Herodians to ask him whether it is lawful to give tribute to Caesar, after saying he teaches God's way in truth and shows no partiality.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -925,10 +938,10 @@
           "verification": {
             "model": "mistralai/mistral-large-4-0",
             "verdict": "fail",
-            "fidelity": 5,
-            "completeness": 2,
+            "fidelity": 4,
+            "completeness": 3,
             "issues": [
-              "other"
+              "addition"
             ],
             "prompt_version": "paraphrase-verify-7"
           }
@@ -937,7 +950,7 @@
       "arbitration": {
         "selected_attempt": 1,
         "reason": "close selected: fidelity 5 + completeness 5, 52 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1676128170
+        "shuffle_seed": 3684478365
       }
     },
     "speaker": {
@@ -952,7 +965,7 @@
     },
     "context": {
       "literary": {
-        "text": "The Pharisees, seeking to entangle Jesus in his talk, send their disciples with the Herodians to ask him whether it is lawful to give tribute unto Cesar.",
+        "text": "The Pharisees sent their disciples with the Herodians to Jesus, addressing him as Master and asking whether it is lawful to give tribute to Caesar, seeking to entangle him in his talk.",
         "confidence": "high",
         "sources": [
           "MAT.22.15",
@@ -980,7 +993,7 @@
         },
         {
           "kind": "scholarly_estimate",
-          "label": "Peter's denial during Holy Week",
+          "label": "Holy Week",
           "date_range": {
             "from": 28,
             "to": 32,
@@ -1033,8 +1046,10 @@
     "review": {
       "status": null,
       "note": null,
-      "flags": [],
-      "required": false
+      "flags": [
+        "genre_conflict:speaker:narrative"
+      ],
+      "required": true
     },
     "sources": [
       {
@@ -1104,14 +1119,14 @@
       ]
     },
     "paraphrase": {
-      "text": "After a while, those standing by came to him and said that surely he was also one of them, for his speech revealed it.",
+      "text": "After a while, those standing by came to him and said, Surely you also are one of them, for your speech reveals you.",
       "genre": "narrative",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "After a while, those standing by came to him and said that surely he was also one of them, for his speech revealed it.",
+          "text": "After a while, those standing by came to him and said, Surely you also are one of them, for your speech reveals you.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1131,7 +1146,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Bystanders told him his speech proved he was one of them.",
+          "text": "Bystanders told him his speech revealed he was one of them.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1145,7 +1160,7 @@
             "fidelity": 4,
             "completeness": 4,
             "issues": [
-              "addition"
+              "other"
             ],
             "prompt_version": "paraphrase-verify-7"
           }
@@ -1153,8 +1168,8 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 24 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 254908016
+        "reason": "close selected: fidelity 5 + completeness 5, 23 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 3944927846
       }
     },
     "speaker": {
@@ -1168,7 +1183,7 @@
     },
     "context": {
       "literary": {
-        "text": "Bystanders come to Peter and tell him that his speech reveals he is one of them, after he has already denied knowing Jesus twice.",
+        "text": "Those standing by came to Peter and told him he must also be one of them, since his speech revealed him. This follows his earlier denials of knowing Jesus.",
         "confidence": "high",
         "sources": [
           "MAT.26.73",
@@ -1182,7 +1197,7 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "Peter's denial during Holy Week",
+          "label": "Holy Week",
           "date_range": {
             "from": 28,
             "to": 32,
@@ -1301,7 +1316,7 @@
       ]
     },
     "paraphrase": {
-      "text": "Seeing the earthquake and what was done, the centurion and his companions feared greatly, declaring Jesus truly the Son of God.",
+      "text": "When the centurion and those with him watching Jesus saw the earthquake and what happened, they were very afraid, saying, 'Truly this was the Son of God.'",
       "genre": "narrative",
       "genre_by": "model",
       "history": [
@@ -1328,7 +1343,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Seeing the earthquake and what was done, the centurion and his companions feared greatly, declaring Jesus truly the Son of God.",
+          "text": "Seeing the earthquake, the centurion and his companions feared greatly, declaring Jesus the Son of God.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1338,18 +1353,20 @@
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
+            "verdict": "fail",
+            "fidelity": 4,
             "completeness": 5,
-            "issues": [],
+            "issues": [
+              "other"
+            ],
             "prompt_version": "paraphrase-verify-7"
           }
         }
       ],
       "arbitration": {
-        "selected_attempt": 2,
-        "reason": "condensed selected: fidelity 5 + completeness 5, 21 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1568170349
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 27 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 1346420261
       }
     },
     "speaker": {
@@ -1363,7 +1380,7 @@
     },
     "context": {
       "literary": {
-        "text": "While watching Jesus, the centurion and those with him saw the earthquake and the things that were done; they feared greatly and said Jesus was truly the Son of God.",
+        "text": "The centurion and those with him, while watching Jesus, saw the earthquake and the things that were done; they feared greatly and said that truly this was the Son of God.",
         "confidence": "high",
         "sources": [
           "MAT.27.54"
@@ -1456,7 +1473,7 @@
         },
         {
           "kind": "scholarly_estimate",
-          "label": "Peter's denial during Holy Week",
+          "label": "Holy Week",
           "date_range": {
             "from": 28,
             "to": 32,
@@ -1568,14 +1585,14 @@
       ]
     },
     "paraphrase": {
-      "text": "Fearing and trembling, she came, fell before him, and told the whole truth.",
+      "text": "But the woman, afraid and trembling, knowing what had happened to her, came and fell down before him and told him the whole truth.",
       "genre": "narrative",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "The woman, afraid and trembling, knowing what was done, came and fell before him and told all the truth.",
+          "text": "But the woman, afraid and trembling, knowing what had happened to her, came and fell down before him and told him the whole truth.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1595,7 +1612,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Fearing and trembling, she came, fell before him, and told the whole truth.",
+          "text": "Trembling and aware of what had been done to her, she fell before him and told the whole truth.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1605,18 +1622,20 @@
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 4,
+            "issues": [
+              "addition"
+            ],
             "prompt_version": "paraphrase-verify-7"
           }
         }
       ],
       "arbitration": {
-        "selected_attempt": 2,
-        "reason": "condensed selected: fidelity 5 + completeness 5, 13 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1380613116
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 24 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 4102128038
       }
     },
     "speaker": {
@@ -1625,12 +1644,13 @@
     },
     "context": {
       "literary": {
-        "text": "A woman who had touched Jesus' clothes, knowing what had been done in her, came fearing and trembling and fell down before him, telling him all the truth.",
+        "text": "A woman who had touched Jesus' clothes, knowing what had been done in her, came fearing and trembling and fell down before him, telling him the truth after he asked who had touched him.",
         "confidence": "high",
         "sources": [
-          "MRK.5.33",
           "MRK.5.30",
-          "MRK.5.32"
+          "MRK.5.31",
+          "MRK.5.32",
+          "MRK.5.33"
         ],
         "confidence_by": "model",
         "model": "deepseek/deepseek-v4.1-flash",
@@ -1639,7 +1659,7 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "Healing of the woman with an issue of blood",
+          "label": "But the woman fearing and trembling, came and fell down before him",
           "date_range": {
             "from": 26,
             "to": 30,
@@ -1716,6 +1736,12 @@
         "license": "MIT (repository), text in the public domain"
       },
       {
+        "id": "MRK.5.31",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
         "id": "MRK.5.32",
         "type": "bible_text",
         "dataset": "kjv",
@@ -1741,14 +1767,14 @@
       ]
     },
     "paraphrase": {
-      "text": "Jesus told them they did not know what they asked, asking if they could drink his cup and share his baptism; when they said they could, he said they would indeed.",
+      "text": "Jesus asked whether they could drink his cup and share his baptism; they said they could, and he said they would.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "But Jesus said to them, You do not know what you ask: can you drink of the cup that I drink of? and be baptized with the baptism that I am baptized with? And they said to him, We can. And Jesus said to them, You shall indeed drink of the cup that I drink of; and with the baptism that I am baptized with you shall be baptized:",
+          "text": "But Jesus told them: You do not know what you ask. Can you drink the cup I drink of, and be baptized with the baptism I am baptized with? They said to him: We can. And Jesus told them: You shall indeed drink of the cup that I drink of, and with the baptism I am baptized with you shall be baptized.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1768,7 +1794,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Jesus told them they did not know what they asked, asking if they could drink his cup and share his baptism; when they said they could, he said they would indeed.",
+          "text": "Jesus asked whether they could drink his cup and share his baptism; they said they could, and he said they would.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1788,8 +1814,8 @@
       ],
       "arbitration": {
         "selected_attempt": 2,
-        "reason": "condensed selected: fidelity 5 + completeness 5, 31 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 4257910679
+        "reason": "condensed selected: fidelity 5 + completeness 5, 21 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 228985298
       }
     },
     "speaker": {
@@ -1805,12 +1831,9 @@
     },
     "context": {
       "literary": {
-        "text": "James and John asked Jesus to grant them places at his right and left hand in his glory. Jesus responded that they did not know what they asked, questioning whether they could drink his cup and be baptized with his baptism; they answered that they could.",
+        "text": "Jesus asks James and John whether they can drink of the cup he drinks of and be baptized with his baptism, and they answer that they can.",
         "confidence": "high",
         "sources": [
-          "MRK.10.35",
-          "MRK.10.36",
-          "MRK.10.37",
           "MRK.10.38",
           "MRK.10.39"
         ],
@@ -1885,24 +1908,6 @@
         "type": "event_data",
         "dataset": "theographic",
         "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "MRK.10.35",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "MRK.10.36",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "MRK.10.37",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
       }
     ]
   }

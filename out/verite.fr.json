@@ -17,14 +17,14 @@
       ]
     },
     "paraphrase": {
-      "text": "Il dit à ses disciples de prier le maître d'envoyer des ouvriers, car la moisson est grande mais les ouvriers sont peu nombreux.",
+      "text": "Alors il dit à ses disciples : la moisson est grande, mais il y a peu d’ouvriers. Priez donc le maître de la moisson d’envoyer des ouvriers dans sa moisson.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "Il dit à ses disciples que la moisson est grande mais qu'il y a peu d'ouvriers, et de prier le maître de la moisson d'envoyer des ouvriers.",
+          "text": "Alors il dit à ses disciples : la moisson est grande, mais il y a peu d’ouvriers. Priez donc le maître de la moisson d’envoyer des ouvriers dans sa moisson.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -34,19 +34,17 @@
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
+            "verdict": "pass",
+            "fidelity": 5,
             "completeness": 5,
-            "issues": [
-              "other"
-            ],
+            "issues": [],
             "prompt_version": "paraphrase-verify-7"
           }
         },
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Il dit à ses disciples de prier le maître d'envoyer des ouvriers, car la moisson est grande mais les ouvriers sont peu nombreux.",
+          "text": "Il dit à ses disciples que la moisson est grande mais qu’il y a peu d’ouvriers, et de prier le maître d’en envoyer.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -58,18 +56,18 @@
             "model": "mistralai/mistral-large-4-0",
             "verdict": "fail",
             "fidelity": 4,
-            "completeness": 5,
+            "completeness": 4,
             "issues": [
-              "other"
+              "addition"
             ],
             "prompt_version": "paraphrase-verify-7"
           }
         }
       ],
       "arbitration": {
-        "selected_attempt": 2,
-        "reason": "condensed selected: fidelity 4 + completeness 5, 23 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 497103851
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 30 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 1234293274
       }
     },
     "speaker": {
@@ -84,7 +82,7 @@
     },
     "context": {
       "literary": {
-        "text": "Jésus, voyant la foule languissante et abattue comme des brebis sans berger, s'adresse à ses disciples pour leur dire que la moisson est grande mais qu'il y a peu d'ouvriers, et les invite à prier le maître de la moisson.",
+        "text": "Voyant la foule languissante et abattue, comme des brebis sans berger, Jésus dit à ses disciples que la moisson est grande mais qu'il y a peu d'ouvriers, et les invite à prier le maître de la moisson d'envoyer des ouvriers.",
         "confidence": "high",
         "sources": [
           "MAT.9.36",
@@ -98,7 +96,7 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "3e tournée en Galilée",
+          "label": "3e tournée de Galilée",
           "date_range": {
             "from": 27,
             "to": 31,
@@ -191,7 +189,7 @@
       ]
     },
     "paraphrase": {
-      "text": "Devant Jésus, les occupants de la barque s'inclinèrent en affirmant qu'il était vraiment le Fils de Dieu.",
+      "text": "Ceux de la barque se prosternèrent devant Jésus en proclamant qu'il est le Fils de Dieu.",
       "genre": "narrative",
       "genre_by": "model",
       "history": [
@@ -199,6 +197,28 @@
           "attempt": 1,
           "style": "close",
           "text": "Ceux qui étaient dans la barque vinrent se prosterner devant Jésus et dirent qu'il était vraiment le Fils de Dieu.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 5,
+            "issues": [
+              "addition"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Ceux de la barque se prosternèrent devant Jésus en proclamant qu'il est le Fils de Dieu.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -216,31 +236,9 @@
           }
         },
         {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Ceux de la barque se prosternèrent devant Jésus en le proclamant Fils de Dieu.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-10",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 4,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
           "attempt": 3,
           "style": "free",
-          "text": "Devant Jésus, les occupants de la barque s'inclinèrent en affirmant qu'il était vraiment le Fils de Dieu.",
+          "text": "Ils dirent à Jésus qu'il était vraiment le Fils de Dieu, en s'inclinant devant lui, ceux de la barque.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -259,13 +257,13 @@
         }
       ],
       "arbitration": {
-        "selected_attempt": 3,
-        "reason": "free selected: fidelity 5 + completeness 5, 17 words; 2 other candidate(s) not selected",
-        "shuffle_seed": 367953818
+        "selected_attempt": 2,
+        "reason": "condensed selected: fidelity 5 + completeness 5, 16 words; 2 other candidate(s) not selected",
+        "shuffle_seed": 1152492987
       }
     },
     "speaker": {
-      "value": "disciples",
+      "value": "Ceux qui étaient dans la barque",
       "role": "speaker",
       "confidence": "medium",
       "sources": [
@@ -275,7 +273,7 @@
     },
     "context": {
       "literary": {
-        "text": "Après que Jésus a sauvé Pierre qui s'enfonçait et fait cesser le vent, ceux qui étaient dans la barque vinrent se prosterner devant lui en le proclamant Fils de Dieu.",
+        "text": "Après que Jésus a sauvé Pierre qui s'enfonçait et fait cesser le vent, ceux qui étaient dans la barque vinrent se prosterner devant lui et le proclamèrent Fils de Dieu.",
         "confidence": "high",
         "sources": [
           "MAT.14.30",
@@ -412,14 +410,14 @@
       ]
     },
     "paraphrase": {
-      "text": "Oui, Seigneur, dit-elle, mais les petits chiens mangent les miettes tombant de la table de leurs maîtres.",
+      "text": "Les miettes de la table des maîtres, les petits chiens les mangent, dit-elle, Seigneur.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "Oui, Seigneur, dit-elle, mais les petits chiens mangent les miettes tombant de la table de leurs maîtres.",
+          "text": "Oui, Seigneur, mais les petits chiens mangent les miettes tombant de la table de leurs maîtres.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -439,7 +437,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Elle répond au Seigneur que les petits chiens mangent les miettes de la table.",
+          "text": "Elle dit oui, mais les chiens mangent les miettes de la table.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -450,8 +448,8 @@
           "verification": {
             "model": "mistralai/mistral-large-4-0",
             "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
+            "fidelity": 3,
+            "completeness": 3,
             "issues": [
               "addition"
             ],
@@ -461,7 +459,7 @@
         {
           "attempt": 3,
           "style": "free",
-          "text": "Les miettes de la table des maîtres, voilà ce que mangent les petits chiens, lui dit-elle.",
+          "text": "Les miettes de la table des maîtres, les petits chiens les mangent, dit-elle, Seigneur.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -471,24 +469,22 @@
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
+            "verdict": "pass",
+            "fidelity": 5,
             "completeness": 5,
-            "issues": [
-              "genre_changed"
-            ],
+            "issues": [],
             "prompt_version": "paraphrase-verify-7"
           }
         }
       ],
       "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 17 words; 2 other candidate(s) not selected",
-        "shuffle_seed": 56175512
+        "selected_attempt": 3,
+        "reason": "free selected: fidelity 5 + completeness 5, 14 words; 2 other candidate(s) not selected",
+        "shuffle_seed": 3409791395
       }
     },
     "speaker": {
-      "value": "Cananéenne",
+      "value": "Canaanéenne",
       "role": "speaker",
       "confidence": "medium",
       "sources": [
@@ -498,9 +494,10 @@
     },
     "context": {
       "literary": {
-        "text": "Une femme vient se prosterner devant Jésus et lui demande secours, et Jésus lui répond par une parole sur le pain des enfants et les petits chiens.",
+        "text": "Une femme s'adresse à Jésus après qu'il a dit n'être envoyé qu'aux brebis perdues d'Israël et avoir parlé du pain des enfants et des petits chiens. Elle répond en acceptant sa parole et en demandant secours.",
         "confidence": "high",
         "sources": [
+          "MAT.15.24",
           "MAT.15.25",
           "MAT.15.26",
           "MAT.15.27"
@@ -512,7 +509,7 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "Guérison de la fille de la Cananéenne",
+          "label": "Guérison de la fille cananéenne",
           "date_range": {
             "from": 27,
             "to": 31,
@@ -575,6 +572,12 @@
         "license": "CC-BY-SA-4.0"
       },
       {
+        "id": "MAT.15.24",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      },
+      {
         "id": "MAT.15.25",
         "type": "bible_text",
         "dataset": "lsg1910",
@@ -606,14 +609,14 @@
       ]
     },
     "paraphrase": {
-      "text": "Il répondit qu'Élie doit venir et rétablir toutes choses, mais qu'Élie est déjà venu, qu'on ne l'a pas reconnu et qu'on l'a traité comme on a voulu ; de même le Fils de l'homme souffrira de leur part.",
+      "text": "Il répondit qu'Élie doit venir et rétablir toutes choses, mais qu'Élie est déjà venu, qu'on ne l'a pas reconnu et qu'on l'a traité comme on a voulu. De même, le Fils de l'homme souffrira de leur part.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "Il répondit qu'Élie doit venir et rétablir toutes choses, mais qu'Élie est déjà venu, qu'on ne l'a pas reconnu et qu'on l'a traité comme on a voulu ; de même le Fils de l'homme souffrira de leur part.",
+          "text": "Il répondit qu'Élie doit venir et rétablir toutes choses, mais qu'Élie est déjà venu, qu'on ne l'a pas reconnu et qu'on l'a traité comme on a voulu. De même, le Fils de l'homme souffrira de leur part.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -633,7 +636,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Il déclare qu'Élie est déjà venu sans être reconnu, et que le Fils de l'homme souffrira de même.",
+          "text": "Il déclare qu'Élie est déjà venu sans être reconnu, et que le Fils de l'homme souffrira de leur part.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -645,7 +648,7 @@
             "model": "mistralai/mistral-large-4-0",
             "verdict": "fail",
             "fidelity": 5,
-            "completeness": 2,
+            "completeness": 3,
             "issues": [
               "other"
             ],
@@ -655,8 +658,8 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 38 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2775940832
+        "reason": "close selected: fidelity 5 + completeness 5, 37 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 1353324734
       }
     },
     "speaker": {
@@ -671,7 +674,7 @@
     },
     "context": {
       "literary": {
-        "text": "Jésus répond aux disciples qui lui demandent pourquoi les scribes disent qu'Élie doit venir premièrement. Il leur dit qu'Élie est déjà venu et qu'ils ne l'ont pas reconnu.",
+        "text": "Jésus répond aux disciples qui lui demandent pourquoi les scribes disent qu'Élie doit venir premièrement. Il leur déclare qu'Élie est déjà venu sans être reconnu.",
         "confidence": "high",
         "sources": [
           "MAT.17.10",
@@ -785,14 +788,14 @@
       ]
     },
     "paraphrase": {
-      "text": "Il leur répondit qu'ils boiraient sa coupe, mais que s'asseoir à sa droite ou à sa gauche ne dépendait pas de lui, et ne serait donné qu'à ceux à qui son Père l'a réservé.",
+      "text": "Il leur dit : vous boirez ma coupe, mais être assis à ma droite et à ma gauche ne dépend pas de moi, ce sera pour ceux à qui mon Père l’a réservé.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "Il leur répondit qu'ils boiraient sa coupe, mais que s'asseoir à sa droite ou à sa gauche ne dépendait pas de lui, et ne serait donné qu'à ceux à qui son Père l'a réservé.",
+          "text": "Il leur dit : vous boirez ma coupe, mais être assis à ma droite et à ma gauche ne dépend pas de moi, ce sera pour ceux à qui mon Père l’a réservé.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -812,7 +815,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Il déclare que s'asseoir à sa droite ou à sa gauche ne dépend pas de lui, mais est réservé par son Père.",
+          "text": "Il répond qu’ils boiront sa coupe, mais que les places à sa droite et à sa gauche sont réservées par son Père.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -823,8 +826,8 @@
           "verification": {
             "model": "mistralai/mistral-large-4-0",
             "verdict": "fail",
-            "fidelity": 3,
-            "completeness": 2,
+            "fidelity": 4,
+            "completeness": 4,
             "issues": [
               "addition"
             ],
@@ -834,8 +837,8 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 34 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 3131052401
+        "reason": "close selected: fidelity 5 + completeness 5, 33 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 3149878236
       }
     },
     "speaker": {
@@ -850,10 +853,9 @@
     },
     "context": {
       "literary": {
-        "text": "La mère des fils de Zébédée a demandé à Jésus que ses deux fils soient assis à sa droite et à sa gauche dans son royaume. Jésus lui répond, ainsi qu'à ses fils, que cette place ne dépend pas de lui mais sera donnée à ceux à qui son Père l'a réservée.",
+        "text": "Jésus répond à la demande de la mère des fils de Zébédée, qui voulait que ses deux fils soient assis à sa droite et à sa gauche dans son royaume. Il leur dit qu'ils boiront sa coupe, mais que ces places ne dépendent pas de lui.",
         "confidence": "high",
         "sources": [
-          "MAT.20.20",
           "MAT.20.21",
           "MAT.20.23"
         ],
@@ -939,12 +941,6 @@
         "license": "CC-BY-SA-4.0"
       },
       {
-        "id": "MAT.20.20",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
         "id": "MAT.20.21",
         "type": "bible_text",
         "dataset": "lsg1910",
@@ -970,14 +966,14 @@
       ]
     },
     "paraphrase": {
-      "text": "Ils envoyèrent vers lui leurs disciples avec les hérodiens, qui dirent : « Maître, nous savons que tu es vrai et que tu enseignes la voie de Dieu selon la vérité, sans te soucier de personne. Dis-nous donc ce qu'il t'en semble : est-il permis, ou non, de payer le tribut à César ? »",
+      "text": "Ils envoyèrent leurs disciples avec les hérodiens lui dire : Maître, nous savons que tu es vrai et que tu enseignes la voie de Dieu selon la vérité, sans te soucier de personne, car tu ne regardes pas à l'apparence. Dis-nous donc ce qu'il t'en semble : est-il permis, ou non, de payer le tribut à César ?",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "Ils envoyèrent vers lui leurs disciples avec les hérodiens, qui dirent : « Maître, nous savons que tu es vrai et que tu enseignes la voie de Dieu selon la vérité, sans te soucier de personne. Dis-nous donc ce qu'il t'en semble : est-il permis, ou non, de payer le tribut à César ? »",
+          "text": "Ils envoyèrent leurs disciples avec les hérodiens lui dire : Maître, nous savons que tu es vrai et que tu enseignes la voie de Dieu selon la vérité, sans te soucier de personne, car tu ne regardes pas à l'apparence. Dis-nous donc ce qu'il t'en semble : est-il permis, ou non, de payer le tribut à César ?",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -992,13 +988,12 @@
             "completeness": 5,
             "issues": [],
             "prompt_version": "paraphrase-verify-7"
-          },
-          "trimmed": true
+          }
         },
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Ils lui envoyèrent des disciples avec les hérodiens demander si payer le tribut à César est permis.",
+          "text": "Ils lui envoyèrent des disciples avec les hérodiens demander si, selon lui, il est permis de payer le tribut à César.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1009,10 +1004,9 @@
           "verification": {
             "model": "mistralai/mistral-large-4-0",
             "verdict": "fail",
-            "fidelity": 4,
+            "fidelity": 5,
             "completeness": 2,
             "issues": [
-              "genre_changed",
               "other"
             ],
             "prompt_version": "paraphrase-verify-7"
@@ -1021,12 +1015,12 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 55 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1611326406
+        "reason": "close selected: fidelity 5 + completeness 5, 58 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 2220446758
       }
     },
     "speaker": {
-      "value": "espions",
+      "value": "les disciples des pharisiens avec les hérodiens",
       "role": "speaker",
       "confidence": "medium",
       "sources": [
@@ -1037,7 +1031,7 @@
     },
     "context": {
       "literary": {
-        "text": "Les pharisiens envoient leurs disciples avec les hérodiens pour surprendre Jésus par ses propres paroles. Ils l'interrogent en l'appelant Maître et lui demandent s'il est permis de payer le tribut à César.",
+        "text": "Les pharisiens, voulant surprendre Jésus par ses paroles, lui envoient leurs disciples avec les hérodiens ; ceux-ci l'interrogent pour savoir s'il est permis de payer le tribut à César.",
         "confidence": "high",
         "sources": [
           "MAT.22.15",
@@ -1051,7 +1045,7 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "Débats dans le temple",
+          "label": "Débats dans le Temple",
           "date_range": {
             "from": 28,
             "to": 32,
@@ -1065,7 +1059,7 @@
         },
         {
           "kind": "scholarly_estimate",
-          "label": "La semaine sainte",
+          "label": "Semaine sainte",
           "date_range": {
             "from": 28,
             "to": 32,
@@ -1252,7 +1246,7 @@
       }
     },
     "speaker": {
-      "value": "le serviteur du souverain sacrificateur",
+      "value": "serviteur du souverain sacrificateur",
       "role": "speaker",
       "confidence": "medium",
       "sources": [
@@ -1262,11 +1256,10 @@
     },
     "context": {
       "literary": {
-        "text": "Ceux qui se trouvaient là s'approchent de Pierre et lui disent qu'il est certainement de ces gens-là, car son langage le fait reconnaître. Pierre réagit en faisant des imprécations et en jurant qu'il ne connaît pas cet homme.",
+        "text": "Peu après, ceux qui se trouvaient là s'approchent de Pierre et lui disent qu'il est certainement de ces gens-là, car son langage le fait reconnaître. Pierre est ainsi identifié comme quelqu'un qui était avec Jésus.",
         "confidence": "high",
         "sources": [
-          "MAT.26.73",
-          "MAT.26.74"
+          "MAT.26.73"
         ],
         "confidence_by": "model",
         "model": "deepseek/deepseek-v4.1-flash",
@@ -1275,7 +1268,7 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "La semaine sainte",
+          "label": "Semaine sainte",
           "date_range": {
             "from": 28,
             "to": 32,
@@ -1371,12 +1364,6 @@
         "type": "event_data",
         "dataset": "theographic",
         "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "MAT.26.74",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
       }
     ]
   },
@@ -1397,34 +1384,14 @@
       ]
     },
     "paraphrase": {
-      "text": "En voyant le séisme et ce qui s'était passé, le centenier et ceux qui gardaient Jésus eurent très peur et dirent : vraiment, cet homme était Fils de Dieu.",
+      "text": null,
+      "reason": "no_faithful_version",
       "genre": "narrative",
-      "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "En voyant le séisme et ce qui s'était passé, le centenier et ceux qui gardaient Jésus eurent très peur et dirent : vraiment, cet homme était Fils de Dieu.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-10",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Le centenier et ses hommes, effrayés par le séisme et les événements, dirent que cet homme était Fils de Dieu.",
+          "text": "Le centenier et ses gardes, voyant le tremblement de terre et ce qui arrivait, eurent très peur et dirent que cet homme était vraiment Fils de Dieu.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1436,7 +1403,29 @@
             "model": "mistralai/mistral-large-4-0",
             "verdict": "fail",
             "fidelity": 4,
-            "completeness": 4,
+            "completeness": 5,
+            "issues": [
+              "addition"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Voyant le tremblement de terre, le centenier et ses gardes, saisis de frayeur, dirent que cet homme était Fils de Dieu.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 5,
             "issues": [
               "addition"
             ],
@@ -1445,9 +1434,9 @@
         }
       ],
       "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 29 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1349210935
+        "selected_attempt": null,
+        "reason": "no candidate passes (close: problem reported: addition; condensed: problem reported: addition)",
+        "shuffle_seed": 607134346
       }
     },
     "speaker": {
@@ -1461,7 +1450,7 @@
     },
     "context": {
       "literary": {
-        "text": "Le centenier et ceux qui gardaient Jésus, ayant vu le tremblement de terre et ce qui venait d'arriver, furent saisis d'une grande frayeur et déclarèrent que cet homme était Fils de Dieu.",
+        "text": "Après le tremblement de terre et les événements survenus à la mort de Jésus, le centenier et ses gardes, saisis de frayeur, déclarent que cet homme était Fils de Dieu.",
         "confidence": "high",
         "sources": [
           "MAT.27.54"
@@ -1554,7 +1543,7 @@
         },
         {
           "kind": "scholarly_estimate",
-          "label": "La semaine sainte",
+          "label": "Semaine sainte",
           "date_range": {
             "from": 28,
             "to": 32,
@@ -1603,6 +1592,7 @@
       "status": null,
       "note": null,
       "flags": [
+        "paraphrase_failed",
         "genre_conflict:speaker:narrative"
       ],
       "required": true
@@ -1696,7 +1686,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Effrayée, la femme vint se jeter à ses pieds et lui dit toute la vérité.",
+          "text": "Effrayée, elle se jeta à ses pieds et lui dit toute la vérité.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1717,7 +1707,7 @@
       "arbitration": {
         "selected_attempt": 1,
         "reason": "close selected: fidelity 5 + completeness 5, 24 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1466448770
+        "shuffle_seed": 1887174259
       }
     },
     "speaker": {
@@ -1726,11 +1716,11 @@
     },
     "context": {
       "literary": {
-        "text": "Une femme, effrayée et tremblante, vient se jeter aux pieds de Jésus après avoir été guérie en le touchant, et lui avoue toute la vérité. Jésus lui répond alors que sa foi l'a sauvée.",
+        "text": "Une femme, effrayée et tremblante, sachant ce qui s'était passé en elle, vient se jeter aux pieds de Jésus et lui dit toute la vérité, après que Jésus a demandé qui l'a touché.",
         "confidence": "high",
         "sources": [
-          "MRK.5.33",
-          "MRK.5.34"
+          "MRK.5.30",
+          "MRK.5.33"
         ],
         "confidence_by": "model",
         "model": "deepseek/deepseek-v4.1-flash",
@@ -1739,7 +1729,7 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "Miracles à Capernaüm",
+          "label": "La femme, effrayée et tremblante, vint se jeter à ses pieds",
           "date_range": {
             "from": 26,
             "to": 30,
@@ -1819,7 +1809,7 @@
         "license": "CC-BY-SA-4.0"
       },
       {
-        "id": "MRK.5.34",
+        "id": "MRK.5.30",
         "type": "bible_text",
         "dataset": "lsg1910",
         "license": "CC0-1.0"
@@ -1844,14 +1834,14 @@
       ]
     },
     "paraphrase": {
-      "text": "Jésus leur dit qu'ils ne savaient pas ce qu'ils demandaient, et demanda s'ils pouvaient boire sa coupe ou être baptisés de son baptême. Ils répondirent qu'ils le pouvaient. Il confirma qu'ils boiraient sa coupe et seraient baptisés de son baptême.",
+      "text": "Il leur dit qu'ils ne savaient pas ce qu'ils demandaient, et demanda s'ils pouvaient boire sa coupe ou recevoir son baptême. Ils répondirent qu'ils le pouvaient. Il dit alors qu'ils boiraient sa coupe et recevraient son baptême.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "Jésus leur dit qu'ils ne savaient pas ce qu'ils demandaient, et demanda s'ils pouvaient boire sa coupe ou être baptisés de son baptême. Ils répondirent qu'ils le pouvaient. Il confirma qu'ils boiraient sa coupe et seraient baptisés de son baptême.",
+          "text": "Il leur dit qu'ils ne savaient pas ce qu'ils demandaient, et demanda s'ils pouvaient boire sa coupe ou recevoir son baptême. Ils répondirent qu'ils le pouvaient. Il dit alors qu'ils boiraient sa coupe et recevraient son baptême.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1871,7 +1861,7 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Jésus avertit ses interlocuteurs qu'ils ignorent ce qu'ils demandent, puis confirme qu'ils partageront sa coupe et son baptême.",
+          "text": "Puisqu'ils affirmaient pouvoir boire sa coupe et recevoir son baptême, il leur annonça que cela leur arriverait.",
           "model": "deepseek/deepseek-v4.1-flash",
           "prompt_version": "paraphrase-gen-10",
           "code_checks": {
@@ -1882,10 +1872,11 @@
           "verification": {
             "model": "mistralai/mistral-large-4-0",
             "verdict": "fail",
-            "fidelity": 4,
+            "fidelity": 3,
             "completeness": 3,
             "issues": [
-              "other"
+              "addition",
+              "genre_changed"
             ],
             "prompt_version": "paraphrase-verify-7"
           }
@@ -1893,8 +1884,8 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 40 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1345850911
+        "reason": "close selected: fidelity 5 + completeness 5, 37 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 2663447909
       }
     },
     "speaker": {
@@ -1910,7 +1901,7 @@
     },
     "context": {
       "literary": {
-        "text": "Jésus répond à Jacques et Jean, les fils de Zébédée, qui lui ont demandé de siéger à sa droite et à sa gauche dans sa gloire. Il leur déclare qu'ils ne savent pas ce qu'ils demandent et les interroge sur la coupe et le baptême.",
+        "text": "Jésus répond à Jacques et Jean, qui viennent de lui demander de siéger à sa droite et à sa gauche dans sa gloire. Il leur déclare qu'ils boiront sa coupe et seront baptisés de son baptême.",
         "confidence": "high",
         "sources": [
           "MRK.10.35",

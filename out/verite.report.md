@@ -1,7 +1,7 @@
 # Report: la vérité
 
 ## Price check
-- Checked at: 2026-10-09T12:46:02Z (source: https://openrouter.ai/api/v1/models)
+- Checked at: 2026-10-09T15:55:18Z (source: https://openrouter.ai/api/v1/models)
 - Result: OK
 
 | Model | Ref in | Ref out | Now in | Now out | Status |
@@ -137,11 +137,12 @@ Prices in USD per 1M tokens.
 - dropped (invalid in at least one language): 0
 
 ## Review
-- entries that must go through the review page: 3
+- entries that must go through the review page: 4
 
   - MAT.14.33 to MAT.14.33 (review required): genre_conflict:speaker:narrative
+  - MAT.22.16 to MAT.22.17 (review required): genre_conflict:speaker:narrative
   - MAT.26.73 to MAT.26.73 (review required): genre_conflict:speaker:narrative
-  - MAT.27.54 to MAT.27.54 (review required): genre_conflict:speaker:narrative
+  - MAT.27.54 to MAT.27.54 (review required): genre_conflict:speaker:narrative, paraphrase_failed
   - MRK.5.33 to MRK.5.33: speaker_not_identified
 
 ## Cross-language check
