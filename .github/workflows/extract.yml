@@ -15,6 +15,22 @@ on:
         type: choice
         options: [rules, model]
         default: rules
+      limit:
+        description: "Garder seulement les N premiers candidats (défaut: tous)"
+        required: false
+        default: ""
+      workers:
+        description: "Parallélisme externe : nombre d'entrées traitées en simultané (défaut: 4)"
+        required: false
+        default: "4"
+      workers_inner:
+        description: "Parallélisme interne par entrée : context + paraphrase en simultané si >= 2 (défaut: 2)"
+        required: false
+        default: "2"
+      mutualize_langs:
+        description: "Un seul appel localize par label pour toutes les langues (défaut: true)"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -90,7 +106,11 @@ jobs:
           python extract.py \
             --topic "${{ inputs.topic }}" \
             --mode "${{ inputs.mode }}" \
-            ${{ inputs.lang != '' && format('--lang {0}', inputs.lang) || '' }}
+            ${{ inputs.lang != '' && format('--lang {0}', inputs.lang) || '' }} \
+            ${{ inputs.limit != '' && format('--limit {0}', inputs.limit) || '' }} \
+            --workers "${{ inputs.workers }}" \
+            --workers-inner "${{ inputs.workers_inner }}" \
+            ${{ inputs.mutualize_langs && '--mutualize-langs' || '' }}
 
       - name: Résumé
         if: always()
