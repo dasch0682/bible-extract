@@ -150,7 +150,7 @@ def test_the_generation_prompt_states_the_rules_and_the_word_limit(tmp_path):
     gen = Gen(gen_answer())
     run(gen, Ver(), tmp_path)
     system, user = gen.prompts[0]
-    assert "present tense" in system and "NO information" in system and "use at most 11 words" in system
+    assert "NO information" in system and "use at most 11 words" in system
     assert all(s in system for s in pp.STYLES) and EXCERPT in user
 
 
@@ -169,16 +169,10 @@ def test_long_excerpt_excludes_free_style(tmp_path):
 
 def test_code_checks():
     ok = pp.code_checks(CLOSE, EXCERPT, "fr", RULES)
-    assert ok == {"non_empty": True, "not_longer_than_excerpt": True, "target_language": True, "tense_present": True}
+    assert ok == {"non_empty": True, "not_longer_than_excerpt": True, "target_language": True}
     assert pp.code_checks("  ", EXCERPT, "fr", RULES)["non_empty"] is False
     assert pp.code_checks(EXCERPT + " et encore un mot", EXCERPT, "fr", RULES)["not_longer_than_excerpt"] is False
     assert pp.code_checks("Jesus says that he is the way and the truth.", EXCERPT, "fr", RULES)["target_language"] is False
-    assert pp.code_checks("Il vint à Jérusalem.", EXCERPT, "fr", RULES)["tense_present"] is False
-    assert pp.code_checks("Il vient à Jérusalem.", EXCERPT, "fr", RULES)["tense_present"] is True
-    assert pp.code_checks("Ils ne l'ont pas reconnu.", EXCERPT, "fr", RULES)["tense_present"] is True
-    assert pp.code_checks("D'autres travaillaient dans ce champ.", EXCERPT, "fr", RULES)["tense_present"] is False
-    assert pp.code_checks("Il fait la vérité.", EXCERPT, "fr", RULES)["tense_present"] is True
-    assert pp.code_checks("tense check skipped for en", EXCERPT, "en", RULES)["tense_present"] is None
 
 
 def test_a_paraphrase_as_long_as_the_excerpt_passes():
@@ -250,7 +244,7 @@ def test_verification_failing_gives_null_and_review(tmp_path):
 
 def hist(style, fidelity=5, completeness=4, issues=(), words=5, checks=None, verdict="pass", attempt=None):
     return {"attempt": attempt or pp.STYLES.index(style) + 1, "style": style, "text": " ".join(["mot"] * words),
-            "code_checks": checks or {"non_empty": True, "not_longer_than_excerpt": True, "target_language": True, "tense_present": True},
+            "code_checks": checks or {"non_empty": True, "not_longer_than_excerpt": True, "target_language": True},
             "verification": {"verdict": verdict, "fidelity": fidelity, "completeness": completeness,
                              "issues": list(issues)}}
 
@@ -267,7 +261,7 @@ def test_tie_goes_to_the_shortest_then_to_close():
 
 
 def test_failed_check_problem_low_fidelity_and_unverified_are_dropped():
-    bad = {"non_empty": True, "not_longer_than_excerpt": False, "target_language": True, "tense_present": True}
+    bad = {"non_empty": True, "not_longer_than_excerpt": False, "target_language": True}
     n, _ = pp.arbitrate([hist("close", 5, 5, checks=bad), hist("condensed", 5, 5, ["addition"], verdict="fail"),
                          hist("free", 3, 5)], 4)
     assert n is None

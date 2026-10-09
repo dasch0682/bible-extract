@@ -6,8 +6,7 @@ Specification, section "Paraphrase":
 2. code checks on every candidate: not longer than the excerpt, in the target language, non-empty;
 3. verification, ONE call, by a model of another family than the generator: it sees the excerpt and the
    candidates in a shuffled order under neutral letters, and scores each from 1 to 5 on fidelity (nothing
-   added) and completeness (the central idea is kept), and reports problems (addition, genre changed,
-   tense other than present);
+   added) and completeness (the central idea is kept), and reports problems (addition, genre changed, other);
 4. arbitration by the code: it drops the candidates that fail a check, have a reported problem or a fidelity
    below `min_fidelity` (data/paraphrase_rules.yml), keeps the best sum of the two scores, then the shortest,
    then the order close, condensed, free;
@@ -36,7 +35,7 @@ import localize
 import validate
 from models import family
 
-GENERATION_VERSION = "paraphrase-gen-9"
+GENERATION_VERSION = "paraphrase-gen-10"
 VERIFICATION_VERSION = "paraphrase-verify-7"
 TRIM_VERSION = "paraphrase-trim-1"
 RULES_PATH = Path(__file__).parent / "data" / "paraphrase_rules.yml"
@@ -50,15 +49,6 @@ REVIEW_REQUIRED = ("paraphrase_failed", "genre_conflict")
 
 _JSON = re.compile(r"\{.*\}", re.S)
 _WORD = re.compile(r"[^\W\d_]+")
-# Unambiguous passé simple and imparfait forms; passé composé is intentionally excluded.
-_PAST_TENSE_FR = re.compile(
-    r"\b\w+aient\b"                                                        # imparfait/cond. 3rd plural
-    r"|\b\w+(?:irent|èrent|urent)\b"                                       # passé simple 3rd plural
-    r"|\b(?:vint|fit|prit|fut|alla|envoya|répondit|mourut|sortit|entra)\b"  # passé simple 3rd singular
-    r"|\b(?:était|avait|faisait|disait|venait|prenait|allait|savait"        # imparfait 3rd singular
-    r"|voyait|pouvait|voulait|devait)\b",
-    re.I,
-)
 _STYLE_RULES = {
     "close": "stay close to the text: follow the order and structure of the excerpt, only simplify the vocabulary",
     "condensed": "keep only the central idea, in one sentence",
@@ -105,11 +95,6 @@ def _generation_prompt(excerpt_text: str, max_words: int, lang_cfg: dict,
         f"You paraphrase a Bible excerpt ({lang_cfg['translation']}) in {lang}. Rules shared by every candidate: "
         "keep the original genre (a speech stays a speech, for example 'Jesus declares that...'; a narrative stays "
         "a narrative; a letter, a prayer or a parable stays one); "
-        "write every verb in the present tense (historic present), even when the excerpt is in past tense — "
-        "convert all past narration to historic present (e.g. 'la parole a été faite chair' → 'la parole devient chair'; "
-        "'Je vous ai envoyés moissonner' → 'il les envoie moissonner'; 'ils ne l'ont pas reconnu' → 'ils ne le reconnaissent pas'; "
-        "'d'autres ont travaillé' → 'd'autres travaillent'; 'elle a habité parmi nous' → 'elle habite parmi nous'); "
-        "avoid passé simple, imparfait and passé composé; "
         "add NO information that is not in the excerpt — this applies to every style including free: never add "
         "a character name, detail, interpretation, implied context or consequence absent from the excerpt text; "
         "in particular, do NOT name a character who is not named in the excerpt itself (if the excerpt uses a "
@@ -163,19 +148,12 @@ def language_check(text: str, lang: str, markers: dict):
     return other <= mine
 
 
-def tense_check_fr(text: str) -> bool:
-    """True when no unambiguous passé simple or imparfait form is found."""
-    return not bool(_PAST_TENSE_FR.search(text))
-
-
 def code_checks(text: str, excerpt_text: str, lang: str, rules: dict) -> dict:
     """The code checks; a check is True (passes), False (fails), or None (not checked)."""
-    tense = tense_check_fr(text) if lang == "fr" else None
     return {
         "non_empty": bool(validate._ws(text)),
         "not_longer_than_excerpt": validate.word_count(text) <= validate.word_count(excerpt_text) + 2,
         "target_language": language_check(text, lang, rules["markers"]),
-        "tense_present": tense,
     }
 
 
@@ -216,8 +194,7 @@ def _trim_prompt(text: str, current_wc: int, max_words: int, style: str, lang_cf
     user = (
         f"This '{style}' paraphrase is {current_wc} words but must be at most {max_words} words.\n\n"
         f"Text: {text}\n\n"
-        "Shorten it by removing or condensing one phrase. Keep the same tense (historic present), "
-        "genre and content. Return only the shortened text."
+        "Shorten it by removing or condensing one phrase. Keep the same genre and content. Return only the shortened text."
     )
     return system, user
 

@@ -60,8 +60,8 @@ specification wins.
 
 ## Paraphrase
 - Keeps the original genre (discourse, narrative, letter, prayer, parable),
-  is written in the present tense, and is never longer than the extract
-  (word count compared by the code). It adds no information absent from the extract.
+  and is never longer than the extract (word count compared by the code).
+  It adds no information absent from the extract.
 - Three candidates (`close`, `condensed`, `free`) are generated in ONE call.
   The code runs its checks (not longer than the extract, target language,
   non-empty), then ONE verification call by a model from a different family
