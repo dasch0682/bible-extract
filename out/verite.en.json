@@ -5,32 +5,32 @@
     "translation": "KJV 1769",
     "reference": {
       "book": "MAT",
-      "start": "14.33",
-      "end": "14.33",
-      "label": "Matthew 14:33"
+      "start": "9.37",
+      "end": "9.38",
+      "label": "Matthew 9:37-38"
     },
     "excerpt": {
-      "text": "Then they that were in the ship came and worshipped him, saying, Of a truth thou art the Son of God.",
+      "text": "Then saith he unto his disciples, The harvest truly is plenteous, but the labourers are few; Pray ye therefore the Lord of the harvest, that he will send forth labourers into his harvest.",
       "verses": [
-        "MAT.14.33"
+        "MAT.9.37",
+        "MAT.9.38"
       ]
     },
     "paraphrase": {
-      "text": "Those in the boat come and worship him, saying, 'Truly you are the Son of God.'",
-      "genre": "narrative",
+      "text": "He told his disciples the harvest is plentiful but workers few; pray the Lord of the harvest to send workers.",
+      "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "Those in the boat come and worship him, saying, 'Truly you are the Son of God.'",
+          "text": "He told his disciples the harvest is plentiful but workers few; pray the Lord of the harvest to send workers.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -44,14 +44,13 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Those in the boat worship him, declaring him the Son of God.",
+          "text": "He said the harvest is abundant but laborers are scarce, so ask the Lord to send workers.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -59,7 +58,7 @@
             "fidelity": 4,
             "completeness": 4,
             "issues": [
-              "other"
+              "addition"
             ],
             "prompt_version": "paraphrase-verify-7"
           }
@@ -67,8 +66,175 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 16 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1240182587
+        "reason": "close selected: fidelity 5 + completeness 5, 20 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 2610497533
+      }
+    },
+    "speaker": {
+      "value": "Jesus",
+      "role": "speaker",
+      "confidence": "medium",
+      "sources": [
+        "MAT.9.37",
+        "MAT.9.38",
+        "speaker-quotations:MAT.9.37-MAT.9.38"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "Jesus, moved with compassion when he saw the multitudes fainting and scattered like sheep without a shepherd, tells his disciples that the harvest is plenteous but the labourers are few, and bids them pray to the Lord of the harvest to send forth labourers.",
+        "confidence": "high",
+        "sources": [
+          "MAT.9.36",
+          "MAT.9.37",
+          "MAT.9.38"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
+      },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "The harvest truly is plenteous, but the labourers are few",
+          "date_range": {
+            "from": 27,
+            "to": 31,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:390"
+          ],
+          "event": "390"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.9.37",
+          "routes": [
+            "pattern:en"
+          ],
+          "single_route": true
+        },
+        {
+          "step": "pattern",
+          "rule": "true_word",
+          "matched": "truly",
+          "verse": "MAT.9.37"
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [],
+      "required": false
+    },
+    "sources": [
+      {
+        "id": "MAT.9.37",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "MAT.9.38",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "speaker-quotations:MAT.9.37-MAT.9.38",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "theographic:event:390",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "MAT.9.36",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "en",
+    "translation": "KJV 1769",
+    "reference": {
+      "book": "MAT",
+      "start": "14.33",
+      "end": "14.33",
+      "label": "Matthew 14:33"
+    },
+    "excerpt": {
+      "text": "Then they that were in the ship came and worshipped him, saying, Of a truth thou art the Son of God.",
+      "verses": [
+        "MAT.14.33"
+      ]
+    },
+    "paraphrase": {
+      "text": "Then those in the ship came and worshipped him, saying, Truly you are the Son of God.",
+      "genre": "narrative",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "Then those in the ship came and worshipped him, saying, Truly you are the Son of God.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Those in the ship worshipped him, saying he was truly the Son of God.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 4,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 17 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 2341422740
       }
     },
     "speaker": {
@@ -111,7 +277,7 @@
       "places": []
     },
     "discovery": {
-      "mode": "model",
+      "mode": "rules",
       "steps": [
         {
           "step": "union",
@@ -135,16 +301,6 @@
           "rule": "truth",
           "matched": "truth",
           "verse": "MAT.14.33"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "MAT.14.33",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "MAT.14.33"
-          ]
         }
       ]
     },
@@ -195,32 +351,31 @@
     "translation": "KJV 1769",
     "reference": {
       "book": "MAT",
-      "start": "22.16",
-      "end": "22.16",
-      "label": "Matthew 22:16"
+      "start": "15.27",
+      "end": "15.27",
+      "label": "Matthew 15:27"
     },
     "excerpt": {
-      "text": "And they sent out unto him their disciples with the Herodians, saying, Master, we know that thou art true, and teachest the way of God in truth, neither carest thou for any man: for thou regardest not the person of men.",
+      "text": "And she said, Truth, Lord: yet the dogs eat of the crumbs which fall from their masters’ table.",
       "verses": [
-        "MAT.22.16"
+        "MAT.15.27"
       ]
     },
     "paraphrase": {
-      "text": "They send their disciples with the Herodians to him, saying, Master, we know you are true and teach God's way in truth, and care for no man, for you do not regard men's persons.",
-      "genre": "narrative",
+      "text": "She said: true, Lord, but dogs eat crumbs falling from their masters' table.",
+      "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "They send their disciples with the Herodians to him, saying, Master, we know you are true and teach God's way in truth, and care for no man, for you do not regard men's persons.",
+          "text": "She said: true, Lord, but dogs eat crumbs falling from their masters' table.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -234,20 +389,41 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "They send disciples with the Herodians, who say he teaches God's way truly and favors no man.",
+          "text": "She agreed, yet noted dogs eat crumbs from their masters' table.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
             "verdict": "fail",
             "fidelity": 4,
-            "completeness": 3,
+            "completeness": 4,
+            "issues": [
+              "addition"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 3,
+          "style": "free",
+          "text": "The crumbs from the master's table still feed the dogs, she said.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 4,
             "issues": [
               "addition",
               "genre_changed"
@@ -258,8 +434,510 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 34 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1574324103
+        "reason": "close selected: fidelity 5 + completeness 5, 13 words; 2 other candidate(s) not selected",
+        "shuffle_seed": 583331329
+      }
+    },
+    "speaker": {
+      "value": "Canaanite mother of possessed girl",
+      "role": "speaker",
+      "confidence": "medium",
+      "sources": [
+        "MAT.15.27",
+        "speaker-quotations:MAT.15.27-MAT.15.27"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "A woman answers Jesus, replying to his saying that it is not meet to take the children's bread and cast it to dogs, by saying that the dogs eat the crumbs falling from their masters' table.",
+        "confidence": "high",
+        "sources": [
+          "MAT.15.26",
+          "MAT.15.27"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
+      },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "Healing of the Canaanite Woman's Daughter",
+          "date_range": {
+            "from": 27,
+            "to": 31,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:399"
+          ],
+          "event": "399"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.15.27",
+          "routes": [
+            "pattern:en"
+          ],
+          "single_route": true
+        },
+        {
+          "step": "pattern",
+          "rule": "truth",
+          "matched": "Truth",
+          "verse": "MAT.15.27"
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [],
+      "required": false
+    },
+    "sources": [
+      {
+        "id": "MAT.15.27",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "speaker-quotations:MAT.15.27-MAT.15.27",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "theographic:event:399",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "MAT.15.26",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "en",
+    "translation": "KJV 1769",
+    "reference": {
+      "book": "MAT",
+      "start": "17.11",
+      "end": "17.12",
+      "label": "Matthew 17:11-12"
+    },
+    "excerpt": {
+      "text": "And Jesus answered and said unto them, Elias truly shall first come, and restore all things. But I say unto you, That Elias is come already, and they knew him not, but have done unto him whatsoever they listed. Likewise shall also the Son of man suffer of them.",
+      "verses": [
+        "MAT.17.11",
+        "MAT.17.12"
+      ]
+    },
+    "paraphrase": {
+      "text": "And Jesus answered and said to them, Elijah truly will first come and restore all things. But I say to you, that Elijah has come already, and they did not know him, but did to him whatever they wanted. Likewise the Son of man will also suffer from them.",
+      "genre": "discourse",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "And Jesus answered and said to them, Elijah truly will first come and restore all things. But I say to you, that Elijah has come already, and they did not know him, but did to him whatever they wanted. Likewise the Son of man will also suffer from them.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Jesus said Elijah has already come and was unrecognized, and the Son of man will likewise suffer.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 3,
+            "issues": [
+              "addition"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 49 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 1584774350
+      }
+    },
+    "speaker": {
+      "value": "Jesus",
+      "role": "speaker",
+      "confidence": "medium",
+      "sources": [
+        "MAT.17.11",
+        "MAT.17.12",
+        "speaker-quotations:MAT.17.11-MAT.17.12"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "Jesus answers his disciples' question about why the scribes say Elias must first come, telling them that Elias has already come and was not recognized, and that the Son of man will likewise suffer.",
+        "confidence": "high",
+        "sources": [
+          "MAT.17.11",
+          "MAT.17.12"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
+      },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "The Transfiguation",
+          "date_range": {
+            "from": 27,
+            "to": 31,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:406"
+          ],
+          "event": "406"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.17.11",
+          "routes": [
+            "pattern:fr",
+            "pattern:en"
+          ],
+          "single_route": true
+        },
+        {
+          "step": "pattern",
+          "rule": "true_word",
+          "matched": "truly",
+          "verse": "MAT.17.11"
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [],
+      "required": false
+    },
+    "sources": [
+      {
+        "id": "MAT.17.11",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "MAT.17.12",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "speaker-quotations:MAT.17.11-MAT.17.12",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "theographic:event:406",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "en",
+    "translation": "KJV 1769",
+    "reference": {
+      "book": "MAT",
+      "start": "20.23",
+      "end": "20.23",
+      "label": "Matthew 20:23"
+    },
+    "excerpt": {
+      "text": "And he saith unto them, Ye shall drink indeed of my cup, and be baptized with the baptism that I am baptized with: but to sit on my right hand, and on my left, is not mine to give, but it shall be given to them for whom it is prepared of my Father.",
+      "verses": [
+        "MAT.20.23"
+      ]
+    },
+    "paraphrase": {
+      "text": "He told them they would indeed drink his cup and be baptized with his baptism, but to sit at his right and left is not his to give, but for those for whom his Father prepared it.",
+      "genre": "discourse",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "He told them they would indeed drink his cup and be baptized with his baptism, but to sit at his right and left is not his to give, but for those for whom his Father prepared it.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "He said they would share his cup and baptism, but seats at his right and left belong to those his Father has prepared them for.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 5,
+            "issues": [
+              "addition"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 37 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 2912456705
+      }
+    },
+    "speaker": {
+      "value": "Jesus",
+      "role": "speaker",
+      "confidence": "high",
+      "sources": [
+        "MAT.20.23",
+        "speaker-quotations:MAT.20.23-MAT.20.23",
+        "acai:person:Jesus.2"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "The mother of Zebedee's sons asked Jesus to let her two sons sit at his right and left in his kingdom. Jesus told them they would drink his cup and share his baptism, but that such places are given by his Father.",
+        "confidence": "high",
+        "sources": [
+          "MAT.20.20",
+          "MAT.20.21",
+          "MAT.20.22",
+          "MAT.20.23"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
+      },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "Jesus Teaches in Perea",
+          "date_range": {
+            "from": 28,
+            "to": 32,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:438"
+          ],
+          "event": "438"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.20.23",
+          "routes": [
+            "pattern:fr"
+          ],
+          "single_route": true
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [],
+      "required": false
+    },
+    "sources": [
+      {
+        "id": "MAT.20.23",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "speaker-quotations:MAT.20.23-MAT.20.23",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "acai:person:Jesus.2",
+        "type": "entity_data",
+        "dataset": "acai",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "theographic:event:438",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "MAT.20.20",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "MAT.20.21",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "MAT.20.22",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "en",
+    "translation": "KJV 1769",
+    "reference": {
+      "book": "MAT",
+      "start": "22.16",
+      "end": "22.17",
+      "label": "Matthew 22:16-17"
+    },
+    "excerpt": {
+      "text": "And they sent out unto him their disciples with the Herodians, saying, Master, we know that thou art true, and teachest the way of God in truth, neither carest thou for any man: for thou regardest not the person of men. Tell us therefore, What thinkest thou? Is it lawful to give tribute unto Cesar, or not?",
+      "verses": [
+        "MAT.22.16",
+        "MAT.22.17"
+      ]
+    },
+    "paraphrase": {
+      "text": "They sent their disciples with the Herodians to him, saying, Teacher, we know you are true and teach God's way truthfully, and do not care for any man, for you do not regard men's persons. Tell us then, what do you think? Is it lawful to give tribute to Caesar or not?",
+      "genre": "discourse",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "They sent their disciples with the Herodians to him, saying, Teacher, we know you are true and teach God's way truthfully, and do not care for any man, for you do not regard men's persons. Tell us then, what do you think? Is it lawful to give tribute to Caesar or not?",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "They asked him whether it is lawful to give tribute to Caesar.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 5,
+            "completeness": 2,
+            "issues": [
+              "other"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 52 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 1676128170
       }
     },
     "speaker": {
@@ -268,12 +946,13 @@
       "confidence": "medium",
       "sources": [
         "MAT.22.16",
+        "MAT.22.17",
         "speaker-quotations:MAT.22.16-MAT.22.17"
       ]
     },
     "context": {
       "literary": {
-        "text": "The Pharisees, seeking to entangle Jesus in his talk, sent their disciples with the Herodians to him, addressing him as Master and asking whether it is lawful to give tribute to Caesar.",
+        "text": "The Pharisees, seeking to entangle Jesus in his talk, send their disciples with the Herodians to ask him whether it is lawful to give tribute unto Cesar.",
         "confidence": "high",
         "sources": [
           "MAT.22.15",
@@ -317,7 +996,7 @@
       "places": []
     },
     "discovery": {
-      "mode": "model",
+      "mode": "rules",
       "steps": [
         {
           "step": "union",
@@ -348,30 +1027,24 @@
           "rule": "true_word",
           "matched": "true",
           "verse": "MAT.22.16"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "MAT.22.16",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "MAT.22.16"
-          ]
         }
       ]
     },
     "review": {
       "status": null,
       "note": null,
-      "flags": [
-        "genre_conflict:speaker:narrative"
-      ],
-      "required": true
+      "flags": [],
+      "required": false
     },
     "sources": [
       {
         "id": "MAT.22.16",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "MAT.22.17",
         "type": "bible_text",
         "dataset": "kjv",
         "license": "MIT (repository), text in the public domain"
@@ -411,12 +1084,470 @@
         "type": "bible_text",
         "dataset": "kjv",
         "license": "MIT (repository), text in the public domain"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "en",
+    "translation": "KJV 1769",
+    "reference": {
+      "book": "MAT",
+      "start": "26.73",
+      "end": "26.73",
+      "label": "Matthew 26:73"
+    },
+    "excerpt": {
+      "text": "And after a while came unto him they that stood by, and said to Peter, Surely thou also art one of them; for thy speech bewrayeth thee.",
+      "verses": [
+        "MAT.26.73"
+      ]
+    },
+    "paraphrase": {
+      "text": "After a while, those standing by came to him and said that surely he was also one of them, for his speech revealed it.",
+      "genre": "narrative",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "After a while, those standing by came to him and said that surely he was also one of them, for his speech revealed it.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Bystanders told him his speech proved he was one of them.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 4,
+            "issues": [
+              "addition"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 24 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 254908016
+      }
+    },
+    "speaker": {
+      "value": "high priest's servant",
+      "role": "speaker",
+      "confidence": "medium",
+      "sources": [
+        "MAT.26.73",
+        "speaker-quotations:MAT.26.73-MAT.26.73"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "Bystanders come to Peter and tell him that his speech reveals he is one of them, after he has already denied knowing Jesus twice.",
+        "confidence": "high",
+        "sources": [
+          "MAT.26.73",
+          "MAT.26.70",
+          "MAT.26.72"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
       },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "Peter's denial during Holy Week",
+          "date_range": {
+            "from": 28,
+            "to": 32,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:443"
+          ],
+          "event": "443"
+        },
+        {
+          "kind": "scholarly_estimate",
+          "label": "Jewish Trials",
+          "date_range": {
+            "from": 28,
+            "to": 32,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:455"
+          ],
+          "event": "455"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.26.73",
+          "routes": [
+            "strongs"
+          ],
+          "single_route": true
+        },
+        {
+          "step": "strongs",
+          "numbers": [
+            "G230"
+          ],
+          "verse": "MAT.26.73"
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [
+        "genre_conflict:speaker:narrative"
+      ],
+      "required": true
+    },
+    "sources": [
       {
-        "id": "MAT.22.17",
+        "id": "MAT.26.73",
         "type": "bible_text",
         "dataset": "kjv",
         "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "G230",
+        "type": "concordance",
+        "dataset": "byztxt",
+        "license": "Unlicense (public domain)"
+      },
+      {
+        "id": "speaker-quotations:MAT.26.73-MAT.26.73",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "theographic:event:443",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "theographic:event:455",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "MAT.26.70",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "MAT.26.72",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "en",
+    "translation": "KJV 1769",
+    "reference": {
+      "book": "MAT",
+      "start": "27.54",
+      "end": "27.54",
+      "label": "Matthew 27:54"
+    },
+    "excerpt": {
+      "text": "Now when the centurion, and they that were with him, watching Jesus, saw the earthquake, and those things that were done, they feared greatly, saying, Truly this was the Son of God.",
+      "verses": [
+        "MAT.27.54"
+      ]
+    },
+    "paraphrase": {
+      "text": "Seeing the earthquake and what was done, the centurion and his companions feared greatly, declaring Jesus truly the Son of God.",
+      "genre": "narrative",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "When the centurion and those with him watching Jesus saw the earthquake and what happened, they were very afraid, saying, 'Truly this was the Son of God.'",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Seeing the earthquake and what was done, the centurion and his companions feared greatly, declaring Jesus truly the Son of God.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 2,
+        "reason": "condensed selected: fidelity 5 + completeness 5, 21 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 1568170349
+      }
+    },
+    "speaker": {
+      "value": "the centurion",
+      "role": "speaker",
+      "confidence": "medium",
+      "sources": [
+        "MAT.27.54",
+        "speaker-quotations:MAT.27.54-MAT.27.54"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "While watching Jesus, the centurion and those with him saw the earthquake and the things that were done; they feared greatly and said Jesus was truly the Son of God.",
+        "confidence": "high",
+        "sources": [
+          "MAT.27.54"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
+      },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "Crucifixion and Burial",
+          "date_range": {
+            "from": 28,
+            "to": 32,
+            "era": "CE"
+          },
+          "confidence": "disputed",
+          "sources": [
+            "theographic:event:459"
+          ],
+          "event": "459",
+          "day_candidates": [
+            {
+              "date": "0030-04-07",
+              "method": "calendar_computation",
+              "assumptions": [
+                "Dates are in the Julian calendar; days begin at sunset.",
+                "Sunset is taken at 18:00 local mean time in Jerusalem (longitude 35.2 degrees east).",
+                "A month begins on the evening when the moon is at least 18 hours old at sunset (geocentric conjunction).",
+                "Nisan is the first month whose 14th day falls on or after 21 March (Julian), the spring equinox being taken at that date.",
+                "Jesus died on the 15th of Nisan, as in the other three Gospels.",
+                "A month begins on the evening when the moon is at least 24 hours old at sunset (geocentric conjunction).",
+                "Jesus died on the 14th of Nisan, as in John's Gospel."
+              ],
+              "derivations": [
+                [
+                  "Dates are in the Julian calendar; days begin at sunset.",
+                  "Sunset is taken at 18:00 local mean time in Jerusalem (longitude 35.2 degrees east).",
+                  "A month begins on the evening when the moon is at least 18 hours old at sunset (geocentric conjunction).",
+                  "Nisan is the first month whose 14th day falls on or after 21 March (Julian), the spring equinox being taken at that date.",
+                  "Jesus died on the 15th of Nisan, as in the other three Gospels."
+                ],
+                [
+                  "Dates are in the Julian calendar; days begin at sunset.",
+                  "Sunset is taken at 18:00 local mean time in Jerusalem (longitude 35.2 degrees east).",
+                  "A month begins on the evening when the moon is at least 24 hours old at sunset (geocentric conjunction).",
+                  "Nisan is the first month whose 14th day falls on or after 21 March (Julian), the spring equinox being taken at that date.",
+                  "Jesus died on the 14th of Nisan, as in John's Gospel."
+                ]
+              ],
+              "sources": [
+                "meeus:chapter-49",
+                "calendar-rules:passion"
+              ]
+            },
+            {
+              "date": "0033-04-03",
+              "method": "calendar_computation",
+              "assumptions": [
+                "Dates are in the Julian calendar; days begin at sunset.",
+                "Sunset is taken at 18:00 local mean time in Jerusalem (longitude 35.2 degrees east).",
+                "A month begins on the evening when the moon is at least 18 hours old at sunset (geocentric conjunction).",
+                "Nisan is the first month whose 14th day falls on or after 21 March (Julian), the spring equinox being taken at that date.",
+                "Jesus died on the 14th of Nisan, as in John's Gospel.",
+                "A month begins on the evening when the moon is at least 24 hours old at sunset (geocentric conjunction)."
+              ],
+              "derivations": [
+                [
+                  "Dates are in the Julian calendar; days begin at sunset.",
+                  "Sunset is taken at 18:00 local mean time in Jerusalem (longitude 35.2 degrees east).",
+                  "A month begins on the evening when the moon is at least 18 hours old at sunset (geocentric conjunction).",
+                  "Nisan is the first month whose 14th day falls on or after 21 March (Julian), the spring equinox being taken at that date.",
+                  "Jesus died on the 14th of Nisan, as in John's Gospel."
+                ],
+                [
+                  "Dates are in the Julian calendar; days begin at sunset.",
+                  "Sunset is taken at 18:00 local mean time in Jerusalem (longitude 35.2 degrees east).",
+                  "A month begins on the evening when the moon is at least 24 hours old at sunset (geocentric conjunction).",
+                  "Nisan is the first month whose 14th day falls on or after 21 March (Julian), the spring equinox being taken at that date.",
+                  "Jesus died on the 14th of Nisan, as in John's Gospel."
+                ]
+              ],
+              "sources": [
+                "meeus:chapter-49",
+                "calendar-rules:passion"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "scholarly_estimate",
+          "label": "Peter's denial during Holy Week",
+          "date_range": {
+            "from": 28,
+            "to": 32,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:443"
+          ],
+          "event": "443"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.27.54",
+          "routes": [
+            "strongs",
+            "pattern:en"
+          ],
+          "single_route": false
+        },
+        {
+          "step": "strongs",
+          "numbers": [
+            "G230"
+          ],
+          "verse": "MAT.27.54"
+        },
+        {
+          "step": "pattern",
+          "rule": "true_word",
+          "matched": "Truly",
+          "verse": "MAT.27.54"
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [
+        "genre_conflict:speaker:narrative"
+      ],
+      "required": true
+    },
+    "sources": [
+      {
+        "id": "MAT.27.54",
+        "type": "bible_text",
+        "dataset": "kjv",
+        "license": "MIT (repository), text in the public domain"
+      },
+      {
+        "id": "G230",
+        "type": "concordance",
+        "dataset": "byztxt",
+        "license": "Unlicense (public domain)"
+      },
+      {
+        "id": "speaker-quotations:MAT.27.54-MAT.27.54",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "theographic:event:459",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "theographic:event:443",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "meeus:chapter-49",
+        "type": "algorithm",
+        "dataset": "meeus-astronomical-algorithms",
+        "license": "published formulas (a book; no text or table is copied)"
+      },
+      {
+        "id": "calendar-rules:passion",
+        "type": "rules",
+        "dataset": "calendar-rules",
+        "license": "project file"
       }
     ]
   },
@@ -437,21 +1568,20 @@
       ]
     },
     "paraphrase": {
-      "text": "But the woman, fearing and trembling, knowing what is done in her, comes and falls down before him and tells him all the truth.",
+      "text": "Fearing and trembling, she came, fell before him, and told the whole truth.",
       "genre": "narrative",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "But the woman, fearing and trembling, knowing what is done in her, comes and falls down before him and tells him all the truth.",
+          "text": "The woman, afraid and trembling, knowing what was done, came and fell before him and told all the truth.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -465,31 +1595,28 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Fearing and trembling, knowing what is done in her, she comes, falls before him, and tells all the truth.",
+          "text": "Fearing and trembling, she came, fell before him, and told the whole truth.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
+            "verdict": "pass",
+            "fidelity": 5,
             "completeness": 5,
-            "issues": [
-              "other"
-            ],
+            "issues": [],
             "prompt_version": "paraphrase-verify-7"
           }
         }
       ],
       "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 24 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 708464921
+        "selected_attempt": 2,
+        "reason": "condensed selected: fidelity 5 + completeness 5, 13 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 1380613116
       }
     },
     "speaker": {
@@ -528,7 +1655,7 @@
       "places": []
     },
     "discovery": {
-      "mode": "model",
+      "mode": "rules",
       "steps": [
         {
           "step": "union",
@@ -552,16 +1679,6 @@
           "rule": "truth",
           "matched": "truth",
           "verse": "MRK.5.33"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "MRK.5.33",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "MRK.5.33"
-          ]
         }
       ]
     },
@@ -612,32 +1729,32 @@
     "translation": "KJV 1769",
     "reference": {
       "book": "MRK",
-      "start": "12.14",
-      "end": "12.14",
-      "label": "Mark 12:14"
+      "start": "10.38",
+      "end": "10.39",
+      "label": "Mark 10:38-39"
     },
     "excerpt": {
-      "text": "And when they were come, they say unto him, Master, we know that thou art true, and carest for no man: for thou regardest not the person of men, but teachest the way of God in truth: Is it lawful to give tribute to Cesar, or not?",
+      "text": "But Jesus said unto them, Ye know not what ye ask: can ye drink of the cup that I drink of? and be baptized with the baptism that I am baptized with? And they said unto him, We can. And Jesus said unto them, Ye shall indeed drink of the cup that I drink of; and with the baptism that I am baptized withal shall ye be baptized:",
       "verses": [
-        "MRK.12.14"
+        "MRK.10.38",
+        "MRK.10.39"
       ]
     },
     "paraphrase": {
-      "text": "They come and say to him: Master, we know you are true and care for no man, for you respect no person, but teach God's way in truth: is it lawful to give tribute to Caesar or not?",
+      "text": "Jesus told them they did not know what they asked, asking if they could drink his cup and share his baptism; when they said they could, he said they would indeed.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "They come and say to him: Master, we know you are true and care for no man, for you respect no person, but teach God's way in truth: is it lawful to give tribute to Caesar or not?",
+          "text": "But Jesus said to them, You do not know what you ask: can you drink of the cup that I drink of? and be baptized with the baptism that I am baptized with? And they said to him, We can. And Jesus said to them, You shall indeed drink of the cup that I drink of; and with the baptism that I am baptized with you shall be baptized:",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -651,712 +1768,13 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "They ask him whether it is lawful to give tribute to Caesar, calling him a true teacher who regards no man.",
+          "text": "Jesus told them they did not know what they asked, asking if they could drink his cup and share his baptism; when they said they could, he said they would indeed.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 3,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 38 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2562054002
-      }
-    },
-    "speaker": {
-      "value": "Master",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "MRK.12.14",
-        "speaker-quotations:MRK.12.14-MRK.12.15"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Certain Pharisees and Herodians were sent to Jesus to catch him in his words, and they asked him whether it was lawful to give tribute to Caesar.",
-        "confidence": "high",
-        "sources": [
-          "MRK.12.13",
-          "MRK.12.14"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Debates in the Temple",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:448"
-          ],
-          "event": "448"
-        },
-        {
-          "kind": "scholarly_estimate",
-          "label": "Peter's denial during Holy Week",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:443"
-          ],
-          "event": "443"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "MRK.12.14",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225",
-            "G227"
-          ],
-          "verse": "MRK.12.14"
-        },
-        {
-          "step": "pattern",
-          "rule": "truth",
-          "matched": "truth",
-          "verse": "MRK.12.14"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "MRK.12.14"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "MRK.12.14",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "MRK.12.14"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "MRK.12.14",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:MRK.12.14-MRK.12.15",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:448",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "theographic:event:443",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "MRK.12.13",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "MRK",
-      "start": "12.29",
-      "end": "12.34",
-      "label": "Mark 12:29-34"
-    },
-    "excerpt": {
-      "text": "And Jesus answered him, The first of all the commandments is, Hear, O Israel; The Lord our God is one Lord: And thou shalt love the Lord thy God with all thy heart, and with all thy soul, and with all thy mind, and with all thy strength: this is the first commandment. And the second is like, namely this, Thou shalt love thy neighbour as thyself. There is none other commandment greater than these. And the scribe said unto him, Well, Master, thou hast said the truth: for there is one God; and there is none other but he: And to love him with all the heart, and with all the understanding, and with all the soul, and with all the strength, and to love his neighbour as himself, is more than all whole burnt offerings and sacrifices. And when Jesus saw that he answered discreetly, he said unto him, Thou art not far from the kingdom of God. And no man after that durst ask him any question.",
-      "verses": [
-        "MRK.12.29",
-        "MRK.12.30",
-        "MRK.12.31",
-        "MRK.12.32",
-        "MRK.12.33",
-        "MRK.12.34"
-      ]
-    },
-    "paraphrase": {
-      "text": "Jesus answers him: the first of all commandments is, Hear, O Israel; the Lord our God is one Lord: and you love the Lord your God with all your heart, and with all your soul, and with all your mind, and with all your strength: this is the first commandment. And the second is like this, You love your neighbour as yourself. There is no other commandment greater than these. And the scribe says to him, Well, Master, you say the truth: for there is one God; and there is none other but he: and to love him with all the heart, and with all the understanding, and with all the soul, and with all the strength, and to love his neighbour as himself, is more than all whole burnt offerings and sacrifices. And when Jesus sees that he answers discreetly, he says to him, You are not far from the kingdom of God. And no man after that dares ask him any question.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Jesus answers him: the first of all commandments is, Hear, O Israel; the Lord our God is one Lord: and you love the Lord your God with all your heart, and with all your soul, and with all your mind, and with all your strength: this is the first commandment. And the second is like this, You love your neighbour as yourself. There is no other commandment greater than these. And the scribe says to him, Well, Master, you say the truth: for there is one God; and there is none other but he: and to love him with all the heart, and with all the understanding, and with all the soul, and with all the strength, and to love his neighbour as himself, is more than all whole burnt offerings and sacrifices. And when Jesus sees that he answers discreetly, he says to him, You are not far from the kingdom of God. And no man after that dares ask him any question.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Jesus says the first commandment is to hear that the Lord our God is one Lord and to love him with all heart, soul, mind, and strength, and the second is to love your neighbour as yourself, and no other commandment is greater; the scribe agrees and says this is more than all burnt offerings and sacrifices, and Jesus, seeing he answers discreetly, tells him he is not far from the kingdom of God, and no man dares ask him any question.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 4,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 164 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 3796097753
-      }
-    },
-    "speaker": {
-      "value": null,
-      "reason": "not_identified"
-    },
-    "context": {
-      "literary": {
-        "text": "A scribe asked Jesus which is the first commandment of all, and Jesus answered him, naming the love of God and the love of neighbour. The scribe agreed with Jesus' answer, and Jesus told him he was not far from the kingdom of God.",
-        "confidence": "high",
-        "sources": [
-          "MRK.12.28",
-          "MRK.12.29",
-          "MRK.12.30",
-          "MRK.12.31",
-          "MRK.12.32",
-          "MRK.12.33",
-          "MRK.12.34"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Debates in the Temple",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:448"
-          ],
-          "event": "448"
-        },
-        {
-          "kind": "scholarly_estimate",
-          "label": "Peter's denial during Holy Week",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:443"
-          ],
-          "event": "443"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "MRK.12.32",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "MRK.12.32"
-        },
-        {
-          "step": "pattern",
-          "rule": "truth",
-          "matched": "truth",
-          "verse": "MRK.12.32"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "MRK.12.32",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "MRK.12.32"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [
-        "speaker_ambiguous"
-      ],
-      "required": true
-    },
-    "sources": [
-      {
-        "id": "MRK.12.29",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "MRK.12.30",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "MRK.12.31",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "MRK.12.32",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "MRK.12.33",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "MRK.12.34",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "theographic:event:448",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "theographic:event:443",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "MRK.12.28",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "LUK",
-      "start": "20.21",
-      "end": "20.21",
-      "label": "Luke 20:21"
-    },
-    "excerpt": {
-      "text": "And they asked him, saying, Master, we know that thou sayest and teachest rightly, neither acceptest thou the person of any, but teachest the way of God truly:",
-      "verses": [
-        "LUK.20.21"
-      ]
-    },
-    "paraphrase": {
-      "text": "They ask him, saying, Master, we know that you say and teach rightly, and do not accept anyone's person, but truly teach God's way.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "They ask him, saying, Master, we know that you say and teach rightly, and do not accept anyone's person, but truly teach God's way.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "They tell him he teaches God's way truly and shows no partiality.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 3,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 24 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1021629158
-      }
-    },
-    "speaker": {
-      "value": "Master",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "LUK.20.21",
-        "speaker-quotations:LUK.20.21-LUK.20.22"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Spies sent by the chief priests and scribes question Jesus, addressing him as Master and flattering him, in order to catch him in his words.",
-        "confidence": "high",
-        "sources": [
-          "LUK.20.19",
-          "LUK.20.20",
-          "LUK.20.21"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Debates in the Temple",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:448"
-          ],
-          "event": "448"
-        },
-        {
-          "kind": "scholarly_estimate",
-          "label": "Peter's denial during Holy Week",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:443"
-          ],
-          "event": "443"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "LUK.20.21",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "LUK.20.21"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "truly",
-          "verse": "LUK.20.21"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "LUK.20.21",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "LUK.20.21"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "LUK.20.21",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:LUK.20.21-LUK.20.22",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:448",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "theographic:event:443",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "LUK.20.19",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "LUK.20.20",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "1.9",
-      "end": "1.9",
-      "label": "John 1:9"
-    },
-    "excerpt": {
-      "text": "That was the true Light, which lighteth every man that cometh into the world.",
-      "verses": [
-        "JHN.1.9"
-      ]
-    },
-    "paraphrase": {
-      "text": "The true Light lights every man coming into the world.",
-      "genre": "narrative",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "That is the true Light, which lights every man coming into the world.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "The true Light lights every man coming into the world.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 3,
-          "style": "free",
-          "text": "Coming into the world, every man is lit by the true Light.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -1370,827 +1788,8 @@
       ],
       "arbitration": {
         "selected_attempt": 2,
-        "reason": "condensed selected: fidelity 5 + completeness 5, 10 words; 2 other candidate(s) not selected",
-        "shuffle_seed": 2184685357
-      }
-    },
-    "speaker": {
-      "value": null,
-      "reason": "not_identified"
-    },
-    "context": {
-      "literary": {
-        "text": "The verses contrast John, who was sent from God to bear witness of the Light, with the true Light itself, which enlightens every man coming into the world.",
-        "confidence": "high",
-        "sources": [
-          "JHN.1.6",
-          "JHN.1.7",
-          "JHN.1.8",
-          "JHN.1.9"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.1.9",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G228"
-          ],
-          "verse": "JHN.1.9"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.1.9"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.1.9",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.1.9"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [
-        "speaker_not_identified"
-      ],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.1.9",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G228",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "JHN.1.6",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.1.7",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.1.8",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "1.14",
-      "end": "1.18",
-      "label": "John 1:14-18"
-    },
-    "excerpt": {
-      "text": "And the Word was made flesh, and dwelt among us, (and we beheld his glory, the glory as of the only begotten of the Father,) full of grace and truth. John bare witness of him, and cried, saying, This was he of whom I spake, He that cometh after me is preferred before me: for he was before me. And of his fulness have all we received, and grace for grace. For the law was given by Moses, but grace and truth came by Jesus Christ. No man hath seen God at any time; the only begotten Son, which is in the bosom of the Father, he hath declared him.",
-      "verses": [
-        "JHN.1.14",
-        "JHN.1.15",
-        "JHN.1.16",
-        "JHN.1.17",
-        "JHN.1.18"
-      ]
-    },
-    "paraphrase": {
-      "text": "The Word becomes flesh and dwells among us, and we behold his glory, the glory as of the only begotten of the Father, full of grace and truth. John bears witness of him and cries, saying, This is he of whom I speak: He that comes after me is preferred before me, for he is before me. And of his fullness all we receive, and grace for grace. For the law is given by Moses, but grace and truth come by Jesus Christ. No man has seen God at any time; the only begotten Son, which is in the bosom of the Father, he has declared him.",
-      "genre": "narrative",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "The Word becomes flesh and dwells among us, and we behold his glory, the glory as of the only begotten of the Father, full of grace and truth. John bears witness of him and cries, saying, This is he of whom I speak: He that comes after me is preferred before me, for he is before me. And of his fullness all we receive, and grace for grace. For the law is given by Moses, but grace and truth come by Jesus Christ. No man has seen God at any time; the only begotten Son, which is in the bosom of the Father, he has declared him.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "The Word becomes flesh and dwells among us, full of grace and truth, and John bears witness that he who comes after him is preferred before him, and of his fullness all receive grace for grace, for the law is given by Moses but grace and truth come by Jesus Christ, and the only begotten Son in the bosom of the Father has declared him.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 3,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 107 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 3443940462
-      }
-    },
-    "speaker": {
-      "value": "John the Baptist",
-      "role": "speaker",
-      "confidence": "low",
-      "sources": [
-        "JHN.1.15",
-        "speaker-quotations:JHN.1.15-JHN.1.15"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "The evangelist testifies that the Word became flesh and dwelt among us, and John bore witness of him, crying that he who comes after him is preferred before him. Through Jesus Christ came grace and truth, and the only begotten Son has declared God.",
-        "confidence": "medium",
-        "sources": [
-          "JHN.1.14",
-          "JHN.1.15",
-          "JHN.1.17",
-          "JHN.1.18"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "John's Witness",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:269"
-          ],
-          "event": "269"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.1.14",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "JHN.1.14"
-        },
-        {
-          "step": "pattern",
-          "rule": "truth",
-          "matched": "truth",
-          "verse": "JHN.1.14"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.1.14",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.1.14"
-          ]
-        },
-        {
-          "step": "union",
-          "verse": "JHN.1.17",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "JHN.1.17"
-        },
-        {
-          "step": "pattern",
-          "rule": "truth",
-          "matched": "truth",
-          "verse": "JHN.1.17"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.1.17",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.1.17"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [
-        "speaker_partial_coverage",
-        "genre_conflict:speaker:narrative"
-      ],
-      "required": true
-    },
-    "sources": [
-      {
-        "id": "JHN.1.14",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.1.15",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.1.16",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.1.17",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.1.18",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.1.15-JHN.1.15",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:269",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "3.21",
-      "end": "3.21",
-      "label": "John 3:21"
-    },
-    "excerpt": {
-      "text": "But he that doeth truth cometh to the light, that his deeds may be made manifest, that they are wrought in God.",
-      "verses": [
-        "JHN.3.21"
-      ]
-    },
-    "paraphrase": {
-      "text": "Whoever does truth comes to the light so his deeds show they are done in God.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "But whoever does truth comes to the light, so his deeds are shown to be done in God.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Whoever does truth comes to the light so his deeds show they are done in God.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 2,
-        "reason": "condensed selected: fidelity 5 + completeness 5, 16 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2874612825
-      }
-    },
-    "speaker": {
-      "value": "Jesus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.3.21",
-        "speaker-quotations:JHN.3.10-JHN.3.21"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "In a discourse contrasting those who do evil and avoid the light with those who do truth and come to the light, the speaker states that he who doeth truth cometh to the light so his deeds may be made manifest as wrought in God.",
-        "confidence": "medium",
-        "sources": [
-          "JHN.3.20",
-          "JHN.3.21"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Jesus and Nicodemus",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:274"
-          ],
-          "event": "274"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.3.21",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "JHN.3.21"
-        },
-        {
-          "step": "pattern",
-          "rule": "truth",
-          "matched": "truth",
-          "verse": "JHN.3.21"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.3.21",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.3.21"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.3.21",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.3.10-JHN.3.21",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:274",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "JHN.3.20",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "3.33",
-      "end": "3.33",
-      "label": "John 3:33"
-    },
-    "excerpt": {
-      "text": "He that hath received his testimony hath set to his seal that God is true.",
-      "verses": [
-        "JHN.3.33"
-      ]
-    },
-    "paraphrase": {
-      "text": "Whoever receives his testimony seals that God is true.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Whoever receives his testimony seals that God is true.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Receiving his testimony confirms God is true.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 4,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 3,
-          "style": "free",
-          "text": "God is true—his testimony proves it.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 4,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 9 words; 2 other candidate(s) not selected",
-        "shuffle_seed": 3185194223
-      }
-    },
-    "speaker": {
-      "value": "John the Baptist",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.3.33",
-        "speaker-quotations:JHN.3.27-JHN.3.36"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "The speaker continues a discourse about the one who comes from above and testifies of what he has seen and heard, declaring that whoever receives his testimony confirms that God is true.",
-        "confidence": "medium",
-        "sources": [
-          "JHN.3.32",
-          "JHN.3.33"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "John the Baptist Witnesses",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:275"
-          ],
-          "event": "275"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.3.33",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.3.33"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.3.33"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.3.33",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.3.33"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.3.33",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.3.27-JHN.3.36",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:275",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "JHN.3.32",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "4.16",
-      "end": "4.18",
-      "label": "John 4:16-18"
-    },
-    "excerpt": {
-      "text": "Jesus saith unto her, Go, call thy husband, and come hither. The woman answered and said, I have no husband. Jesus said unto her, Thou hast well said, I have no husband: For thou hast had five husbands; and he whom thou now hast is not thy husband: in that saidst thou truly.",
-      "verses": [
-        "JHN.4.16",
-        "JHN.4.17",
-        "JHN.4.18"
-      ]
-    },
-    "paraphrase": {
-      "text": "Jesus says to her, 'Go, call your husband and come here.' She answers, 'I have no husband.' Jesus says, 'You say well, I have no husband, for you have had five husbands, and he whom you now have is not your husband; in that you say truly.'",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Jesus says to her, 'Go, call your husband and come here.' She answers, 'I have no husband.' Jesus says, 'You say well, I have no husband, for you have had five husbands, and he whom you now have is not your husband; in that you say truly.'",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Jesus tells a woman to call her husband; she says she has none, and he replies that she has had five, and the one she now has is not her husband.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 4,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 47 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2678819577
+        "reason": "condensed selected: fidelity 5 + completeness 5, 31 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 4257910679
       }
     },
     "speaker": {
@@ -2198,22 +1797,22 @@
       "role": "speaker",
       "confidence": "high",
       "sources": [
-        "JHN.4.16",
-        "JHN.4.17",
-        "JHN.4.18",
-        "speaker-quotations:JHN.4.16-JHN.4.17",
-        "speaker-quotations:JHN.4.18-JHN.4.18",
+        "MRK.10.38",
+        "MRK.10.39",
+        "speaker-quotations:MRK.10.38-MRK.10.39",
         "acai:person:Jesus.2"
       ]
     },
     "context": {
       "literary": {
-        "text": "Jesus tells the woman to go call her husband, and she replies that she has none. Jesus then says she has had five husbands and the man she now has is not her husband.",
+        "text": "James and John asked Jesus to grant them places at his right and left hand in his glory. Jesus responded that they did not know what they asked, questioning whether they could drink his cup and be baptized with his baptism; they answered that they could.",
         "confidence": "high",
         "sources": [
-          "JHN.4.16",
-          "JHN.4.17",
-          "JHN.4.18"
+          "MRK.10.35",
+          "MRK.10.36",
+          "MRK.10.37",
+          "MRK.10.38",
+          "MRK.10.39"
         ],
         "confidence_by": "model",
         "model": "deepseek/deepseek-v4.1-flash",
@@ -2222,866 +1821,31 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "Jesus and the Samaritan woman at the well",
+          "label": "Jesus Teaches in Perea",
           "date_range": {
-            "from": 25,
-            "to": 29,
+            "from": 28,
+            "to": 32,
             "era": "CE"
           },
           "confidence": "probable",
           "sources": [
-            "theographic:event:278"
+            "theographic:event:438"
           ],
-          "event": "278"
+          "event": "438"
         }
       ],
       "places": []
     },
     "discovery": {
-      "mode": "model",
+      "mode": "rules",
       "steps": [
         {
           "step": "union",
-          "verse": "JHN.4.18",
+          "verse": "MRK.10.39",
           "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.4.18"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "truly",
-          "verse": "JHN.4.18"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.4.18",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.4.18"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.4.16",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.4.17",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.4.18",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.16-JHN.4.17",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.18-JHN.4.18",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "acai:person:Jesus.2",
-        "type": "entity_data",
-        "dataset": "acai",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "theographic:event:278",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "4.23",
-      "end": "4.23",
-      "label": "John 4:23"
-    },
-    "excerpt": {
-      "text": "But the hour cometh, and now is, when the true worshippers shall worship the Father in spirit and in truth: for the Father seeketh such to worship him.",
-      "verses": [
-        "JHN.4.23"
-      ]
-    },
-    "paraphrase": {
-      "text": "But the hour comes, and now is, when true worshippers worship the Father in spirit and truth, for the Father seeks such to worship him.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "But the hour comes, and now is, when true worshippers worship the Father in spirit and truth, for the Father seeks such to worship him.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "The hour comes when true worshippers worship the Father in spirit and truth, as he seeks.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 3,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 25 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 3558641908
-      }
-    },
-    "speaker": {
-      "value": "Jesus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.4.23",
-        "speaker-quotations:JHN.4.21-JHN.4.24"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jesus speaks to a woman about worship, telling her the hour is coming when true worshippers will worship the Father in spirit and in truth.",
-        "confidence": "high",
-        "sources": [
-          "JHN.4.21",
-          "JHN.4.23"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Jesus and the Samaritan woman at the well",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:278"
-          ],
-          "event": "278"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.4.23",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225",
-            "G228"
-          ],
-          "verse": "JHN.4.23"
-        },
-        {
-          "step": "pattern",
-          "rule": "truth",
-          "matched": "truth",
-          "verse": "JHN.4.23"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.4.23"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.4.23",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.4.23"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.4.23",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "G228",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.21-JHN.4.24",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:278",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "JHN.4.21",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "4.24",
-      "end": "4.24",
-      "label": "John 4:24"
-    },
-    "excerpt": {
-      "text": "God is a Spirit: and they that worship him must worship him in spirit and in truth.",
-      "verses": [
-        "JHN.4.24"
-      ]
-    },
-    "paraphrase": {
-      "text": "God is a Spirit, and his worshipers must worship in spirit and truth.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "God is a Spirit, and his worshipers must worship in spirit and truth.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "God is Spirit, so worship must be in spirit and truth.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 3,
-          "style": "free",
-          "text": "Worship in spirit and truth, for God is Spirit.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "genre_changed"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 13 words; 2 other candidate(s) not selected",
-        "shuffle_seed": 1095018972
-      }
-    },
-    "speaker": {
-      "value": "Jesus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.4.24",
-        "speaker-quotations:JHN.4.21-JHN.4.24"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jesus speaks to a woman, telling her that God is a Spirit and that true worshippers must worship him in spirit and in truth.",
-        "confidence": "high",
-        "sources": [
-          "JHN.4.21",
-          "JHN.4.24",
-          "JHN.4.25"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Jesus and the Samaritan woman at the well",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:278"
-          ],
-          "event": "278"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.4.24",
-          "routes": [
-            "strongs",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "JHN.4.24"
-        },
-        {
-          "step": "pattern",
-          "rule": "truth",
-          "matched": "truth",
-          "verse": "JHN.4.24"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.4.24",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.4.24"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.4.24",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.21-JHN.4.24",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:278",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "JHN.4.21",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.4.25",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "4.37",
-      "end": "4.38",
-      "label": "John 4:37-38"
-    },
-    "excerpt": {
-      "text": "And herein is that saying true, One soweth, and another reapeth. I sent you to reap that whereon ye bestowed no labour: other men laboured, and ye are entered into their labours.",
-      "verses": [
-        "JHN.4.37",
-        "JHN.4.38"
-      ]
-    },
-    "paraphrase": {
-      "text": "Here the saying is true: one sows, another reaps. He sends them to reap what they do not labor for; others labor, and they enter their labors.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Here the saying is true: one sows, another reaps. He sends them to reap what they do not labor for; others labor, and they enter their labors.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "One sows and another reaps: he sends them to reap where others labor.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 3,
-            "completeness": 3,
-            "issues": [
-              "addition",
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 27 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2825214801
-      }
-    },
-    "speaker": {
-      "value": "Jesus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.4.37",
-        "JHN.4.38",
-        "speaker-quotations:JHN.4.34-JHN.4.38"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jesus speaks to his disciples, continuing the harvest metaphor: he tells them he sent them to reap where they did not labour, since other men laboured and they have entered into their labours.",
-        "confidence": "high",
-        "sources": [
-          "JHN.4.37",
-          "JHN.4.38"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Jesus and the Samaritan woman at the well",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:278"
-          ],
-          "event": "278"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.4.37",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G228"
-          ],
-          "verse": "JHN.4.37"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.4.37"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.4.37",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.4.37"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.4.37",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.4.38",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G228",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.34-JHN.4.38",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:278",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "4.42",
-      "end": "4.42",
-      "label": "John 4:42"
-    },
-    "excerpt": {
-      "text": "And said unto the woman, Now we believe, not because of thy saying: for we have heard him ourselves, and know that this is indeed the Christ, the Saviour of the world.",
-      "verses": [
-        "JHN.4.42"
-      ]
-    },
-    "paraphrase": {
-      "text": "They say to the woman that now they believe not because of her word, for they hear him themselves and know he is truly the Christ, the Saviour of the world.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "They say to the woman that now they believe not because of her word, for they hear him themselves and know he is truly the Christ, the Saviour of the world.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "They tell the woman they believe not because of her saying, for they hear and know he is the Christ.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 5,
-            "completeness": 3,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 31 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2644107439
-      }
-    },
-    "speaker": {
-      "value": "many Samaritans",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.4.42",
-        "speaker-quotations:JHN.4.42-JHN.4.42"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "The Samaritans of the city, having heard Jesus themselves during his two-day stay, tell the woman that they now believe not because of her testimony but because they know he is the Christ, the Saviour of the world.",
-        "confidence": "high",
-        "sources": [
-          "JHN.4.39",
-          "JHN.4.40",
-          "JHN.4.41",
-          "JHN.4.42"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Jesus and the Samaritan woman at the well",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:278"
-          ],
-          "event": "278"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.4.42",
-          "routes": [
-            "strongs",
             "pattern:fr"
           ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G230"
-          ],
-          "verse": "JHN.4.42"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.4.42",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.4.42"
-          ]
+          "single_route": true
         }
       ]
     },
@@ -3093,502 +1857,19 @@
     },
     "sources": [
       {
-        "id": "JHN.4.42",
+        "id": "MRK.10.38",
         "type": "bible_text",
         "dataset": "kjv",
         "license": "MIT (repository), text in the public domain"
       },
       {
-        "id": "G230",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.42-JHN.4.42",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:278",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "JHN.4.39",
+        "id": "MRK.10.39",
         "type": "bible_text",
         "dataset": "kjv",
         "license": "MIT (repository), text in the public domain"
       },
       {
-        "id": "JHN.4.40",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.4.41",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "5.31",
-      "end": "5.33",
-      "label": "John 5:31-33"
-    },
-    "excerpt": {
-      "text": "If I bear witness of myself, my witness is not true. There is another that beareth witness of me; and I know that the witness which he witnesseth of me is true. Ye sent unto John, and he bare witness unto the truth.",
-      "verses": [
-        "JHN.5.31",
-        "JHN.5.32",
-        "JHN.5.33"
-      ]
-    },
-    "paraphrase": {
-      "text": "If he bears witness of himself, his witness is not true. Another bears witness of him, and he knows that witness is true. You send to John, and he bears witness to the truth.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "If he bears witness of himself, his witness is not true. Another bears witness of him, and he knows that witness is true. You send to John, and he bears witness to the truth.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "He says that self-witness is untrue, another's witness is true, and John, whom they send to, bears witness to the truth.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 34 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2854345167
-      }
-    },
-    "speaker": {
-      "value": "Jesus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.5.31",
-        "JHN.5.32",
-        "JHN.5.33",
-        "speaker-quotations:JHN.5.19-JHN.5.47"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jesus speaks to his hearers about testimony concerning himself. He says that if he bears witness of himself his witness is not true, but there is another who bears witness of him, and notes that they sent unto John, who bare witness unto the truth.",
-        "confidence": "high",
-        "sources": [
-          "JHN.5.31",
-          "JHN.5.32",
-          "JHN.5.33"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Bethesda pool healing",
-          "date_range": {
-            "from": 26,
-            "to": 30,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:291"
-          ],
-          "event": "291"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.5.31",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.5.31"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.5.31"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.5.31",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.5.31",
-            "JHN.5.32",
-            "JHN.5.33"
-          ]
-        },
-        {
-          "step": "union",
-          "verse": "JHN.5.32",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.5.32"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.5.32"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.5.32",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.5.32"
-          ]
-        },
-        {
-          "step": "union",
-          "verse": "JHN.5.33",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "JHN.5.33"
-        },
-        {
-          "step": "pattern",
-          "rule": "truth",
-          "matched": "truth",
-          "verse": "JHN.5.33"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.5.33",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.5.33"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.5.31",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.5.32",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.5.33",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.5.19-JHN.5.47",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:291",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "6.32",
-      "end": "6.33",
-      "label": "John 6:32-33"
-    },
-    "excerpt": {
-      "text": "Then Jesus said unto them, Verily, verily, I say unto you, Moses gave you not that bread from heaven; but my Father giveth you the true bread from heaven. For the bread of God is he which cometh down from heaven, and giveth life unto the world.",
-      "verses": [
-        "JHN.6.32",
-        "JHN.6.33"
-      ]
-    },
-    "paraphrase": {
-      "text": "Then Jesus says to them, truly, truly, he says to you, Moses does not give you that bread from heaven, but his Father gives you the true bread from heaven. For the bread of God is he who comes down from heaven and gives life to the world.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Then Jesus says to them, truly, truly, he says to you, Moses does not give you that bread from heaven, but his Father gives you the true bread from heaven. For the bread of God is he who comes down from heaven and gives life to the world.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Jesus says that Moses does not give them the bread from heaven, but his Father gives the true bread that comes down and gives life.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 48 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2936923544
-      }
-    },
-    "speaker": {
-      "value": "Jesus",
-      "role": "speaker",
-      "confidence": "high",
-      "sources": [
-        "JHN.6.32",
-        "JHN.6.33",
-        "speaker-quotations:JHN.6.32-JHN.6.33",
-        "acai:person:Jesus.2"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jesus speaks to the people who asked him for a sign and cited the manna their fathers ate in the desert. He tells them that Moses did not give the true bread from heaven, but his Father gives the true bread, which comes down from heaven and gives life to the world.",
-        "confidence": "high",
-        "sources": [
-          "JHN.6.31",
-          "JHN.6.32",
-          "JHN.6.33"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Jesus the true bread from heaven",
-          "date_range": {
-            "from": 27,
-            "to": 31,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:397"
-          ],
-          "event": "397"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.6.32",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G228"
-          ],
-          "verse": "JHN.6.32"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.6.32"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.6.32",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.6.32"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.6.32",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.6.33",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G228",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.6.32-JHN.6.33",
+        "id": "speaker-quotations:MRK.10.38-MRK.10.39",
         "type": "speaker_data",
         "dataset": "speaker-quotations",
         "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
@@ -3600,652 +1881,28 @@
         "license": "CC-BY-SA-4.0"
       },
       {
-        "id": "theographic:event:397",
+        "id": "theographic:event:438",
         "type": "event_data",
         "dataset": "theographic",
         "license": "CC-BY-SA-4.0"
       },
       {
-        "id": "JHN.6.31",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "7.18",
-      "end": "7.18",
-      "label": "John 7:18"
-    },
-    "excerpt": {
-      "text": "He that speaketh of himself seeketh his own glory: but he that seeketh his glory that sent him, the same is true, and no unrighteousness is in him.",
-      "verses": [
-        "JHN.7.18"
-      ]
-    },
-    "paraphrase": {
-      "text": "Whoever speaks from himself seeks his own glory, but whoever seeks the glory of the one who sends him is true, and no unrighteousness is in him.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Whoever speaks from himself seeks his own glory, but whoever seeks the glory of the one who sends him is true, and no unrighteousness is in him.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "The one speaking from himself seeks his own glory; the one seeking the sender's glory is true and unrighteous in nothing.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 27 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 29552992
-      }
-    },
-    "speaker": {
-      "value": "Jesus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.7.18",
-        "speaker-quotations:JHN.7.16-JHN.7.19"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jesus answers the Jews who marvelled at his learning, teaching that his doctrine comes from God who sent him, and that whoever seeks God's glory is true.",
-        "confidence": "high",
-        "sources": [
-          "JHN.7.15",
-          "JHN.7.16",
-          "JHN.7.18"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.7.18",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.7.18"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.7.18"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.7.18",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.7.18"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.7.18",
+        "id": "MRK.10.35",
         "type": "bible_text",
         "dataset": "kjv",
         "license": "MIT (repository), text in the public domain"
       },
       {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.7.16-JHN.7.19",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "JHN.7.15",
+        "id": "MRK.10.36",
         "type": "bible_text",
         "dataset": "kjv",
         "license": "MIT (repository), text in the public domain"
       },
       {
-        "id": "JHN.7.16",
+        "id": "MRK.10.37",
         "type": "bible_text",
         "dataset": "kjv",
         "license": "MIT (repository), text in the public domain"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "7.28",
-      "end": "7.29",
-      "label": "John 7:28-29"
-    },
-    "excerpt": {
-      "text": "Then cried Jesus in the temple as he taught, saying, Ye both know me, and ye know whence I am: and I am not come of myself, but he that sent me is true, whom ye know not. But I know him: for I am from him, and he hath sent me.",
-      "verses": [
-        "JHN.7.28",
-        "JHN.7.29"
-      ]
-    },
-    "paraphrase": {
-      "text": "Jesus teaches in the temple that they know him and his origin, but do not know the true one who sent him, whom he knows.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Jesus cries out in the temple as he teaches, saying, 'You both know me and know where I am from; I do not come of myself, but he who sent me is true, whom you do not know. But I know him, for I am from him, and he sends me.'",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Jesus teaches in the temple that they know him and his origin, but do not know the true one who sent him, whom he knows.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 2,
-        "reason": "condensed selected: fidelity 4 + completeness 5, 25 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2773122054
-      }
-    },
-    "speaker": {
-      "value": "Jesus",
-      "role": "speaker",
-      "confidence": "high",
-      "sources": [
-        "JHN.7.28",
-        "JHN.7.29",
-        "speaker-quotations:JHN.7.28-JHN.7.29",
-        "acai:person:Christ",
-        "acai:person:Jesus.2"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jesus cries out in the temple as he teaches, addressing those who claim to know him and his origin, and declares that he was sent by the one who is true and whom they do not know.",
-        "confidence": "high",
-        "sources": [
-          "JHN.7.28",
-          "JHN.7.29"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.7.28",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G228"
-          ],
-          "verse": "JHN.7.28"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.7.28"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.7.28",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.7.28"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.7.28",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.7.29",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G228",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.7.28-JHN.7.29",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "acai:person:Christ",
-        "type": "entity_data",
-        "dataset": "acai",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "acai:person:Jesus.2",
-        "type": "entity_data",
-        "dataset": "acai",
-        "license": "CC-BY-SA-4.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "en",
-    "translation": "KJV 1769",
-    "reference": {
-      "book": "JHN",
-      "start": "8.13",
-      "end": "8.18",
-      "label": "John 8:13-18"
-    },
-    "excerpt": {
-      "text": "The Pharisees therefore said unto him, Thou bearest record of thyself; thy record is not true. Jesus answered and said unto them, Though I bear record of myself, yet my record is true: for I know whence I came, and whither I go; but ye cannot tell whence I come, and whither I go. Ye judge after the flesh; I judge no man. And yet if I judge, my judgment is true: for I am not alone, but I and the Father that sent me. It is also written in your law, that the testimony of two men is true. I am one that bear witness of myself, and the Father that sent me beareth witness of me.",
-      "verses": [
-        "JHN.8.13",
-        "JHN.8.14",
-        "JHN.8.15",
-        "JHN.8.16",
-        "JHN.8.17",
-        "JHN.8.18"
-      ]
-    },
-    "paraphrase": {
-      "text": "The Pharisees say to him, 'You bear witness of yourself; your witness is not true.' Jesus answers them, 'Though I bear witness of myself, my witness is true, for I know where I come from and where I go, but you cannot tell where I come from and where I go. You judge after the flesh; I judge no one. Yet if I judge, my judgment is true, for I am not alone, but I and the Father who sent me. It is also written in your law that the testimony of two men is true. I am one who bears witness of myself, and the Father who sent me bears witness of me.'",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "The Pharisees say to him, 'You bear witness of yourself; your witness is not true.' Jesus answers them, 'Though I bear witness of myself, my witness is true, for I know where I come from and where I go, but you cannot tell where I come from and where I go. You judge after the flesh; I judge no one. Yet if I judge, my judgment is true, for I am not alone, but I and the Father who sent me. It is also written in your law that the testimony of two men is true. I am one who bears witness of myself, and the Father who sent me bears witness of me.'",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "The Pharisees tell him his self-witness is false, but Jesus replies that his witness is true because he knows his origin and destination, he judges not by flesh but truly, and the Father who sent him testifies with him, as the law requires two witnesses.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": null
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 4,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 114 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1332921522
-      }
-    },
-    "speaker": {
-      "value": null,
-      "reason": "not_identified"
-    },
-    "context": {
-      "literary": {
-        "text": "The Pharisees accuse Jesus that his record of himself is not true, and Jesus answers them, defending his testimony and citing the law that the testimony of two men is true.",
-        "confidence": "high",
-        "sources": [
-          "JHN.8.13",
-          "JHN.8.14",
-          "JHN.8.17",
-          "JHN.8.18"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Light of the World/I am discourse",
-          "date_range": {
-            "from": 27,
-            "to": 31,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:420"
-          ],
-          "event": "420"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.8.13",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.8.13"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.8.13"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.8.13",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.8.13",
-            "JHN.8.14"
-          ]
-        },
-        {
-          "step": "union",
-          "verse": "JHN.8.14",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.8.14"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.8.14"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.8.14",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.8.14"
-          ]
-        },
-        {
-          "step": "union",
-          "verse": "JHN.8.16",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.8.16"
-        },
-        {
-          "step": "pattern",
-          "rule": "true_word",
-          "matched": "true",
-          "verse": "JHN.8.16"
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.8.16",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.8.16"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [
-        "speaker_ambiguous"
-      ],
-      "required": true
-    },
-    "sources": [
-      {
-        "id": "JHN.8.13",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.8.14",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.8.15",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.8.16",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.8.17",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "JHN.8.18",
-        "type": "bible_text",
-        "dataset": "kjv",
-        "license": "MIT (repository), text in the public domain"
-      },
-      {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "theographic:event:420",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
       }
     ]
   }

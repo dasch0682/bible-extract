@@ -5,6 +5,181 @@
     "translation": "LSG 1910",
     "reference": {
       "book": "MAT",
+      "start": "9.37",
+      "end": "9.38",
+      "label": "Matthieu 9,37-38"
+    },
+    "excerpt": {
+      "text": "Alors il dit à ses disciples: La moisson est grande, mais il y a peu d’ouvriers. Priez donc le maître de la moisson d’envoyer des ouvriers dans sa moisson.",
+      "verses": [
+        "MAT.9.37",
+        "MAT.9.38"
+      ]
+    },
+    "paraphrase": {
+      "text": "Il dit à ses disciples de prier le maître d'envoyer des ouvriers, car la moisson est grande mais les ouvriers sont peu nombreux.",
+      "genre": "discourse",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "Il dit à ses disciples que la moisson est grande mais qu'il y a peu d'ouvriers, et de prier le maître de la moisson d'envoyer des ouvriers.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 5,
+            "issues": [
+              "other"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Il dit à ses disciples de prier le maître d'envoyer des ouvriers, car la moisson est grande mais les ouvriers sont peu nombreux.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 5,
+            "issues": [
+              "other"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 2,
+        "reason": "condensed selected: fidelity 4 + completeness 5, 23 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 497103851
+      }
+    },
+    "speaker": {
+      "value": "Jésus",
+      "role": "speaker",
+      "confidence": "medium",
+      "sources": [
+        "MAT.9.37",
+        "MAT.9.38",
+        "speaker-quotations:MAT.9.37-MAT.9.38"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "Jésus, voyant la foule languissante et abattue comme des brebis sans berger, s'adresse à ses disciples pour leur dire que la moisson est grande mais qu'il y a peu d'ouvriers, et les invite à prier le maître de la moisson.",
+        "confidence": "high",
+        "sources": [
+          "MAT.9.36",
+          "MAT.9.37",
+          "MAT.9.38"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
+      },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "3e tournée en Galilée",
+          "date_range": {
+            "from": 27,
+            "to": 31,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:390"
+          ],
+          "event": "390"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.9.37",
+          "routes": [
+            "pattern:en"
+          ],
+          "single_route": true
+        },
+        {
+          "step": "exclusion_check",
+          "verse": "MAT.9.37",
+          "rules": [
+            "amen_formula"
+          ],
+          "found": [],
+          "excluded": false
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [],
+      "required": false
+    },
+    "sources": [
+      {
+        "id": "MAT.9.37",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      },
+      {
+        "id": "MAT.9.38",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      },
+      {
+        "id": "speaker-quotations:MAT.9.37-MAT.9.38",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "theographic:event:390",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "MAT.9.36",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "fr",
+    "translation": "LSG 1910",
+    "reference": {
+      "book": "MAT",
       "start": "14.33",
       "end": "14.33",
       "label": "Matthieu 14,33"
@@ -16,21 +191,20 @@
       ]
     },
     "paraphrase": {
-      "text": "Ceux dans la barque viennent se prosterner devant Jésus et disent qu'il est vraiment le Fils de Dieu.",
+      "text": "Devant Jésus, les occupants de la barque s'inclinèrent en affirmant qu'il était vraiment le Fils de Dieu.",
       "genre": "narrative",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "Ceux dans la barque viennent se prosterner devant Jésus et disent qu'il est vraiment le Fils de Dieu.",
+          "text": "Ceux qui étaient dans la barque vinrent se prosterner devant Jésus et dirent qu'il était vraiment le Fils de Dieu.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -44,14 +218,13 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Ceux dans la barque se prosternent et disent à Jésus qu'il est le Fils de Dieu.",
+          "text": "Ceux de la barque se prosternèrent devant Jésus en le proclamant Fils de Dieu.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -59,7 +232,7 @@
             "fidelity": 4,
             "completeness": 4,
             "issues": [
-              "other"
+              "addition"
             ],
             "prompt_version": "paraphrase-verify-7"
           }
@@ -67,31 +240,28 @@
         {
           "attempt": 3,
           "style": "free",
-          "text": "Devant Jésus, les gens de la barque s'inclinent et proclament qu'il est vraiment le Fils de Dieu.",
+          "text": "Devant Jésus, les occupants de la barque s'inclinèrent en affirmant qu'il était vraiment le Fils de Dieu.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 4,
-            "issues": [
-              "other"
-            ],
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
             "prompt_version": "paraphrase-verify-7"
           }
         }
       ],
       "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 18 words; 2 other candidate(s) not selected",
-        "shuffle_seed": 1142704840
+        "selected_attempt": 3,
+        "reason": "free selected: fidelity 5 + completeness 5, 17 words; 2 other candidate(s) not selected",
+        "shuffle_seed": 367953818
       }
     },
     "speaker": {
@@ -136,7 +306,7 @@
       "places": []
     },
     "discovery": {
-      "mode": "model",
+      "mode": "rules",
       "steps": [
         {
           "step": "union",
@@ -169,16 +339,6 @@
           ],
           "found": [],
           "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "MAT.14.33",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "MAT.14.33"
-          ]
         }
       ]
     },
@@ -241,32 +401,31 @@
     "translation": "LSG 1910",
     "reference": {
       "book": "MAT",
-      "start": "22.16",
-      "end": "22.16",
-      "label": "Matthieu 22,16"
+      "start": "15.27",
+      "end": "15.27",
+      "label": "Matthieu 15,27"
     },
     "excerpt": {
-      "text": "Ils envoyèrent auprès de lui leurs disciples avec les hérodiens, qui dirent: Maître, nous savons que tu es vrai, et que tu enseignes la voie de Dieu selon la vérité, sans t’inquiéter de personne, car tu ne regardes pas à l’apparence des hommes.",
+      "text": "Oui, Seigneur, dit-elle, mais les petits chiens mangent les miettes qui tombent de la table de leurs maîtres.",
       "verses": [
-        "MAT.22.16"
+        "MAT.15.27"
       ]
     },
     "paraphrase": {
-      "text": "Ils envoient vers lui leurs disciples avec les hérodiens, qui disent : « Maître, nous savons que tu es vrai et que tu enseignes la voie de Dieu selon la vérité, sans t'inquiéter de personne, car tu ne regardes pas à l'apparence des hommes. »",
+      "text": "Oui, Seigneur, dit-elle, mais les petits chiens mangent les miettes tombant de la table de leurs maîtres.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "Ils envoient vers lui leurs disciples avec les hérodiens, qui disent : « Maître, nous savons que tu es vrai et que tu enseignes la voie de Dieu selon la vérité, sans t'inquiéter de personne, car tu ne regardes pas à l'apparence des hommes. »",
+          "text": "Oui, Seigneur, dit-elle, mais les petits chiens mangent les miettes tombant de la table de leurs maîtres.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -280,23 +439,214 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Ils envoient leurs disciples avec les hérodiens dire à celui-ci qu'il est vrai, qu'il enseigne la voie de Dieu selon la vérité, sans se soucier de personne ni de l'apparence.",
+          "text": "Elle répond au Seigneur que les petits chiens mangent les miettes de la table.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
             "verdict": "fail",
-            "fidelity": 3,
-            "completeness": 3,
+            "fidelity": 4,
+            "completeness": 5,
             "issues": [
-              "genre_changed",
-              "addition",
+              "addition"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 3,
+          "style": "free",
+          "text": "Les miettes de la table des maîtres, voilà ce que mangent les petits chiens, lui dit-elle.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 5,
+            "issues": [
+              "genre_changed"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 17 words; 2 other candidate(s) not selected",
+        "shuffle_seed": 56175512
+      }
+    },
+    "speaker": {
+      "value": "Cananéenne",
+      "role": "speaker",
+      "confidence": "medium",
+      "sources": [
+        "MAT.15.27",
+        "speaker-quotations:MAT.15.27-MAT.15.27"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "Une femme vient se prosterner devant Jésus et lui demande secours, et Jésus lui répond par une parole sur le pain des enfants et les petits chiens.",
+        "confidence": "high",
+        "sources": [
+          "MAT.15.25",
+          "MAT.15.26",
+          "MAT.15.27"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
+      },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "Guérison de la fille de la Cananéenne",
+          "date_range": {
+            "from": 27,
+            "to": 31,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:399"
+          ],
+          "event": "399"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.15.27",
+          "routes": [
+            "pattern:en"
+          ],
+          "single_route": true
+        },
+        {
+          "step": "exclusion_check",
+          "verse": "MAT.15.27",
+          "rules": [
+            "amen_formula"
+          ],
+          "found": [],
+          "excluded": false
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [],
+      "required": false
+    },
+    "sources": [
+      {
+        "id": "MAT.15.27",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      },
+      {
+        "id": "speaker-quotations:MAT.15.27-MAT.15.27",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "theographic:event:399",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "MAT.15.25",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      },
+      {
+        "id": "MAT.15.26",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "fr",
+    "translation": "LSG 1910",
+    "reference": {
+      "book": "MAT",
+      "start": "17.11",
+      "end": "17.12",
+      "label": "Matthieu 17,11-12"
+    },
+    "excerpt": {
+      "text": "Il répondit: Il est vrai qu’Élie doit venir, et rétablir toutes choses. Mais je vous dis qu’Élie est déjà venu, qu’ils ne l’ont pas reconnu, et qu’ils l’ont traité comme ils ont voulu. De même le Fils de l’homme souffrira de leur part.",
+      "verses": [
+        "MAT.17.11",
+        "MAT.17.12"
+      ]
+    },
+    "paraphrase": {
+      "text": "Il répondit qu'Élie doit venir et rétablir toutes choses, mais qu'Élie est déjà venu, qu'on ne l'a pas reconnu et qu'on l'a traité comme on a voulu ; de même le Fils de l'homme souffrira de leur part.",
+      "genre": "discourse",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "Il répondit qu'Élie doit venir et rétablir toutes choses, mais qu'Élie est déjà venu, qu'on ne l'a pas reconnu et qu'on l'a traité comme on a voulu ; de même le Fils de l'homme souffrira de leur part.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Il déclare qu'Élie est déjà venu sans être reconnu, et que le Fils de l'homme souffrira de même.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 5,
+            "completeness": 2,
+            "issues": [
               "other"
             ],
             "prompt_version": "paraphrase-verify-7"
@@ -305,8 +655,374 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 45 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 3910545665
+        "reason": "close selected: fidelity 5 + completeness 5, 38 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 2775940832
+      }
+    },
+    "speaker": {
+      "value": "Jésus",
+      "role": "speaker",
+      "confidence": "medium",
+      "sources": [
+        "MAT.17.11",
+        "MAT.17.12",
+        "speaker-quotations:MAT.17.11-MAT.17.12"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "Jésus répond aux disciples qui lui demandent pourquoi les scribes disent qu'Élie doit venir premièrement. Il leur dit qu'Élie est déjà venu et qu'ils ne l'ont pas reconnu.",
+        "confidence": "high",
+        "sources": [
+          "MAT.17.10",
+          "MAT.17.11",
+          "MAT.17.12"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
+      },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "La Transfiguration",
+          "date_range": {
+            "from": 27,
+            "to": 31,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:406"
+          ],
+          "event": "406"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.17.11",
+          "routes": [
+            "pattern:fr",
+            "pattern:en"
+          ],
+          "single_route": true
+        },
+        {
+          "step": "pattern",
+          "rule": "vrai",
+          "matched": "vrai",
+          "verse": "MAT.17.11"
+        },
+        {
+          "step": "exclusion_check",
+          "verse": "MAT.17.11",
+          "rules": [
+            "amen_formula"
+          ],
+          "found": [],
+          "excluded": false
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [],
+      "required": false
+    },
+    "sources": [
+      {
+        "id": "MAT.17.11",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      },
+      {
+        "id": "MAT.17.12",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      },
+      {
+        "id": "speaker-quotations:MAT.17.11-MAT.17.12",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "theographic:event:406",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "MAT.17.10",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "fr",
+    "translation": "LSG 1910",
+    "reference": {
+      "book": "MAT",
+      "start": "20.23",
+      "end": "20.23",
+      "label": "Matthieu 20,23"
+    },
+    "excerpt": {
+      "text": "Et il leur répondit: Il est vrai que vous boirez ma coupe; mais pour ce qui est d’être assis à ma droite et à ma gauche, cela ne dépend pas de moi, et ne sera donné qu’à ceux à quimon Père l’a réservé.",
+      "verses": [
+        "MAT.20.23"
+      ]
+    },
+    "paraphrase": {
+      "text": "Il leur répondit qu'ils boiraient sa coupe, mais que s'asseoir à sa droite ou à sa gauche ne dépendait pas de lui, et ne serait donné qu'à ceux à qui son Père l'a réservé.",
+      "genre": "discourse",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "Il leur répondit qu'ils boiraient sa coupe, mais que s'asseoir à sa droite ou à sa gauche ne dépendait pas de lui, et ne serait donné qu'à ceux à qui son Père l'a réservé.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Il déclare que s'asseoir à sa droite ou à sa gauche ne dépend pas de lui, mais est réservé par son Père.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 3,
+            "completeness": 2,
+            "issues": [
+              "addition"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 34 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 3131052401
+      }
+    },
+    "speaker": {
+      "value": "Jésus",
+      "role": "speaker",
+      "confidence": "high",
+      "sources": [
+        "MAT.20.23",
+        "speaker-quotations:MAT.20.23-MAT.20.23",
+        "acai:person:Jesus.2"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "La mère des fils de Zébédée a demandé à Jésus que ses deux fils soient assis à sa droite et à sa gauche dans son royaume. Jésus lui répond, ainsi qu'à ses fils, que cette place ne dépend pas de lui mais sera donnée à ceux à qui son Père l'a réservée.",
+        "confidence": "high",
+        "sources": [
+          "MAT.20.20",
+          "MAT.20.21",
+          "MAT.20.23"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
+      },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "Jésus enseigne en Pérée",
+          "date_range": {
+            "from": 28,
+            "to": 32,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:438"
+          ],
+          "event": "438"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.20.23",
+          "routes": [
+            "pattern:fr"
+          ],
+          "single_route": true
+        },
+        {
+          "step": "pattern",
+          "rule": "vrai",
+          "matched": "vrai",
+          "verse": "MAT.20.23"
+        },
+        {
+          "step": "exclusion_check",
+          "verse": "MAT.20.23",
+          "rules": [
+            "amen_formula"
+          ],
+          "found": [],
+          "excluded": false
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [],
+      "required": false
+    },
+    "sources": [
+      {
+        "id": "MAT.20.23",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      },
+      {
+        "id": "speaker-quotations:MAT.20.23-MAT.20.23",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "acai:person:Jesus.2",
+        "type": "entity_data",
+        "dataset": "acai",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "theographic:event:438",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "MAT.20.20",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      },
+      {
+        "id": "MAT.20.21",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "fr",
+    "translation": "LSG 1910",
+    "reference": {
+      "book": "MAT",
+      "start": "22.16",
+      "end": "22.17",
+      "label": "Matthieu 22,16-17"
+    },
+    "excerpt": {
+      "text": "Ils envoyèrent auprès de lui leurs disciples avec les hérodiens, qui dirent: Maître, nous savons que tu es vrai, et que tu enseignes la voie de Dieu selon la vérité, sans t’inquiéter de personne, car tu ne regardes pas à l’apparence des hommes. Dis-nous donc ce qu’il t’en semble: est-il permis, ou non, de payer le tribut à César?",
+      "verses": [
+        "MAT.22.16",
+        "MAT.22.17"
+      ]
+    },
+    "paraphrase": {
+      "text": "Ils envoyèrent vers lui leurs disciples avec les hérodiens, qui dirent : « Maître, nous savons que tu es vrai et que tu enseignes la voie de Dieu selon la vérité, sans te soucier de personne. Dis-nous donc ce qu'il t'en semble : est-il permis, ou non, de payer le tribut à César ? »",
+      "genre": "discourse",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "Ils envoyèrent vers lui leurs disciples avec les hérodiens, qui dirent : « Maître, nous savons que tu es vrai et que tu enseignes la voie de Dieu selon la vérité, sans te soucier de personne. Dis-nous donc ce qu'il t'en semble : est-il permis, ou non, de payer le tribut à César ? »",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          },
+          "trimmed": true
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Ils lui envoyèrent des disciples avec les hérodiens demander si payer le tribut à César est permis.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 2,
+            "issues": [
+              "genre_changed",
+              "other"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 55 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 1611326406
       }
     },
     "speaker": {
@@ -315,12 +1031,13 @@
       "confidence": "medium",
       "sources": [
         "MAT.22.16",
+        "MAT.22.17",
         "speaker-quotations:MAT.22.16-MAT.22.17"
       ]
     },
     "context": {
       "literary": {
-        "text": "Les pharisiens, voulant surprendre Jésus par ses propres paroles, envoient auprès de lui leurs disciples avec les hérodiens. Ceux-ci s'adressent à lui en l'appelant Maître et lui demandent s'il est permis de payer le tribut à César.",
+        "text": "Les pharisiens envoient leurs disciples avec les hérodiens pour surprendre Jésus par ses propres paroles. Ils l'interrogent en l'appelant Maître et lui demandent s'il est permis de payer le tribut à César.",
         "confidence": "high",
         "sources": [
           "MAT.22.15",
@@ -364,7 +1081,7 @@
       "places": []
     },
     "discovery": {
-      "mode": "model",
+      "mode": "rules",
       "steps": [
         {
           "step": "union",
@@ -404,16 +1121,6 @@
           ],
           "found": [],
           "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "MAT.22.16",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "MAT.22.16"
-          ]
         }
       ]
     },
@@ -426,6 +1133,12 @@
     "sources": [
       {
         "id": "MAT.22.16",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      },
+      {
+        "id": "MAT.22.17",
         "type": "bible_text",
         "dataset": "lsg1910",
         "license": "CC0-1.0"
@@ -465,12 +1178,477 @@
         "type": "bible_text",
         "dataset": "lsg1910",
         "license": "CC0-1.0"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "fr",
+    "translation": "LSG 1910",
+    "reference": {
+      "book": "MAT",
+      "start": "26.73",
+      "end": "26.73",
+      "label": "Matthieu 26,73"
+    },
+    "excerpt": {
+      "text": "Peu après, ceux qui étaient là, s’étant approchés, dirent à Pierre: Certainement tu es aussi de ces gens-là, car ton langage te fait reconnaître.",
+      "verses": [
+        "MAT.26.73"
+      ]
+    },
+    "paraphrase": {
+      "text": "Peu après, ceux qui étaient là s'approchèrent et dirent à Pierre qu'il était sûrement de ces gens, car son langage le faisait reconnaître.",
+      "genre": "narrative",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "Peu après, ceux qui étaient là s'approchèrent et dirent à Pierre qu'il était sûrement de ces gens, car son langage le faisait reconnaître.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Des gens dirent à Pierre qu'il était de ces gens-là, son langage le trahissant.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 5,
+            "issues": [
+              "addition"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 23 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 2483778094
+      }
+    },
+    "speaker": {
+      "value": "le serviteur du souverain sacrificateur",
+      "role": "speaker",
+      "confidence": "medium",
+      "sources": [
+        "MAT.26.73",
+        "speaker-quotations:MAT.26.73-MAT.26.73"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "Ceux qui se trouvaient là s'approchent de Pierre et lui disent qu'il est certainement de ces gens-là, car son langage le fait reconnaître. Pierre réagit en faisant des imprécations et en jurant qu'il ne connaît pas cet homme.",
+        "confidence": "high",
+        "sources": [
+          "MAT.26.73",
+          "MAT.26.74"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
       },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "La semaine sainte",
+          "date_range": {
+            "from": 28,
+            "to": 32,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:443"
+          ],
+          "event": "443"
+        },
+        {
+          "kind": "scholarly_estimate",
+          "label": "Procès des Juifs",
+          "date_range": {
+            "from": 28,
+            "to": 32,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:455"
+          ],
+          "event": "455"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.26.73",
+          "routes": [
+            "strongs"
+          ],
+          "single_route": true
+        },
+        {
+          "step": "strongs",
+          "numbers": [
+            "G230"
+          ],
+          "verse": "MAT.26.73"
+        },
+        {
+          "step": "exclusion_check",
+          "verse": "MAT.26.73",
+          "rules": [
+            "amen_formula"
+          ],
+          "found": [],
+          "excluded": false
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [
+        "genre_conflict:speaker:narrative"
+      ],
+      "required": true
+    },
+    "sources": [
       {
-        "id": "MAT.22.17",
+        "id": "MAT.26.73",
         "type": "bible_text",
         "dataset": "lsg1910",
         "license": "CC0-1.0"
+      },
+      {
+        "id": "G230",
+        "type": "concordance",
+        "dataset": "byztxt",
+        "license": "Unlicense (public domain)"
+      },
+      {
+        "id": "speaker-quotations:MAT.26.73-MAT.26.73",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "theographic:event:443",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "theographic:event:455",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "MAT.26.74",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      }
+    ]
+  },
+  {
+    "schema_version": "2",
+    "language": "fr",
+    "translation": "LSG 1910",
+    "reference": {
+      "book": "MAT",
+      "start": "27.54",
+      "end": "27.54",
+      "label": "Matthieu 27,54"
+    },
+    "excerpt": {
+      "text": "Le centenier et ceux qui étaient avec lui pour garder Jésus, ayant vu le tremblement de terre et ce qui venait d’arriver, furent saisis d’une grande frayeur, et dirent: Assurément, cet homme était Fils de Dieu.",
+      "verses": [
+        "MAT.27.54"
+      ]
+    },
+    "paraphrase": {
+      "text": "En voyant le séisme et ce qui s'était passé, le centenier et ceux qui gardaient Jésus eurent très peur et dirent : vraiment, cet homme était Fils de Dieu.",
+      "genre": "narrative",
+      "genre_by": "model",
+      "history": [
+        {
+          "attempt": 1,
+          "style": "close",
+          "text": "En voyant le séisme et ce qui s'était passé, le centenier et ceux qui gardaient Jésus eurent très peur et dirent : vraiment, cet homme était Fils de Dieu.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 5,
+            "issues": [],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        },
+        {
+          "attempt": 2,
+          "style": "condensed",
+          "text": "Le centenier et ses hommes, effrayés par le séisme et les événements, dirent que cet homme était Fils de Dieu.",
+          "model": "deepseek/deepseek-v4.1-flash",
+          "prompt_version": "paraphrase-gen-10",
+          "code_checks": {
+            "non_empty": true,
+            "not_longer_than_excerpt": true,
+            "target_language": true
+          },
+          "verification": {
+            "model": "mistralai/mistral-large-4-0",
+            "verdict": "fail",
+            "fidelity": 4,
+            "completeness": 4,
+            "issues": [
+              "addition"
+            ],
+            "prompt_version": "paraphrase-verify-7"
+          }
+        }
+      ],
+      "arbitration": {
+        "selected_attempt": 1,
+        "reason": "close selected: fidelity 5 + completeness 5, 29 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 1349210935
+      }
+    },
+    "speaker": {
+      "value": "Le centenier",
+      "role": "speaker",
+      "confidence": "medium",
+      "sources": [
+        "MAT.27.54",
+        "speaker-quotations:MAT.27.54-MAT.27.54"
+      ]
+    },
+    "context": {
+      "literary": {
+        "text": "Le centenier et ceux qui gardaient Jésus, ayant vu le tremblement de terre et ce qui venait d'arriver, furent saisis d'une grande frayeur et déclarèrent que cet homme était Fils de Dieu.",
+        "confidence": "high",
+        "sources": [
+          "MAT.27.54"
+        ],
+        "confidence_by": "model",
+        "model": "deepseek/deepseek-v4.1-flash",
+        "prompt_version": "literary-1"
+      },
+      "temporal": [
+        {
+          "kind": "scholarly_estimate",
+          "label": "Crucifixion et sépulture",
+          "date_range": {
+            "from": 28,
+            "to": 32,
+            "era": "CE"
+          },
+          "confidence": "disputed",
+          "sources": [
+            "theographic:event:459"
+          ],
+          "event": "459",
+          "day_candidates": [
+            {
+              "date": "0030-04-07",
+              "method": "calendar_computation",
+              "assumptions": [
+                "Les dates sont en calendrier julien ; les jours commencent au coucher du soleil.",
+                "Le coucher du soleil est pris à 18 h, heure solaire moyenne locale, à Jerusalem (longitude 35.2 degrés est).",
+                "Un mois commence le soir où la lune a au moins 18 heures au coucher du soleil (conjonction géocentrique).",
+                "Nisan est le premier mois dont le 14e jour tombe le 21 mars (julien) ou après, l'équinoxe de printemps étant pris à cette date.",
+                "Jésus est mort le 15 Nisan, comme dans les trois autres Évangiles.",
+                "Un mois commence le soir où la lune a au moins 24 heures au coucher du soleil (conjonction géocentrique).",
+                "Jésus est mort le 14 Nisan, comme dans l'Évangile de Jean."
+              ],
+              "derivations": [
+                [
+                  "Les dates sont en calendrier julien ; les jours commencent au coucher du soleil.",
+                  "Le coucher du soleil est pris à 18 h, heure solaire moyenne locale, à Jerusalem (longitude 35.2 degrés est).",
+                  "Un mois commence le soir où la lune a au moins 18 heures au coucher du soleil (conjonction géocentrique).",
+                  "Nisan est le premier mois dont le 14e jour tombe le 21 mars (julien) ou après, l'équinoxe de printemps étant pris à cette date.",
+                  "Jésus est mort le 15 Nisan, comme dans les trois autres Évangiles."
+                ],
+                [
+                  "Les dates sont en calendrier julien ; les jours commencent au coucher du soleil.",
+                  "Le coucher du soleil est pris à 18 h, heure solaire moyenne locale, à Jerusalem (longitude 35.2 degrés est).",
+                  "Un mois commence le soir où la lune a au moins 24 heures au coucher du soleil (conjonction géocentrique).",
+                  "Nisan est le premier mois dont le 14e jour tombe le 21 mars (julien) ou après, l'équinoxe de printemps étant pris à cette date.",
+                  "Jésus est mort le 14 Nisan, comme dans l'Évangile de Jean."
+                ]
+              ],
+              "sources": [
+                "meeus:chapter-49",
+                "calendar-rules:passion"
+              ]
+            },
+            {
+              "date": "0033-04-03",
+              "method": "calendar_computation",
+              "assumptions": [
+                "Les dates sont en calendrier julien ; les jours commencent au coucher du soleil.",
+                "Le coucher du soleil est pris à 18 h, heure solaire moyenne locale, à Jerusalem (longitude 35.2 degrés est).",
+                "Un mois commence le soir où la lune a au moins 18 heures au coucher du soleil (conjonction géocentrique).",
+                "Nisan est le premier mois dont le 14e jour tombe le 21 mars (julien) ou après, l'équinoxe de printemps étant pris à cette date.",
+                "Jésus est mort le 14 Nisan, comme dans l'Évangile de Jean.",
+                "Un mois commence le soir où la lune a au moins 24 heures au coucher du soleil (conjonction géocentrique)."
+              ],
+              "derivations": [
+                [
+                  "Les dates sont en calendrier julien ; les jours commencent au coucher du soleil.",
+                  "Le coucher du soleil est pris à 18 h, heure solaire moyenne locale, à Jerusalem (longitude 35.2 degrés est).",
+                  "Un mois commence le soir où la lune a au moins 18 heures au coucher du soleil (conjonction géocentrique).",
+                  "Nisan est le premier mois dont le 14e jour tombe le 21 mars (julien) ou après, l'équinoxe de printemps étant pris à cette date.",
+                  "Jésus est mort le 14 Nisan, comme dans l'Évangile de Jean."
+                ],
+                [
+                  "Les dates sont en calendrier julien ; les jours commencent au coucher du soleil.",
+                  "Le coucher du soleil est pris à 18 h, heure solaire moyenne locale, à Jerusalem (longitude 35.2 degrés est).",
+                  "Un mois commence le soir où la lune a au moins 24 heures au coucher du soleil (conjonction géocentrique).",
+                  "Nisan est le premier mois dont le 14e jour tombe le 21 mars (julien) ou après, l'équinoxe de printemps étant pris à cette date.",
+                  "Jésus est mort le 14 Nisan, comme dans l'Évangile de Jean."
+                ]
+              ],
+              "sources": [
+                "meeus:chapter-49",
+                "calendar-rules:passion"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "scholarly_estimate",
+          "label": "La semaine sainte",
+          "date_range": {
+            "from": 28,
+            "to": 32,
+            "era": "CE"
+          },
+          "confidence": "probable",
+          "sources": [
+            "theographic:event:443"
+          ],
+          "event": "443"
+        }
+      ],
+      "places": []
+    },
+    "discovery": {
+      "mode": "rules",
+      "steps": [
+        {
+          "step": "union",
+          "verse": "MAT.27.54",
+          "routes": [
+            "strongs",
+            "pattern:en"
+          ],
+          "single_route": false
+        },
+        {
+          "step": "strongs",
+          "numbers": [
+            "G230"
+          ],
+          "verse": "MAT.27.54"
+        },
+        {
+          "step": "exclusion_check",
+          "verse": "MAT.27.54",
+          "rules": [
+            "amen_formula"
+          ],
+          "found": [],
+          "excluded": false
+        }
+      ]
+    },
+    "review": {
+      "status": null,
+      "note": null,
+      "flags": [
+        "genre_conflict:speaker:narrative"
+      ],
+      "required": true
+    },
+    "sources": [
+      {
+        "id": "MAT.27.54",
+        "type": "bible_text",
+        "dataset": "lsg1910",
+        "license": "CC0-1.0"
+      },
+      {
+        "id": "G230",
+        "type": "concordance",
+        "dataset": "byztxt",
+        "license": "Unlicense (public domain)"
+      },
+      {
+        "id": "speaker-quotations:MAT.27.54-MAT.27.54",
+        "type": "speaker_data",
+        "dataset": "speaker-quotations",
+        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
+      },
+      {
+        "id": "theographic:event:459",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "theographic:event:443",
+        "type": "event_data",
+        "dataset": "theographic",
+        "license": "CC-BY-SA-4.0"
+      },
+      {
+        "id": "meeus:chapter-49",
+        "type": "algorithm",
+        "dataset": "meeus-astronomical-algorithms",
+        "license": "published formulas (a book; no text or table is copied)"
+      },
+      {
+        "id": "calendar-rules:passion",
+        "type": "rules",
+        "dataset": "calendar-rules",
+        "license": "project file"
       }
     ]
   },
@@ -491,21 +1669,20 @@
       ]
     },
     "paraphrase": {
-      "text": "La femme, effrayée et tremblante, sachant ce qui se passe en elle, vient se jeter à ses pieds et lui dit toute la vérité.",
+      "text": "La femme, effrayée et tremblante, sachant ce qui s'était passé en elle, vint se jeter à ses pieds et lui dit toute la vérité.",
       "genre": "narrative",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "La femme, effrayée et tremblante, sachant ce qui se passe en elle, vient se jeter à ses pieds et lui dit toute la vérité.",
+          "text": "La femme, effrayée et tremblante, sachant ce qui s'était passé en elle, vint se jeter à ses pieds et lui dit toute la vérité.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -519,23 +1696,20 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Effrayée, tremblante, sachant ce qui se passe en elle, la femme se jette à ses pieds et dit toute la vérité.",
+          "text": "Effrayée, la femme vint se jeter à ses pieds et lui dit toute la vérité.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "other"
-            ],
+            "verdict": "pass",
+            "fidelity": 5,
+            "completeness": 3,
+            "issues": [],
             "prompt_version": "paraphrase-verify-7"
           }
         }
@@ -543,7 +1717,7 @@
       "arbitration": {
         "selected_attempt": 1,
         "reason": "close selected: fidelity 5 + completeness 5, 24 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1902802350
+        "shuffle_seed": 1466448770
       }
     },
     "speaker": {
@@ -581,7 +1755,7 @@
       "places": []
     },
     "discovery": {
-      "mode": "model",
+      "mode": "rules",
       "steps": [
         {
           "step": "union",
@@ -614,16 +1788,6 @@
           ],
           "found": [],
           "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "MRK.5.33",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "MRK.5.33"
-          ]
         }
       ]
     },
@@ -668,32 +1832,32 @@
     "translation": "LSG 1910",
     "reference": {
       "book": "MRK",
-      "start": "12.14",
-      "end": "12.14",
-      "label": "Marc 12,14"
+      "start": "10.38",
+      "end": "10.39",
+      "label": "Marc 10,38-39"
     },
     "excerpt": {
-      "text": "Et ils vinrent lui dire: Maître, nous savons que tu es vrai, et que tu ne t’inquiètes de personne; car tu ne regardes pas à l’apparence des hommes, et tu enseignes la voie de Dieu selon la vérité. Est-il permis, ou non, de payer le tribut à César? Devons-nous payer, ou ne pas payer?",
+      "text": "Jésus leur répondit: Vous ne savez ce que vous demandez. Pouvez-vous boire la coupe que je dois boire, ou être baptisés du baptêmedont je dois être baptisé? Nous le pouvons, dirent-ils. Et Jésus leur répondit: Il est vrai que vous boirez la coupe que je dois boire, et que vous serez baptisés du baptême dont je dois être baptisé;",
       "verses": [
-        "MRK.12.14"
+        "MRK.10.38",
+        "MRK.10.39"
       ]
     },
     "paraphrase": {
-      "text": "Ils viennent lui dire : Maître, nous savons que tu es vrai et que tu ne t'inquiètes de personne, car tu ne regardes pas à l'apparence des hommes, et tu enseignes la voie de Dieu selon la vérité. Est-il permis, ou non, de payer le tribut à César ? Devons-nous payer, ou ne pas payer ?",
+      "text": "Jésus leur dit qu'ils ne savaient pas ce qu'ils demandaient, et demanda s'ils pouvaient boire sa coupe ou être baptisés de son baptême. Ils répondirent qu'ils le pouvaient. Il confirma qu'ils boiraient sa coupe et seraient baptisés de son baptême.",
       "genre": "discourse",
       "genre_by": "model",
       "history": [
         {
           "attempt": 1,
           "style": "close",
-          "text": "Ils viennent lui dire : Maître, nous savons que tu es vrai et que tu ne t'inquiètes de personne, car tu ne regardes pas à l'apparence des hommes, et tu enseignes la voie de Dieu selon la vérité. Est-il permis, ou non, de payer le tribut à César ? Devons-nous payer, ou ne pas payer ?",
+          "text": "Jésus leur dit qu'ils ne savaient pas ce qu'ils demandaient, et demanda s'ils pouvaient boire sa coupe ou être baptisés de son baptême. Ils répondirent qu'ils le pouvaient. Il confirma qu'ils boiraient sa coupe et seraient baptisés de son baptême.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -707,14 +1871,13 @@
         {
           "attempt": 2,
           "style": "condensed",
-          "text": "Ils lui disent qu'il est vrai, qu'il enseigne la voie de Dieu, et demandent s'il est permis de payer le tribut à César.",
+          "text": "Jésus avertit ses interlocuteurs qu'ils ignorent ce qu'ils demandent, puis confirme qu'ils partageront sa coupe et son baptême.",
           "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
+          "prompt_version": "paraphrase-gen-10",
           "code_checks": {
             "non_empty": true,
             "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
+            "target_language": true
           },
           "verification": {
             "model": "mistralai/mistral-large-4-0",
@@ -730,1598 +1893,8 @@
       ],
       "arbitration": {
         "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 56 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 3615575439
-      }
-    },
-    "speaker": {
-      "value": "les espions",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "MRK.12.14",
-        "speaker-quotations:MRK.12.14-MRK.12.15"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Des pharisiens et des hérodiens, envoyés pour surprendre Jésus par ses paroles, l'interrogent en l'appelant Maître et lui demandent s'il est permis de payer le tribut à César.",
-        "confidence": "high",
-        "sources": [
-          "MRK.12.13",
-          "MRK.12.14"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Débats dans le temple",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:448"
-          ],
-          "event": "448"
-        },
-        {
-          "kind": "scholarly_estimate",
-          "label": "La semaine sainte",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:443"
-          ],
-          "event": "443"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "MRK.12.14",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225",
-            "G227"
-          ],
-          "verse": "MRK.12.14"
-        },
-        {
-          "step": "pattern",
-          "rule": "verit",
-          "matched": "vérité",
-          "verse": "MRK.12.14"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "MRK.12.14"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "MRK.12.14",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "MRK.12.14",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "MRK.12.14"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "MRK.12.14",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:MRK.12.14-MRK.12.15",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:448",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "theographic:event:443",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "MRK.12.13",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "MRK",
-      "start": "12.29",
-      "end": "12.34",
-      "label": "Marc 12,29-34"
-    },
-    "excerpt": {
-      "text": "Jésus répondit: Voici le premier:Écoute, Israël, le Seigneur, notre Dieu, est l’unique Seigneur; et: Tu aimeras le Seigneur, ton Dieu, de tout ton cœur, de toute ton âme, de toute ta pensée, et de toute ta force. Voici le second:Tu aimeras ton prochain comme toi-même. Il n’y a pas d’autre commandement plus grand que ceux-là. Le scribe lui dit: Bien, maître; tu as dit avec vérité que Dieu est unique, et qu’il n’y en a point d’autre que lui, et que l’aimer de tout son cœur, de toute sa pensée, de toute son âme et de toute sa force, et aimer son prochain comme soi-même, c’est plus que tous les holocaustes et tous les sacrifices. Jésus, voyant qu’il avait répondu avec intelligence, lui dit: Tu n’es pas loin du royaume de Dieu. Et personne n’osa plus lui proposer des questions.",
-      "verses": [
-        "MRK.12.29",
-        "MRK.12.30",
-        "MRK.12.31",
-        "MRK.12.32",
-        "MRK.12.33",
-        "MRK.12.34"
-      ]
-    },
-    "paraphrase": {
-      "text": null,
-      "reason": "no_faithful_version",
-      "genre": "discourse",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Jésus répond : voici le premier : Écoute, Israël, le Seigneur, notre Dieu, est l'unique Seigneur ; et tu aimes le Seigneur, ton Dieu, de tout ton cœur, de toute ton âme, de toute ta pensée et de toute ta force. Voici le second : tu aimes ton prochain comme toi-même. Il n'y a pas d'autre commandement plus grand que ceux-là. Le scribe lui dit : Bien, maître ; tu dis avec vérité que Dieu est unique, qu'il n'y en a pas d'autre que lui, et que l'aimer de tout son cœur, de toute sa pensée, de toute son âme et de toute sa force, et aimer son prochain comme soi-même, c'est plus que tous les holocaustes et tous les sacrifices. Jésus, voyant qu'il répond avec intelligence, lui dit : Tu n'es pas loin du royaume de Dieu. Et personne n'ose plus lui proposer des questions.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": false,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 3,
-            "completeness": 5,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Jésus dit que le premier commandement est d'écouter Israël et d'aimer le Seigneur notre Dieu de tout son cœur, de toute son âme, de toute sa pensée et de toute sa force, et que le second est d'aimer son prochain comme soi-même, sans autre commandement plus grand, et il déclare à celui qui répond avec intelligence qu'il n'est pas loin du royaume de Dieu, et personne n'ose plus l'interroger.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 2,
-            "completeness": 3,
-            "issues": [
-              "addition",
-              "genre_changed",
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": null,
-        "reason": "no candidate passes (close: failed a code check; condensed: problem reported: addition, genre_changed, other)",
-        "shuffle_seed": 3679343277
-      }
-    },
-    "speaker": {
-      "value": null,
-      "reason": "not_identified"
-    },
-    "context": {
-      "literary": {
-        "text": "Un scribe demande à Jésus quel est le premier de tous les commandements. Jésus répond en citant l'amour de Dieu et du prochain, et le scribe approuve ses paroles.",
-        "confidence": "high",
-        "sources": [
-          "MRK.12.28",
-          "MRK.12.29",
-          "MRK.12.30",
-          "MRK.12.31",
-          "MRK.12.32"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Débats dans le temple",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:448"
-          ],
-          "event": "448"
-        },
-        {
-          "kind": "scholarly_estimate",
-          "label": "La semaine sainte",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:443"
-          ],
-          "event": "443"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "MRK.12.32",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "MRK.12.32"
-        },
-        {
-          "step": "pattern",
-          "rule": "verit",
-          "matched": "vérité",
-          "verse": "MRK.12.32"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "MRK.12.32",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "MRK.12.32",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "MRK.12.32"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [
-        "speaker_ambiguous",
-        "paraphrase_failed"
-      ],
-      "required": true
-    },
-    "sources": [
-      {
-        "id": "MRK.12.29",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "MRK.12.30",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "MRK.12.31",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "MRK.12.32",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "MRK.12.33",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "MRK.12.34",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "theographic:event:448",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "theographic:event:443",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "MRK.12.28",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "LUK",
-      "start": "20.21",
-      "end": "20.21",
-      "label": "Luc 20,21"
-    },
-    "excerpt": {
-      "text": "Ces gens lui posèrent cette question: Maître, nous savons que tu parles et enseignes droitement, et que tu ne regardes pas à l’apparence, mais que tu enseignes la voie de Dieu selon la vérité.",
-      "verses": [
-        "LUK.20.21"
-      ]
-    },
-    "paraphrase": {
-      "text": "Ces gens lui demandent : Maître, nous savons que tu parles et enseignes droitement, sans regarder à l'apparence, et que tu enseignes la voie de Dieu selon la vérité.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Ces gens lui demandent : Maître, nous savons que tu parles et enseignes droitement, sans regarder à l'apparence, et que tu enseignes la voie de Dieu selon la vérité.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Ces gens lui disent qu'il enseigne droitement la voie de Dieu selon la vérité, sans regarder à l'apparence.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 4,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 29 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1571731130
-      }
-    },
-    "speaker": {
-      "value": "espions",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "LUK.20.21",
-        "speaker-quotations:LUK.20.21-LUK.20.22"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Dans le temple, des envoyés des principaux sacrificateurs et des scribes, qui feignaient d'être justes pour tendre des pièges à Jésus, l'interrogent en l'appelant Maître.",
-        "confidence": "high",
-        "sources": [
-          "LUK.20.20",
-          "LUK.20.21"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Débats dans le temple",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:448"
-          ],
-          "event": "448"
-        },
-        {
-          "kind": "scholarly_estimate",
-          "label": "La semaine sainte",
-          "date_range": {
-            "from": 28,
-            "to": 32,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:443"
-          ],
-          "event": "443"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "LUK.20.21",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "LUK.20.21"
-        },
-        {
-          "step": "pattern",
-          "rule": "verit",
-          "matched": "vérité",
-          "verse": "LUK.20.21"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "LUK.20.21",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "LUK.20.21",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "LUK.20.21"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "LUK.20.21",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:LUK.20.21-LUK.20.22",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:448",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "theographic:event:443",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "LUK.20.20",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "1.9",
-      "end": "1.9",
-      "label": "Jean 1,9"
-    },
-    "excerpt": {
-      "text": "Cette lumière était la véritable lumière, qui, en venant dans le monde, éclaire tout homme.",
-      "verses": [
-        "JHN.1.9"
-      ]
-    },
-    "paraphrase": {
-      "text": "La véritable lumière vient dans le monde éclairer tout homme.",
-      "genre": "narrative",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Cette lumière est la vraie, qui vient dans le monde et éclaire tout homme.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "La véritable lumière vient dans le monde éclairer tout homme.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 3,
-          "style": "free",
-          "text": "En venant dans le monde, la vraie lumière éclaire chaque homme.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 2,
-        "reason": "condensed selected: fidelity 5 + completeness 5, 10 words; 2 other candidate(s) not selected",
-        "shuffle_seed": 1717394546
-      }
-    },
-    "speaker": {
-      "value": null,
-      "reason": "not_identified"
-    },
-    "context": {
-      "literary": {
-        "text": "Le verset se situe dans le prolongement du témoignage de Jean, qui n'était pas la lumière mais vint pour lui rendre témoignage ; il présente la véritable lumière venant dans le monde.",
-        "confidence": "medium",
-        "sources": [
-          "JHN.1.8",
-          "JHN.1.9"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.1.9",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G228"
-          ],
-          "verse": "JHN.1.9"
-        },
-        {
-          "step": "pattern",
-          "rule": "verit",
-          "matched": "véritable",
-          "verse": "JHN.1.9"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.1.9",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.1.9",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.1.9"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [
-        "speaker_not_identified"
-      ],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.1.9",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G228",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "JHN.1.8",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "1.14",
-      "end": "1.18",
-      "label": "Jean 1,14-18"
-    },
-    "excerpt": {
-      "text": "Et la parole a été faite chair, et elle a habité parmi nous, pleine de grâce et de vérité; et nous avons contemplé sa gloire, une gloire comme la gloire du Fils unique venu du Père. Jean lui a rendu témoignage, et s’est écrié: C’est celui dont j’ai dit: Celui qui vient après moi m’a précédé, car il était avant moi. Et nous avons tous reçu de sa plénitude, et grâce pour grâce; car la loi a été donnée par Moïse, la grâce et la vérité sont venues par Jésus-Christ. Personne n’a jamais vu Dieu; le Fils unique, qui est dans le sein du Père, est celui qui l’a fait connaître.",
-      "verses": [
-        "JHN.1.14",
-        "JHN.1.15",
-        "JHN.1.16",
-        "JHN.1.17",
-        "JHN.1.18"
-      ]
-    },
-    "paraphrase": {
-      "text": "Et la parole devient chair et elle habite parmi nous, pleine de grâce et de vérité, et nous contemplons sa gloire, une gloire comme celle du Fils unique venu du Père. Jean lui rend témoignage et s'écrie : c'est celui dont je dis : celui qui vient après moi me précède, car il est avant moi. Et nous tous recevons de sa plénitude, et grâce pour grâce ; car la loi est donnée par Moïse, la grâce et la vérité viennent par Jésus-Christ. Personne n'a jamais vu Dieu ; le Fils unique, qui est dans le sein du Père, est celui qui le fait connaître.",
-      "genre": "narrative",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Et la parole devient chair et elle habite parmi nous, pleine de grâce et de vérité, et nous contemplons sa gloire, une gloire comme celle du Fils unique venu du Père. Jean lui rend témoignage et s'écrie : c'est celui dont je dis : celui qui vient après moi me précède, car il est avant moi. Et nous tous recevons de sa plénitude, et grâce pour grâce ; car la loi est donnée par Moïse, la grâce et la vérité viennent par Jésus-Christ. Personne n'a jamais vu Dieu ; le Fils unique, qui est dans le sein du Père, est celui qui le fait connaître.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "La parole devient chair et habite parmi nous, pleine de grâce et de vérité, et nous contemplons sa gloire ; Jean lui rend témoignage, et nous recevons tous de sa plénitude, car la grâce et la vérité viennent par Jésus-Christ, et le Fils unique fait connaître Dieu.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 3,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 105 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1987133049
-      }
-    },
-    "speaker": {
-      "value": "Jean-Baptiste",
-      "role": "speaker",
-      "confidence": "low",
-      "sources": [
-        "JHN.1.15",
-        "speaker-quotations:JHN.1.15-JHN.1.15"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "L'apôtre Jean raconte que la Parole a été faite chair; Jean-Baptiste lui a rendu témoignage en s'écriant que celui qui vient après lui était avant lui, et les croyants ont reçu de sa plénitude.",
-        "confidence": "high",
-        "sources": [
-          "JHN.1.14",
-          "JHN.1.15",
-          "JHN.1.16"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Témoignage de Jean",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:269"
-          ],
-          "event": "269"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.1.14",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "JHN.1.14"
-        },
-        {
-          "step": "pattern",
-          "rule": "verit",
-          "matched": "vérité",
-          "verse": "JHN.1.14"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.1.14",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.1.14",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.1.14"
-          ]
-        },
-        {
-          "step": "union",
-          "verse": "JHN.1.17",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "JHN.1.17"
-        },
-        {
-          "step": "pattern",
-          "rule": "verit",
-          "matched": "vérité",
-          "verse": "JHN.1.17"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.1.17",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.1.17",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.1.17"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [
-        "speaker_partial_coverage",
-        "genre_conflict:speaker:narrative"
-      ],
-      "required": true
-    },
-    "sources": [
-      {
-        "id": "JHN.1.14",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.1.15",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.1.16",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.1.17",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.1.18",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.1.15-JHN.1.15",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:269",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "3.21",
-      "end": "3.21",
-      "label": "Jean 3,21"
-    },
-    "excerpt": {
-      "text": "mais celui qui agit selon la vérité vient à la lumière, afin que ses œuvres soient manifestées, parce qu’elles sont faites en Dieu.",
-      "verses": [
-        "JHN.3.21"
-      ]
-    },
-    "paraphrase": {
-      "text": "Mais celui qui agit selon la vérité vient à la lumière, afin que ses œuvres soient manifestées, car elles sont faites en Dieu.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Mais celui qui agit selon la vérité vient à la lumière, afin que ses œuvres soient manifestées, car elles sont faites en Dieu.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Qui agit selon la vérité vient à la lumière, car ses œuvres sont faites en Dieu.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 3,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 23 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 1436053250
-      }
-    },
-    "speaker": {
-      "value": "Jésus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.3.21",
-        "speaker-quotations:JHN.3.10-JHN.3.21"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Le verset s'inscrit dans un enseignement sur le jugement : la lumière est venue dans le monde, et celui qui agit selon la vérité vient à la lumière, contrairement à celui qui fait le mal.",
-        "confidence": "medium",
-        "sources": [
-          "JHN.3.19",
-          "JHN.3.20",
-          "JHN.3.21"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Jésus et Nicodème",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:274"
-          ],
-          "event": "274"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.3.21",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "JHN.3.21"
-        },
-        {
-          "step": "pattern",
-          "rule": "verit",
-          "matched": "vérité",
-          "verse": "JHN.3.21"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.3.21",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.3.21",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.3.21"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.3.21",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.3.10-JHN.3.21",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:274",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "JHN.3.19",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.3.20",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "3.33",
-      "end": "3.33",
-      "label": "Jean 3,33"
-    },
-    "excerpt": {
-      "text": "Celui qui a reçu son témoignage a certifié que Dieu est vrai;",
-      "verses": [
-        "JHN.3.33"
-      ]
-    },
-    "paraphrase": {
-      "text": "Qui reçoit son témoignage certifie que Dieu est vrai.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Qui reçoit son témoignage certifie que Dieu est vrai.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Son témoin certifie la véracité de Dieu.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 4,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 3,
-          "style": "free",
-          "text": "Dieu est vrai, celui qui l'écoute le confirme.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 9 words; 2 other candidate(s) not selected",
-        "shuffle_seed": 1771107369
-      }
-    },
-    "speaker": {
-      "value": "Jean-Baptiste",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.3.33",
-        "speaker-quotations:JHN.3.27-JHN.3.36"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Selon ces versets, celui qui vient d'en haut, envoyé par Dieu, rend témoignage de ce qu'il a vu et entendu, et celui qui reçoit son témoignage certifie que Dieu est vrai.",
-        "confidence": "high",
-        "sources": [
-          "JHN.3.31",
-          "JHN.3.32",
-          "JHN.3.33",
-          "JHN.3.34"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Jean-Baptiste rend témoignage",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:275"
-          ],
-          "event": "275"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.3.33",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.3.33"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "JHN.3.33"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.3.33",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.3.33",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.3.33"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.3.33",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.3.27-JHN.3.36",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:275",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "JHN.3.31",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.3.32",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.3.34",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "4.16",
-      "end": "4.18",
-      "label": "Jean 4,16-18"
-    },
-    "excerpt": {
-      "text": "Va, lui dit Jésus, appelle ton mari, et viens ici. La femme répondit: Je n’ai point de mari. Jésus lui dit: Tu as eu raison de dire: Je n’ai point de mari. Car tu as eu cinq maris, et celui que tu as maintenant n’est pas ton mari. En cela tu as dit vrai.",
-      "verses": [
-        "JHN.4.16",
-        "JHN.4.17",
-        "JHN.4.18"
-      ]
-    },
-    "paraphrase": {
-      "text": "Jésus lui dit d'aller appeler son mari et de venir. Elle répond qu'elle n'a pas de mari. Jésus dit qu'elle a raison de dire cela, car elle a eu cinq maris et celui qu'elle a maintenant n'est pas son mari ; en cela elle dit vrai.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Jésus lui dit d'aller appeler son mari et de venir. Elle répond qu'elle n'a pas de mari. Jésus dit qu'elle a raison de dire cela, car elle a eu cinq maris et celui qu'elle a maintenant n'est pas son mari ; en cela elle dit vrai.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Jésus lui fait dire qu'elle a eu cinq maris et que l'actuel n'est pas le sien.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 2,
-            "completeness": 2,
-            "issues": [
-              "addition",
-              "genre_changed"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 46 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 3917130525
+        "reason": "close selected: fidelity 5 + completeness 5, 40 words; 1 other candidate(s) not selected",
+        "shuffle_seed": 1345850911
       }
     },
     "speaker": {
@@ -2329,22 +1902,21 @@
       "role": "speaker",
       "confidence": "high",
       "sources": [
-        "JHN.4.16",
-        "JHN.4.17",
-        "JHN.4.18",
-        "speaker-quotations:JHN.4.16-JHN.4.17",
-        "speaker-quotations:JHN.4.18-JHN.4.18",
+        "MRK.10.38",
+        "MRK.10.39",
+        "speaker-quotations:MRK.10.38-MRK.10.39",
         "acai:person:Jesus.2"
       ]
     },
     "context": {
       "literary": {
-        "text": "Jésus s'adresse à une femme samaritaine venue puiser de l'eau. Il lui demande d'aller chercher son mari, et elle répond qu'elle n'en a pas ; Jésus révèle alors qu'elle a eu cinq maris.",
+        "text": "Jésus répond à Jacques et Jean, les fils de Zébédée, qui lui ont demandé de siéger à sa droite et à sa gauche dans sa gloire. Il leur déclare qu'ils ne savent pas ce qu'ils demandent et les interroge sur la coupe et le baptême.",
         "confidence": "high",
         "sources": [
-          "JHN.4.16",
-          "JHN.4.17",
-          "JHN.4.18"
+          "MRK.10.35",
+          "MRK.10.37",
+          "MRK.10.38",
+          "MRK.10.39"
         ],
         "confidence_by": "model",
         "model": "deepseek/deepseek-v4.1-flash",
@@ -2353,920 +1925,46 @@
       "temporal": [
         {
           "kind": "scholarly_estimate",
-          "label": "La femme samaritaine",
+          "label": "Jésus enseigne en Pérée",
           "date_range": {
-            "from": 25,
-            "to": 29,
+            "from": 28,
+            "to": 32,
             "era": "CE"
           },
           "confidence": "probable",
           "sources": [
-            "theographic:event:278"
+            "theographic:event:438"
           ],
-          "event": "278"
+          "event": "438"
         }
       ],
       "places": []
     },
     "discovery": {
-      "mode": "model",
+      "mode": "rules",
       "steps": [
         {
           "step": "union",
-          "verse": "JHN.4.18",
+          "verse": "MRK.10.39",
           "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.4.18"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "JHN.4.18"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.4.18",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.4.18",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.4.18"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.4.16",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.4.17",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.4.18",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.16-JHN.4.17",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.18-JHN.4.18",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "acai:person:Jesus.2",
-        "type": "entity_data",
-        "dataset": "acai",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "theographic:event:278",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "4.23",
-      "end": "4.23",
-      "label": "Jean 4,23"
-    },
-    "excerpt": {
-      "text": "Mais l’heure vient, et elle est déjà venue, où les vrais adorateurs adoreront le Père en esprit et en vérité; car ce sont là les adorateurs que le Père demande.",
-      "verses": [
-        "JHN.4.23"
-      ]
-    },
-    "paraphrase": {
-      "text": "Mais l'heure vient, et déjà elle est là, où les vrais adorateurs adorent le Père en esprit et en vérité, car le Père demande de tels adorateurs.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Mais l'heure vient, et déjà elle est là, où les vrais adorateurs adorent le Père en esprit et en vérité, car le Père demande de tels adorateurs.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "L'heure est là où le Père demande des adorateurs en esprit et en vérité.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 3,
-            "completeness": 3,
-            "issues": [
-              "addition",
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 27 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2075886182
-      }
-    },
-    "speaker": {
-      "value": "Jésus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.4.23",
-        "speaker-quotations:JHN.4.21-JHN.4.24"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jésus s'adresse à une femme samaritaine au sujet du lieu de l'adoration ; après qu'elle a évoqué la montagne et Jérusalem, il lui annonce que l'heure vient où les vrais adorateurs adoreront le Père en esprit et en vérité.",
-        "confidence": "high",
-        "sources": [
-          "JHN.4.20",
-          "JHN.4.21",
-          "JHN.4.23"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "La femme samaritaine",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:278"
-          ],
-          "event": "278"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.4.23",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225",
-            "G228"
-          ],
-          "verse": "JHN.4.23"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrais",
-          "verse": "JHN.4.23"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.4.23",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [
-            "amen_formula"
-          ],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.4.23",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.4.23"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.4.23",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "G228",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.21-JHN.4.24",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:278",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "JHN.4.20",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.4.21",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "4.24",
-      "end": "4.24",
-      "label": "Jean 4,24"
-    },
-    "excerpt": {
-      "text": "Dieu est Esprit, et il faut que ceux qui l’adorent l’adorent en esprit et en vérité.",
-      "verses": [
-        "JHN.4.24"
-      ]
-    },
-    "paraphrase": {
-      "text": "Il faut adorer Dieu, qui est Esprit, en esprit et en vérité.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Dieu est Esprit, et ceux qui l'adorent doivent l'adorer en esprit et en vérité.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Il faut adorer Dieu, qui est Esprit, en esprit et en vérité.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 3,
-          "style": "free",
-          "text": "Ceux qui adorent Dieu, lequel est Esprit, l'adorent en esprit et en vérité.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 2,
-        "reason": "condensed selected: fidelity 5 + completeness 5, 12 words; 2 other candidate(s) not selected",
-        "shuffle_seed": 1062989651
-      }
-    },
-    "speaker": {
-      "value": "Jésus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.4.24",
-        "speaker-quotations:JHN.4.21-JHN.4.24"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jésus s'adresse à une femme, près d'un puits en Samarie, en lui parlant de l'adoration du Père et du salut qui vient des Juifs. Elle lui répond en évoquant la venue du Messie.",
-        "confidence": "high",
-        "sources": [
-          "JHN.4.21",
-          "JHN.4.22",
-          "JHN.4.25"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "La femme samaritaine",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:278"
-          ],
-          "event": "278"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.4.24",
-          "routes": [
-            "strongs",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "JHN.4.24"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.4.24",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [
-            "amen_formula"
-          ],
-          "excluded": true
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.4.24",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.4.24"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.4.24",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.21-JHN.4.24",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:278",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "JHN.4.21",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.4.22",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.4.25",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "4.37",
-      "end": "4.38",
-      "label": "Jean 4,37-38"
-    },
-    "excerpt": {
-      "text": "Car en ceci ce qu’on dit est vrai: Autre est celui qui sème, et autre celui qui moissonne. Je vous ai envoyés moissonner ce que vous n’avez pas travaillé; d’autres ont travaillé, et vous êtes entrés dans leur travail.",
-      "verses": [
-        "JHN.4.37",
-        "JHN.4.38"
-      ]
-    },
-    "paraphrase": {
-      "text": "Car ici ce qu’on dit est vrai : autre est celui qui sème, autre celui qui moissonne. Il les envoie moissonner ce qu’ils n’ont pas travaillé ; d’autres travaillent, et ils entrent dans leur travail.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Car ici ce qu’on dit est vrai : autre est celui qui sème, autre celui qui moissonne. Il les envoie moissonner ce qu’ils n’ont pas travaillé ; d’autres travaillent, et ils entrent dans leur travail.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Ce qu’on dit est vrai : autre sème, autre moissonne ; il les envoie moissonner ce que d’autres travaillent.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 2,
-            "completeness": 3,
-            "issues": [
-              "addition",
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 35 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 977211893
-      }
-    },
-    "speaker": {
-      "value": "Jésus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.4.37",
-        "JHN.4.38",
-        "speaker-quotations:JHN.4.34-JHN.4.38"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jésus s'adresse à ses disciples en utilisant l'image de la moisson: il les a envoyés moissonner ce que d'autres ont travaillé, car autre est celui qui sème et autre celui qui moissonne.",
-        "confidence": "high",
-        "sources": [
-          "JHN.4.37",
-          "JHN.4.38"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "La femme samaritaine",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:278"
-          ],
-          "event": "278"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.4.37",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G228"
-          ],
-          "verse": "JHN.4.37"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "JHN.4.37"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.4.37",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.4.37",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.4.37"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.4.37",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.4.38",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G228",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.34-JHN.4.38",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:278",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "4.42",
-      "end": "4.42",
-      "label": "Jean 4,42"
-    },
-    "excerpt": {
-      "text": "et ils disaient à la femme: Ce n’est plus à cause de ce que tu as dit que nous croyons; car nous l’avons entendu nous-mêmes, et nous savons qu’il est vraiment le Sauveur du monde.",
-      "verses": [
-        "JHN.4.42"
-      ]
-    },
-    "paraphrase": {
-      "text": "et ils disent à la femme : ce n'est plus à cause de ce qu'elle a dit qu'ils croient ; car ils l'entendent eux-mêmes, et ils savent qu'il est vraiment le Sauveur du monde.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "et ils disent à la femme : ce n'est plus à cause de ce qu'elle a dit qu'ils croient ; car ils l'entendent eux-mêmes, et ils savent qu'il est vraiment le Sauveur du monde.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "ils disent à la femme qu'ils croient non à cause de sa parole, mais parce qu'ils ont entendu eux-mêmes qu'il est le Sauveur du monde.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 4,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 4 + completeness 5, 34 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 3770326007
-      }
-    },
-    "speaker": {
-      "value": "beaucoup de Samaritains",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.4.42",
-        "speaker-quotations:JHN.4.42-JHN.4.42"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Des Samaritains, ayant entendu Jésus eux-mêmes après qu'il fut resté deux jours auprès d'eux, disent à la femme que ce n'est plus à cause de ses paroles qu'ils croient, mais parce qu'ils savent qu'il est le Sauveur du monde.",
-        "confidence": "high",
-        "sources": [
-          "JHN.4.40",
-          "JHN.4.41",
-          "JHN.4.42"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "La femme samaritaine",
-          "date_range": {
-            "from": 25,
-            "to": 29,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:278"
-          ],
-          "event": "278"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.4.42",
-          "routes": [
-            "strongs",
             "pattern:fr"
           ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G230"
-          ],
-          "verse": "JHN.4.42"
+          "single_route": true
         },
         {
           "step": "pattern",
           "rule": "vrai",
-          "matched": "vraiment",
-          "verse": "JHN.4.42"
+          "matched": "vrai",
+          "verse": "MRK.10.39"
         },
         {
           "step": "exclusion_check",
-          "verse": "JHN.4.42",
+          "verse": "MRK.10.39",
           "rules": [
             "amen_formula"
           ],
           "found": [],
           "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.4.42",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.4.42"
-          ]
         }
       ]
     },
@@ -3278,545 +1976,19 @@
     },
     "sources": [
       {
-        "id": "JHN.4.42",
+        "id": "MRK.10.38",
         "type": "bible_text",
         "dataset": "lsg1910",
         "license": "CC0-1.0"
       },
       {
-        "id": "G230",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.4.42-JHN.4.42",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:278",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "JHN.4.40",
+        "id": "MRK.10.39",
         "type": "bible_text",
         "dataset": "lsg1910",
         "license": "CC0-1.0"
       },
       {
-        "id": "JHN.4.41",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "5.31",
-      "end": "5.33",
-      "label": "Jean 5,31-33"
-    },
-    "excerpt": {
-      "text": "Si c’est moi qui rends témoignage de moi-même, mon témoignage n’est pas vrai. Il y en a un autre qui rend témoignage de moi, et je sais que le témoignage qu’il rend de moi est vrai. Vous avez envoyé vers Jean, et il a rendu témoignage à la vérité.",
-      "verses": [
-        "JHN.5.31",
-        "JHN.5.32",
-        "JHN.5.33"
-      ]
-    },
-    "paraphrase": {
-      "text": null,
-      "reason": "no_faithful_version",
-      "genre": "discourse",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Si c'est lui qui rend témoignage de lui-même, son témoignage n'est pas vrai. Il y en a un autre qui rend témoignage de lui, et il sait que ce témoignage est vrai. Ils envoient vers Jean, et il rend témoignage à la vérité.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 2,
-            "completeness": 3,
-            "issues": [
-              "addition",
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Un autre rend de lui un témoignage vrai, et Jean rend témoignage à la vérité.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 3,
-            "completeness": 2,
-            "issues": [
-              "addition",
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": null,
-        "reason": "no candidate passes (close: problem reported: addition, other; condensed: problem reported: addition, other)",
-        "shuffle_seed": 1829658368
-      }
-    },
-    "speaker": {
-      "value": "Jésus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.5.31",
-        "JHN.5.32",
-        "JHN.5.33",
-        "speaker-quotations:JHN.5.19-JHN.5.47"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jésus parle à ses interlocuteurs de son propre témoignage et de celui d'un autre, ainsi que du témoignage que Jean a rendu à la vérité après qu'ils ont envoyé vers lui.",
-        "confidence": "high",
-        "sources": [
-          "JHN.5.31",
-          "JHN.5.32",
-          "JHN.5.33"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Guérison à la piscine de Béthesda",
-          "date_range": {
-            "from": 26,
-            "to": 30,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:291"
-          ],
-          "event": "291"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.5.31",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.5.31"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "JHN.5.31"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.5.31",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.5.31",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.5.31",
-            "JHN.5.32",
-            "JHN.5.33"
-          ]
-        },
-        {
-          "step": "union",
-          "verse": "JHN.5.32",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.5.32"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "JHN.5.32"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.5.32",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.5.32",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.5.32"
-          ]
-        },
-        {
-          "step": "union",
-          "verse": "JHN.5.33",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G225"
-          ],
-          "verse": "JHN.5.33"
-        },
-        {
-          "step": "pattern",
-          "rule": "verit",
-          "matched": "vérité",
-          "verse": "JHN.5.33"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.5.33",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.5.33",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.5.33"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [
-        "paraphrase_failed"
-      ],
-      "required": true
-    },
-    "sources": [
-      {
-        "id": "JHN.5.31",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.5.32",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.5.33",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G225",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.5.19-JHN.5.47",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "theographic:event:291",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "6.32",
-      "end": "6.33",
-      "label": "Jean 6,32-33"
-    },
-    "excerpt": {
-      "text": "Jésus leur dit: En vérité, en vérité, je vous le dis, Moïse ne vous a pas donné le pain du ciel, mais mon Père vous donne le vrai pain du ciel; car le pain de Dieu, c’est celui qui descend du ciel et qui donne la vie au monde.",
-      "verses": [
-        "JHN.6.32",
-        "JHN.6.33"
-      ]
-    },
-    "paraphrase": {
-      "text": null,
-      "reason": "no_faithful_version",
-      "genre": "discourse",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Il leur déclare : en vérité, Moïse ne leur donne pas le pain du ciel, mais son Père leur donne le vrai pain du ciel ; car le pain de Dieu descend du ciel et donne la vie au monde.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 5,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Il affirme que le Père donne le vrai pain du ciel, celui qui descend et donne la vie au monde.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 3,
-            "completeness": 3,
-            "issues": [
-              "addition",
-              "genre_changed"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": null,
-        "reason": "no candidate passes (close: problem reported: addition; condensed: problem reported: addition, genre_changed)",
-        "shuffle_seed": 1952342159
-      }
-    },
-    "speaker": {
-      "value": "Jésus",
-      "role": "speaker",
-      "confidence": "high",
-      "sources": [
-        "JHN.6.32",
-        "JHN.6.33",
-        "speaker-quotations:JHN.6.32-JHN.6.33",
-        "acai:person:Jesus.2"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jésus s'adresse à la foule qui lui demande un miracle et invoque la manne donnée à leurs pères dans le désert ; il leur répond que c'est son Père qui donne le vrai pain du ciel.",
-        "confidence": "high",
-        "sources": [
-          "JHN.6.31",
-          "JHN.6.32",
-          "JHN.6.33"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Discours sur le pain de vie",
-          "date_range": {
-            "from": 27,
-            "to": 31,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:397"
-          ],
-          "event": "397"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.6.32",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G228"
-          ],
-          "verse": "JHN.6.32"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "JHN.6.32"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.6.32",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [
-            "amen_formula"
-          ],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.6.32",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.6.32"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [
-        "paraphrase_failed"
-      ],
-      "required": true
-    },
-    "sources": [
-      {
-        "id": "JHN.6.32",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.6.33",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G228",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.6.32-JHN.6.33",
+        "id": "speaker-quotations:MRK.10.38-MRK.10.39",
         "type": "speaker_data",
         "dataset": "speaker-quotations",
         "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
@@ -3828,695 +2000,22 @@
         "license": "CC-BY-SA-4.0"
       },
       {
-        "id": "theographic:event:397",
+        "id": "theographic:event:438",
         "type": "event_data",
         "dataset": "theographic",
         "license": "CC-BY-SA-4.0"
       },
       {
-        "id": "JHN.6.31",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "7.18",
-      "end": "7.18",
-      "label": "Jean 7,18"
-    },
-    "excerpt": {
-      "text": "Celui qui parle de son chef cherche sa propre gloire; mais celui qui cherche la gloire de celui qui l’a envoyé, celui-là est vrai, et il n’y a point d’injustice en lui.",
-      "verses": [
-        "JHN.7.18"
-      ]
-    },
-    "paraphrase": {
-      "text": "Celui qui parle de son propre chef cherche sa propre gloire; mais celui qui cherche la gloire de celui qui l'envoie est vrai, et il n'y a pas d'injustice en lui.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Celui qui parle de son propre chef cherche sa propre gloire; mais celui qui cherche la gloire de celui qui l'envoie est vrai, et il n'y a pas d'injustice en lui.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Qui cherche sa propre gloire parle de son chef; qui cherche la gloire de son envoyeur est vrai et sans injustice.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 4,
-            "issues": [
-              "addition"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 31 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 415054252
-      }
-    },
-    "speaker": {
-      "value": "Jésus",
-      "role": "speaker",
-      "confidence": "medium",
-      "sources": [
-        "JHN.7.18",
-        "speaker-quotations:JHN.7.16-JHN.7.19"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jésus répond aux Juifs qui s'étonnent de ce qu'il connaît les Écritures sans avoir étudié. Il leur explique que sa doctrine vient de celui qui l'a envoyé, et non de lui-même.",
-        "confidence": "high",
-        "sources": [
-          "JHN.7.15",
-          "JHN.7.16",
-          "JHN.7.18"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.7.18",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.7.18"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "JHN.7.18"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.7.18",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.7.18",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.7.18"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.7.18",
+        "id": "MRK.10.35",
         "type": "bible_text",
         "dataset": "lsg1910",
         "license": "CC0-1.0"
       },
       {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.7.16-JHN.7.19",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "JHN.7.15",
+        "id": "MRK.10.37",
         "type": "bible_text",
         "dataset": "lsg1910",
         "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.7.16",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "7.28",
-      "end": "7.29",
-      "label": "Jean 7,28-29"
-    },
-    "excerpt": {
-      "text": "Et Jésus, enseignant dans le temple, s’écria: Vous me connaissez, et vous savez d’où je suis! Je ne suis pas venude moi-même:mais celui qui m’a envoyé est vrai, et vous ne le connaissez pas. Moi, je le connais; car je viens de lui, et c’est lui qui m’a envoyé.",
-      "verses": [
-        "JHN.7.28",
-        "JHN.7.29"
-      ]
-    },
-    "paraphrase": {
-      "text": "Jésus, enseignant dans le temple, s'écrie : vous le connaissez, et vous savez d'où il est ! Il ne vient pas de lui-même ; mais celui qui l'envoie est vrai, et vous ne le connaissez pas. Lui, il le connaît ; car il vient de lui, et c'est lui qui l'envoie.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Jésus, enseignant dans le temple, s'écrie : vous le connaissez, et vous savez d'où il est ! Il ne vient pas de lui-même ; mais celui qui l'envoie est vrai, et vous ne le connaissez pas. Lui, il le connaît ; car il vient de lui, et c'est lui qui l'envoie.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Jésus s'écrie dans le temple que vous ne connaissez pas celui qui est vrai et qui l'envoie, lui qui vient de lui.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 2,
-            "completeness": 2,
-            "issues": [
-              "addition",
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 51 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 2252394793
-      }
-    },
-    "speaker": {
-      "value": "Jésus",
-      "role": "speaker",
-      "confidence": "high",
-      "sources": [
-        "JHN.7.28",
-        "JHN.7.29",
-        "speaker-quotations:JHN.7.28-JHN.7.29",
-        "acai:person:Christ",
-        "acai:person:Jesus.2"
-      ]
-    },
-    "context": {
-      "literary": {
-        "text": "Jésus enseigne dans le temple et s'adresse à ceux qui connaissent son origine humaine, affirmant qu'il vient de celui qui l'a envoyé et que personne ne connaît.",
-        "confidence": "high",
-        "sources": [
-          "JHN.7.28",
-          "JHN.7.29"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.7.28",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G228"
-          ],
-          "verse": "JHN.7.28"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "JHN.7.28"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.7.28",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.7.28",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.7.28"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [],
-      "required": false
-    },
-    "sources": [
-      {
-        "id": "JHN.7.28",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.7.29",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G228",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "speaker-quotations:JHN.7.28-JHN.7.29",
-        "type": "speaker_data",
-        "dataset": "speaker-quotations",
-        "license": "CC-BY-4.0 (plus MIT for the Glyssen / Faith Comes By Hearing character data)"
-      },
-      {
-        "id": "acai:person:Christ",
-        "type": "entity_data",
-        "dataset": "acai",
-        "license": "CC-BY-SA-4.0"
-      },
-      {
-        "id": "acai:person:Jesus.2",
-        "type": "entity_data",
-        "dataset": "acai",
-        "license": "CC-BY-SA-4.0"
-      }
-    ]
-  },
-  {
-    "schema_version": "2",
-    "language": "fr",
-    "translation": "LSG 1910",
-    "reference": {
-      "book": "JHN",
-      "start": "8.13",
-      "end": "8.18",
-      "label": "Jean 8,13-18"
-    },
-    "excerpt": {
-      "text": "Là-dessus, les pharisiens lui dirent: Tu rends témoignage de toi-même; ton témoignage n’est pas vrai. Jésus leur répondit: Quoique je rende témoignage de moi-même, mon témoignage est vrai, car je sais d’où je suis venu et où je vais; mais vous, vous ne savez d’où je viens ni où je vais. Vous jugez selon la chair; moi, je ne juge personne. Et si je juge, mon jugement est vrai, car je ne suis pas seul; mais le Père qui m’a envoyé est avec moi. Il est écrit dans votre loi quele témoignage de deux hommes est vrai; je rends témoignage de moi-même, etle Père qui m’a envoyé rend témoignage de moi.",
-      "verses": [
-        "JHN.8.13",
-        "JHN.8.14",
-        "JHN.8.15",
-        "JHN.8.16",
-        "JHN.8.17",
-        "JHN.8.18"
-      ]
-    },
-    "paraphrase": {
-      "text": "Alors les pharisiens lui disent : tu témoignes de toi-même, ton témoignage n'est pas vrai. Jésus leur répond : même si je témoigne de moi-même, mon témoignage est vrai, car je sais d'où je viens et où je vais ; mais vous, vous ne savez ni d'où je viens ni où je vais. Vous jugez selon la chair ; moi, je ne juge personne. Et si je juge, mon jugement est vrai, car je ne suis pas seul, mais le Père qui m'envoie est avec moi. Il est écrit dans votre loi que le témoignage de deux hommes est vrai ; je témoigne de moi-même, et le Père qui m'envoie témoigne de moi.",
-      "genre": "discourse",
-      "genre_by": "model",
-      "history": [
-        {
-          "attempt": 1,
-          "style": "close",
-          "text": "Alors les pharisiens lui disent : tu témoignes de toi-même, ton témoignage n'est pas vrai. Jésus leur répond : même si je témoigne de moi-même, mon témoignage est vrai, car je sais d'où je viens et où je vais ; mais vous, vous ne savez ni d'où je viens ni où je vais. Vous jugez selon la chair ; moi, je ne juge personne. Et si je juge, mon jugement est vrai, car je ne suis pas seul, mais le Père qui m'envoie est avec moi. Il est écrit dans votre loi que le témoignage de deux hommes est vrai ; je témoigne de moi-même, et le Père qui m'envoie témoigne de moi.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "pass",
-            "fidelity": 5,
-            "completeness": 5,
-            "issues": [],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        },
-        {
-          "attempt": 2,
-          "style": "condensed",
-          "text": "Les pharisiens lui disent que son témoignage sur lui-même n'est pas vrai ; Jésus répond que son témoignage est vrai car il sait d'où il vient et où il va, qu'il ne juge personne et que le Père qui l'envoie témoigne avec lui.",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "paraphrase-gen-9",
-          "code_checks": {
-            "non_empty": true,
-            "not_longer_than_excerpt": true,
-            "target_language": true,
-            "tense_present": true
-          },
-          "verification": {
-            "model": "mistralai/mistral-large-4-0",
-            "verdict": "fail",
-            "fidelity": 4,
-            "completeness": 3,
-            "issues": [
-              "other"
-            ],
-            "prompt_version": "paraphrase-verify-7"
-          }
-        }
-      ],
-      "arbitration": {
-        "selected_attempt": 1,
-        "reason": "close selected: fidelity 5 + completeness 5, 113 words; 1 other candidate(s) not selected",
-        "shuffle_seed": 3869213308
-      }
-    },
-    "speaker": {
-      "value": null,
-      "reason": "not_identified"
-    },
-    "context": {
-      "literary": {
-        "text": "Les pharisiens contestent le témoignage que Jésus rend de lui-même. Jésus leur répond que son témoignage est vrai, car le Père qui l'a envoyé rend témoignage de lui.",
-        "confidence": "high",
-        "sources": [
-          "JHN.8.13",
-          "JHN.8.14",
-          "JHN.8.18"
-        ],
-        "confidence_by": "model",
-        "model": "deepseek/deepseek-v4.1-flash",
-        "prompt_version": "literary-1"
-      },
-      "temporal": [
-        {
-          "kind": "scholarly_estimate",
-          "label": "Lumière du monde/Discours du Je suis",
-          "date_range": {
-            "from": 27,
-            "to": 31,
-            "era": "CE"
-          },
-          "confidence": "probable",
-          "sources": [
-            "theographic:event:420"
-          ],
-          "event": "420"
-        }
-      ],
-      "places": []
-    },
-    "discovery": {
-      "mode": "model",
-      "steps": [
-        {
-          "step": "union",
-          "verse": "JHN.8.13",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.8.13"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "JHN.8.13"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.8.13",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.8.13",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.8.13",
-            "JHN.8.14"
-          ]
-        },
-        {
-          "step": "union",
-          "verse": "JHN.8.14",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.8.14"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "JHN.8.14"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.8.14",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.8.14",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.8.14"
-          ]
-        },
-        {
-          "step": "union",
-          "verse": "JHN.8.16",
-          "routes": [
-            "strongs",
-            "pattern:fr",
-            "pattern:en"
-          ],
-          "single_route": false
-        },
-        {
-          "step": "strongs",
-          "numbers": [
-            "G227"
-          ],
-          "verse": "JHN.8.16"
-        },
-        {
-          "step": "pattern",
-          "rule": "vrai",
-          "matched": "vrai",
-          "verse": "JHN.8.16"
-        },
-        {
-          "step": "exclusion_check",
-          "verse": "JHN.8.16",
-          "rules": [
-            "amen_formula"
-          ],
-          "found": [],
-          "excluded": false
-        },
-        {
-          "step": "llm_relevance",
-          "verse": "JHN.8.16",
-          "model": "deepseek/deepseek-v4.1-flash",
-          "prompt_version": "relevance-1",
-          "verdict": "relevant",
-          "cited_verses": [
-            "JHN.8.16"
-          ]
-        }
-      ]
-    },
-    "review": {
-      "status": null,
-      "note": null,
-      "flags": [
-        "speaker_ambiguous"
-      ],
-      "required": true
-    },
-    "sources": [
-      {
-        "id": "JHN.8.13",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.8.14",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.8.15",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.8.16",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.8.17",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "JHN.8.18",
-        "type": "bible_text",
-        "dataset": "lsg1910",
-        "license": "CC0-1.0"
-      },
-      {
-        "id": "G227",
-        "type": "concordance",
-        "dataset": "byztxt",
-        "license": "Unlicense (public domain)"
-      },
-      {
-        "id": "theographic:event:420",
-        "type": "event_data",
-        "dataset": "theographic",
-        "license": "CC-BY-SA-4.0"
       }
     ]
   }
