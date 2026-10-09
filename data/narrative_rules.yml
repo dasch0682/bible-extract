@@ -1,0 +1,7 @@
+# Narrative rules: word limits for pericope.py (chapter-level summary) and narrative.py (per-excerpt).
+# Edit this file to tune prompt lengths; never hard-code these values in the code.
+
+# --- Pericope (chapter-level background summary, not in output JSON) ---
+max_words_narrative_arc: 60    # main narrative thread of the chapter
+max_words_scene_location: 30   # immediate place and broader region/route
+max_words_book_position: 40    # where this chapter sits in the book's arc
