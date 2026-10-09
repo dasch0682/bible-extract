@@ -1,7 +1,7 @@
 # Report: la vérité
 
 ## Price check
-- Checked at: 2026-10-09T16:31:21Z (source: https://openrouter.ai/api/v1/models)
+- Checked at: 2026-10-09T22:29:21Z (source: https://openrouter.ai/api/v1/models)
 - Result: OK
 
 | Model | Ref in | Ref out | Now in | Now out | Status |
@@ -178,9 +178,10 @@ Prices in USD per 1M tokens.
 - dropped (invalid in at least one language): 0
 
 ## Review
-- entries that must go through the review page: 31
+- entries that must go through the review page: 32
 
   - MAT.14.33 to MAT.14.33 (review required): genre_conflict:speaker:narrative
+  - MAT.22.16 to MAT.22.17 (review required): genre_conflict:speaker:narrative
   - MAT.26.73 to MAT.26.73 (review required): genre_conflict:speaker:narrative
   - MAT.27.54 to MAT.27.54 (review required): genre_conflict:speaker:narrative
   - MRK.5.33 to MRK.5.33: speaker_not_identified
@@ -188,35 +189,36 @@ Prices in USD per 1M tokens.
   - MRK.14.36 to MRK.14.38 (review required): genre_conflict:speaker:narrative
   - MRK.14.70 to MRK.14.70 (review required): genre_conflict:speaker:narrative
   - MRK.15.39 to MRK.15.39 (review required): genre_conflict:speaker:narrative
-  - LUK.4.23 to LUK.4.27 (review required): paraphrase_failed
-  - LUK.10.2 to LUK.10.4 (review required): paraphrase_failed
   - LUK.12.42 to LUK.12.46 (review required): paraphrase_failed
+  - LUK.22.20 to LUK.22.22 (review required): genre_conflict:speaker:narrative
   - LUK.22.59 to LUK.22.59 (review required): genre_conflict:speaker:narrative
-  - LUK.24.20 to LUK.24.24 (review required): genre_conflict:speaker:narrative
   - JHN.1.9 to JHN.1.9: speaker_not_identified
   - JHN.1.14 to JHN.1.14: speaker_not_identified
   - JHN.1.17 to JHN.1.17: speaker_not_identified
-  - JHN.1.47 to JHN.1.48 (review required): speaker_ambiguous
+  - JHN.1.47 to JHN.1.48 (review required): paraphrase_failed, speaker_ambiguous
   - JHN.5.29 to JHN.5.35 (review required): paraphrase_failed
   - JHN.6.14 to JHN.6.14 (review required): genre_conflict:speaker:narrative
-  - JHN.7.25 to JHN.7.27 (review required): paraphrase_failed
+  - JHN.6.53 to JHN.6.57 (review required): paraphrase_failed
+  - JHN.7.16 to JHN.7.19 (review required): paraphrase_failed
   - JHN.7.40 to JHN.7.40 (review required): genre_conflict:speaker:narrative
-  - JHN.8.14 to JHN.8.19 (review required): paraphrase_failed
   - JHN.10.41 to JHN.10.41 (review required): genre_conflict:speaker:narrative
+  - JHN.14.30 to JHN.15.3: narrative_failed
+  - JHN.15.24 to JHN.16.1: narrative_failed
+  - JHN.16.11 to JHN.16.15 (review required): paraphrase_failed
   - JHN.17.15 to JHN.17.21 (review required): paraphrase_failed
-  - JHN.18.36 to JHN.18.38 (review required): paraphrase_failed, speaker_ambiguous
+  - JHN.18.36 to JHN.18.38 (review required): speaker_ambiguous
   - JHN.19.35 to JHN.19.35: speaker_not_identified
   - JHN.20.30 to JHN.20.30: speaker_not_identified
   - JHN.21.24 to JHN.21.24: speaker_not_identified
+  - ACT.3.20 to ACT.3.24 (review required): paraphrase_failed
   - ACT.5.23 to ACT.5.23 (review required): genre_conflict:speaker:narrative
   - ACT.12.9 to ACT.12.9: speaker_not_identified
   - ACT.12.11 to ACT.12.11 (review required): genre_conflict:speaker:narrative
-  - ACT.26.25 to ACT.26.27 (review required): paraphrase_failed
   - ROM.1.18 to ROM.1.18: speaker_not_identified
   - ROM.1.25 to ROM.1.25: speaker_not_identified
   - ROM.2.2 to ROM.2.2: speaker_not_identified
   - ROM.2.8 to ROM.2.8: speaker_not_identified
-  - ROM.2.20 to ROM.2.20: speaker_not_identified
+  - ROM.2.20 to ROM.2.20 (review required): paraphrase_failed, speaker_not_identified
   - ROM.3.7 to ROM.3.7: speaker_not_identified
   - ROM.8.10 to ROM.8.10: speaker_not_identified
   - ROM.9.1 to ROM.9.1: speaker_not_identified
@@ -228,7 +230,7 @@ Prices in USD per 1M tokens.
   - 1CO.14.17 to 1CO.14.17: speaker_not_identified
   - 1CO.14.25 to 1CO.14.25: speaker_hypothetical
   - 2CO.1.18 to 2CO.1.18: speaker_not_identified
-  - 2CO.4.2 to 2CO.4.2: speaker_not_identified
+  - 2CO.4.2 to 2CO.4.2 (review required): paraphrase_failed, speaker_not_identified
   - 2CO.6.7 to 2CO.6.7: speaker_not_identified
   - 2CO.6.8 to 2CO.6.8: speaker_not_identified
   - 2CO.7.14 to 2CO.7.14: speaker_not_identified
@@ -240,7 +242,7 @@ Prices in USD per 1M tokens.
   - GAL.3.1 to GAL.3.1: speaker_not_identified
   - GAL.4.16 to GAL.4.16: speaker_not_identified
   - GAL.5.7 to GAL.5.7: speaker_not_identified
-  - EPH.1.13 to EPH.1.13 (review required): paraphrase_failed, speaker_not_identified
+  - EPH.1.13 to EPH.1.13: speaker_not_identified
   - EPH.4.15 to EPH.4.15: speaker_not_identified
   - EPH.4.21 to EPH.4.21: speaker_not_identified
   - EPH.4.24 to EPH.4.24: speaker_not_identified
@@ -253,7 +255,7 @@ Prices in USD per 1M tokens.
   - PHP.4.8 to PHP.4.8: speaker_not_identified
   - COL.1.5 to COL.1.5: speaker_not_identified
   - COL.1.6 to COL.1.6: speaker_not_identified
-  - COL.2.23 to COL.2.23: speaker_not_identified
+  - COL.2.23 to COL.2.23 (review required): paraphrase_failed, speaker_not_identified
   - 1TH.1.9 to 1TH.1.9: speaker_not_identified
   - 1TH.2.13 to 1TH.2.13: speaker_not_identified
   - 2TH.2.10 to 2TH.2.10: speaker_not_identified
@@ -266,7 +268,7 @@ Prices in USD per 1M tokens.
   - 1TI.4.3 to 1TI.4.3: speaker_not_identified
   - 1TI.5.3 to 1TI.5.3: speaker_not_identified
   - 1TI.5.5 to 1TI.5.5: speaker_not_identified
-  - 1TI.5.16 to 1TI.5.16 (review required): paraphrase_failed, speaker_not_identified
+  - 1TI.5.16 to 1TI.5.16: speaker_not_identified
   - 1TI.6.5 to 1TI.6.5: speaker_not_identified
   - 1TI.6.19 to 1TI.6.19: speaker_not_identified
   - 2TI.2.15 to 2TI.2.15: speaker_not_identified
@@ -275,7 +277,7 @@ Prices in USD per 1M tokens.
   - 2TI.3.7 to 2TI.3.7: speaker_not_identified
   - 2TI.3.8 to 2TI.3.8: speaker_not_identified
   - 2TI.4.4 to 2TI.4.4: speaker_not_identified
-  - TIT.1.1 to TIT.1.1: speaker_not_identified
+  - TIT.1.1 to TIT.1.1 (review required): paraphrase_failed, speaker_not_identified
   - TIT.1.9 to TIT.1.9: speaker_not_identified
   - TIT.1.13 to TIT.1.13: speaker_not_identified
   - TIT.1.14 to TIT.1.14: speaker_not_identified
@@ -286,7 +288,7 @@ Prices in USD per 1M tokens.
   - HEB.10.26 to HEB.10.26: speaker_not_identified
   - HEB.11.15 to HEB.11.15: speaker_not_identified
   - HEB.12.11 to HEB.12.11: speaker_not_identified
-  - JAS.1.18 to JAS.1.18: speaker_not_identified
+  - JAS.1.18 to JAS.1.18 (review required): paraphrase_failed, speaker_not_identified
   - JAS.3.14 to JAS.3.14: speaker_not_identified
   - JAS.5.19 to JAS.5.19: speaker_not_identified
   - 1PE.1.22 to 1PE.1.22: speaker_not_identified
@@ -316,11 +318,9 @@ Prices in USD per 1M tokens.
   - 3JN.1.4 to 3JN.1.4: speaker_not_identified
   - 3JN.1.8 to 3JN.1.8: speaker_not_identified
   - 3JN.1.12 to 3JN.1.12: speaker_not_identified
-  - REV.3.12 to REV.3.16 (review required): paraphrase_failed
   - REV.19.1 to REV.19.3 (review required): genre_conflict:speaker:narrative
-  - REV.19.9 to REV.19.10 (review required): genre_conflict:speaker:narrative, paraphrase_failed
+  - REV.19.9 to REV.19.10 (review required): paraphrase_failed
   - REV.19.11 to REV.19.11: speaker_not_identified
-  - REV.21.5 to REV.21.7 (review required): paraphrase_failed
 
 ## Cross-language check
 - neutral fields identical in every language file
