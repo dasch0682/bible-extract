@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="fr" :class="{'dark': darkMode}" x-data="app()" x-init="init()">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bible Extract — Revue</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #6b7280; border-radius: 2px; }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
+
+<!-- SOURCE PICKER MODAL -->
+<div x-show="showSourcePicker" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col">
+
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+      <h2 class="text-base font-semibold">Choisir une source de données</h2>
+      <button x-show="entries.length > 0" @click="showSourcePicker = false"
+              class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex border-b border-gray-200 dark:border-gray-700 flex-shrink-0 px-6">
+      <template x-for="tab in sourceTabs" :key="tab.id">
+        <button @click="sourceTab = tab.id"
+                :class="sourceTab === tab.id ? 'border-b-2 border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'"
+                class="px-4 py-3 text-sm font-medium transition-colors" x-text="tab.label"></button>
+      </template>
+    </div>
+
+    <div class="flex-1 overflow-y-auto scrollbar-thin px-6 py-4">
+
+      <!-- Tab: Dépôt -->
+      <div x-show="sourceTab === 'repo'">
+        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+          Outputs disponibles dans <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">dasch0682/bible-extract</code>
+        </p>
+        <div x-show="topicsLoading" class="space-y-2">
+          <div x-for="i in [1,2,3]" :key="i" class="h-14 bg-gray-100 dark:bg-gray-700 rounded-xl animate-pulse"></div>
+        </div>
+        <div x-show="topicsError" class="text-red-500 text-sm py-4" x-text="topicsError"></div>
+        <div x-show="!topicsLoading && !topicsError && availableTopics.length === 0" class="text-gray-400 text-sm py-4">
+          Aucun output trouvé dans <code>out/</code>.
+        </div>
+        <div class="space-y-2">
+          <template x-for="t in availableTopics" :key="t.topic">
+            <div @click="loadFromRepo(t)"
+                 :class="topic === t.topic && entries.length > 0 ? 'ring-2 ring-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : 'hover:bg-gray-50 dark:hover:bg-gray-700'"
+                 class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 dark:border-gray-600 cursor-pointer transition-all">
+              <div class="flex-1 min-w-0">
+                <div class="font-medium text-sm" x-text="t.label || t.topic"></div>
+                <div class="text-xs text-gray-500 mt-0.5 flex gap-3">
+                  <template x-for="lang in t.langs" :key="lang.code">
+                    <span x-text="lang.code.toUpperCase() + ' · ' + lang.size"></span>
+                  </template>
+                </div>
+              </div>
+              <span x-show="topic === t.topic && entries.length > 0"
+                    class="text-xs font-medium text-indigo-600 dark:text-indigo-400">chargé</span>
+              <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </template>
+        </div>
+        <button @click="loadAvailableTopics()"
+                class="mt-3 text-xs text-indigo-600 dark:text-indigo-400 hover:underline">Actualiser la liste</button>
+      </div>
+
+      <!-- Tab: URL -->
+      <div x-show="sourceTab === 'url'" class="space-y-4">
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+          URL brute d'un fichier JSON (ex. raw.githubusercontent.com/…/out/topic.en.json).
+          Le champ FR est optionnel.
+        </p>
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">URL — EN (ou langue principale)</label>
+          <input type="url" x-model="customUrl.en" placeholder="https://raw.githubusercontent.com/…"
+                 class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">URL — FR (optionnel)</label>
+          <input type="url" x-model="customUrl.fr" placeholder="https://raw.githubusercontent.com/…"
+                 class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <button @click="loadFromUrl()"
+                :disabled="!customUrl.en"
+                :class="customUrl.en ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'"
+                class="w-full py-2 text-sm font-medium rounded-lg transition-colors">
+          Charger depuis les URLs
+        </button>
+        <div x-show="urlError" class="text-red-500 text-sm" x-text="urlError"></div>
+      </div>
+
+      <!-- Tab: Fichier local -->
+      <div x-show="sourceTab === 'file'" class="space-y-4">
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+          Chargez un ou deux fichiers JSON depuis votre système de fichiers.
+          Le fichier FR est optionnel.
+        </p>
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Fichier EN (ou langue principale)</label>
+          <input type="file" accept=".json" @change="handleFileEn($event)"
+                 class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-indigo-50 file:text-indigo-700 dark:file:bg-indigo-900/30 dark:file:text-indigo-300" />
+          <p x-show="fileData.enName" class="text-xs text-green-600 dark:text-green-400 mt-1">
+            ✓ <span x-text="fileData.enName"></span>
+          </p>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Fichier FR (optionnel)</label>
+          <input type="file" accept=".json" @change="handleFileFr($event)"
+                 class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-indigo-50 file:text-indigo-700 dark:file:bg-indigo-900/30 dark:file:text-indigo-300" />
+          <p x-show="fileData.frName" class="text-xs text-green-600 dark:text-green-400 mt-1">
+            ✓ <span x-text="fileData.frName"></span>
+          </p>
+        </div>
+        <button @click="loadFromFiles()"
+                :disabled="!fileData.en"
+                :class="fileData.en ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'"
+                class="w-full py-2 text-sm font-medium rounded-lg transition-colors">
+          Charger les fichiers
+        </button>
+        <div x-show="fileError" class="text-red-500 text-sm" x-text="fileError"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOKEN MODAL -->
+<div x-show="showTokenModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md mx-4">
+    <h2 class="text-lg font-semibold mb-1">Token GitHub</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+      Requis pour soumettre des avis via GitHub Issues.<br/>
+      Scope : <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">public_repo</code>
+    </p>
+    <input type="password" x-model="tokenInput" placeholder="ghp_..."
+           class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4" />
+    <div class="flex gap-2 justify-end">
+      <button @click="showTokenModal = false"
+              class="px-4 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">Annuler</button>
+      <button @click="saveToken()" class="px-4 py-2 text-sm rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center gap-3">
+  <div class="flex items-center gap-2 flex-1 min-w-0">
+    <span class="font-semibold text-indigo-600 dark:text-indigo-400">Bible Extract</span>
+    <span class="text-gray-400">—</span>
+    <span class="text-sm font-medium truncate" x-text="topicLabel || 'Revue'"></span>
+  </div>
+  <div class="hidden sm:flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+    <span x-show="entries.length > 0">
+      <span class="font-medium text-gray-900 dark:text-gray-100" x-text="filtered.length"></span> / <span x-text="entries.length"></span>
+    </span>
+    <span x-show="requiredCount > 0" class="text-amber-600 dark:text-amber-400"><span x-text="requiredCount"></span> requises</span>
+    <span x-show="localCount > 0" class="text-indigo-600 dark:text-indigo-400"><span x-text="localCount"></span> locales</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <button @click="showFilterDrawer = true" class="sm:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h18M7 8h10M10 12h4"/></svg>
+    </button>
+    <!-- Source picker button -->
+    <button @click="openSourcePicker()" title="Changer la source"
+            class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7M4 7c0-2 1-3 3-3h10c2 0 3 1 3 3M4 7h16"/></svg>
+      Source
+    </button>
+    <button @click="toggleDark()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400">
+      <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+      <svg x-show="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+    </button>
+    <button @click="showTokenModal = true" :class="token ? 'text-green-500' : 'text-gray-400'"
+            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" :title="token ? 'Token configuré' : 'Configurer token GitHub'">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="flex" style="height: calc(100vh - 57px)">
+
+  <!-- Sidebar -->
+  <aside class="hidden sm:flex flex-col w-64 flex-shrink-0 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto scrollbar-thin p-4 gap-5">
+
+    <div>
+      <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Recherche</label>
+      <input type="search" x-model.debounce.300ms="filters.search" placeholder="Référence, texte..."
+             class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+    </div>
+
+    <div>
+      <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Statut</label>
+      <div class="flex flex-col gap-1">
+        <template x-for="opt in statusOptions" :key="opt.value">
+          <label class="flex items-center gap-2 cursor-pointer text-sm">
+            <input type="radio" :value="opt.value" x-model="filters.status" class="accent-indigo-600" />
+            <span x-text="opt.label"></span>
+          </label>
+        </template>
+      </div>
+    </div>
+
+    <label class="flex items-center gap-2 cursor-pointer text-sm font-medium">
+      <input type="checkbox" x-model="filters.required" class="accent-indigo-600 w-4 h-4" />
+      Révision requise uniquement
+    </label>
+
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Signalements</label>
+        <button x-show="filters.flags.length > 0" @click="filters.flags = []" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">effacer</button>
+      </div>
+      <div class="flex flex-col gap-1">
+        <template x-for="flag in allFlags" :key="flag.key">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" :value="flag.key" x-model="filters.flags" class="accent-indigo-600 w-4 h-4" />
+            <span class="flex-1 text-xs leading-tight" x-text="flag.label"></span>
+            <span class="text-xs text-gray-400" x-text="flagCounts[flag.key] || 0"></span>
+          </label>
+        </template>
+      </div>
+    </div>
+
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Livre</label>
+        <button x-show="filters.books.length > 0" @click="filters.books = []" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">effacer</button>
+      </div>
+      <div class="flex flex-col gap-2">
+        <template x-for="section in bookSections" :key="section.name">
+          <div>
+            <div class="text-xs text-gray-400 dark:text-gray-500 mb-1" x-text="section.name"></div>
+            <div class="flex flex-wrap gap-1">
+              <template x-for="book in section.books" :key="book">
+                <button @click="toggleBook(book)"
+                        :class="filters.books.includes(book) ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
+                        class="px-1.5 py-0.5 rounded text-xs font-mono transition-colors" x-text="book"></button>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Route découverte</label>
+      <div class="flex flex-col gap-1">
+        <template x-for="opt in routeOptions" :key="opt.value">
+          <label class="flex items-center gap-2 cursor-pointer text-sm">
+            <input type="radio" :value="opt.value" x-model="filters.route" class="accent-indigo-600" />
+            <span x-text="opt.label"></span>
+          </label>
+        </template>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Paraphrase</label>
+      <div class="flex flex-col gap-1">
+        <template x-for="opt in paraphraseOptions" :key="opt.value">
+          <label class="flex items-center gap-2 cursor-pointer text-sm">
+            <input type="radio" :value="opt.value" x-model="filters.paraphrase" class="accent-indigo-600" />
+            <span x-text="opt.label"></span>
+          </label>
+        </template>
+      </div>
+    </div>
+
+    <button @click="clearFilters()" x-show="hasActiveFilters"
+            class="w-full text-sm text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg py-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+      Effacer tous les filtres
+    </button>
+  </aside>
+
+  <!-- Cards -->
+  <main class="flex-1 overflow-y-auto scrollbar-thin p-4 sm:p-6">
+
+    <!-- Empty state: no data loaded -->
+    <div x-show="!loading && !error && entries.length === 0"
+         class="flex flex-col items-center justify-center h-full text-center">
+      <svg class="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      <p class="text-gray-500 dark:text-gray-400 font-medium mb-2">Aucune donnée chargée</p>
+      <button @click="openSourcePicker()"
+              class="px-5 py-2.5 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+        Choisir une source
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div x-show="loading" class="flex flex-col gap-3">
+      <template x-for="i in [1,2,3,4,5]" :key="i">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 animate-pulse">
+          <div class="flex gap-3 mb-3">
+            <div class="h-5 w-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div class="h-5 w-40 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          </div>
+          <div class="space-y-2">
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Error -->
+    <div x-show="!loading && error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center">
+      <p class="text-red-700 dark:text-red-300 font-medium mb-1">Erreur de chargement</p>
+      <p class="text-red-600 dark:text-red-400 text-sm mb-3" x-text="error"></p>
+      <button @click="openSourcePicker()" class="px-4 py-1.5 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700">Choisir une autre source</button>
+    </div>
+
+    <!-- No filter match -->
+    <div x-show="!loading && !error && entries.length > 0 && filtered.length === 0"
+         class="flex flex-col items-center justify-center py-16 text-gray-400">
+      <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <p class="text-sm">Aucune entrée ne correspond aux filtres.</p>
+    </div>
+
+    <!-- Cards -->
+    <div x-show="!loading && !error && filtered.length > 0" class="flex flex-col gap-3">
+      <template x-for="entry in filtered" :key="entryKey(entry)">
+        <article @click="selectEntry(entry)"
+                 :class="selectedEntry && entryKey(selectedEntry) === entryKey(entry) ? 'ring-2 ring-indigo-500 border-indigo-300 dark:border-indigo-600' : 'hover:border-gray-300 dark:hover:border-gray-600'"
+                 class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-5 cursor-pointer transition-all">
+
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="text-xs font-bold px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded font-mono"
+                  x-text="entry.en.reference.book"></span>
+            <span class="font-semibold text-sm sm:text-base" x-text="entry.en.reference.label"></span>
+            <div class="ml-auto flex items-center gap-1.5 flex-wrap">
+              <span x-show="entry.en.review.required && !getEffectiveStatus(entry)"
+                    class="text-xs px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-medium">⚠ requise</span>
+              <template x-if="getEffectiveStatus(entry)">
+                <span :class="statusBadgeClass(getEffectiveStatus(entry))"
+                      class="text-xs px-2 py-0.5 rounded-full font-medium"
+                      x-text="statusLabel(getEffectiveStatus(entry))"></span>
+              </template>
+              <span x-show="localReviews[entryKey(entry)]"
+                    class="text-xs px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium">local</span>
+            </div>
+          </div>
+
+          <div x-show="(entry.en.review.flags || []).length > 0" class="flex flex-wrap gap-1.5 mb-3">
+            <template x-for="flag in (entry.en.review.flags || [])" :key="flag">
+              <span :class="flagBadgeClass(flag)" class="text-xs px-2 py-0.5 rounded-full font-medium" x-text="flagShortLabel(flag)"></span>
+            </template>
+          </div>
+
+          <div class="space-y-1.5 mb-3">
+            <p x-show="entry.fr" class="text-sm text-gray-800 dark:text-gray-200 leading-relaxed">
+              <span class="text-xs font-semibold text-gray-400 mr-1.5">FR</span><span x-text="entry.fr && entry.fr.excerpt.text"></span>
+            </p>
+            <p class="text-sm leading-relaxed" :class="entry.fr ? 'text-gray-500 dark:text-gray-400' : 'text-gray-800 dark:text-gray-200'">
+              <span class="text-xs font-semibold text-gray-400 mr-1.5">EN</span><span x-text="entry.en.excerpt.text"></span>
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3 text-xs text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-700">
+            <span x-show="entry.en.paraphrase && entry.en.paraphrase.text" class="text-green-600 dark:text-green-400">✓ paraphrase</span>
+            <span x-show="!entry.en.paraphrase || !entry.en.paraphrase.text" class="text-red-500 dark:text-red-400">✗ paraphrase</span>
+            <span x-show="entry.en.speaker && entry.en.speaker.value" x-text="speakerSummary(entry.en.speaker)"></span>
+            <span :class="routeBadgeClass(entry)" class="ml-auto" x-text="routeLabel(entry)"></span>
+            <span class="text-indigo-500 dark:text-indigo-400 font-medium">Réviser →</span>
+          </div>
+        </article>
+      </template>
+    </div>
+  </main>
+
+  <!-- Detail panel -->
+  <div x-show="panelOpen && selectedEntry" x-cloak
+       x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0 translate-x-8"
+       x-transition:enter-end="opacity-100 translate-x-0"
+       x-transition:leave="transition ease-in duration-150"
+       x-transition:leave-start="opacity-100 translate-x-0"
+       x-transition:leave-end="opacity-0 translate-x-8"
+       @keydown.escape.window="closePanel()"
+       class="fixed inset-y-0 right-0 z-30 w-full sm:w-[500px] bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex flex-col shadow-2xl"
+       style="top: 57px">
+    <template x-if="selectedEntry">
+      <div class="flex flex-col h-full">
+
+        <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+          <span class="text-xs font-bold px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded font-mono"
+                x-text="selectedEntry.en.reference.book"></span>
+          <span class="font-semibold flex-1 text-sm" x-text="selectedEntry.en.reference.label"></span>
+          <button @click="closePanel()" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto scrollbar-thin px-5 py-4 space-y-6">
+
+          <div x-show="(selectedEntry.en.review.flags || []).length > 0">
+            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Signalements</h3>
+            <div class="flex flex-wrap gap-2">
+              <template x-for="flag in (selectedEntry.en.review.flags || [])" :key="flag">
+                <span :class="flagBadgeClass(flag)" class="text-xs px-3 py-1 rounded-full font-medium" x-text="flagLabel(flag)"></span>
+              </template>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Extrait</h3>
+            <div class="space-y-3">
+              <div x-show="selectedEntry.fr" class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                <div class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-2">FR — <span class="font-normal text-gray-500 dark:text-gray-400" x-text="selectedEntry.fr && selectedEntry.fr.translation"></span></div>
+                <p class="text-sm leading-relaxed" x-text="selectedEntry.fr && selectedEntry.fr.excerpt.text"></p>
+              </div>
+              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                <div class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-2">EN — <span class="font-normal text-gray-500 dark:text-gray-400" x-text="selectedEntry.en.translation"></span></div>
+                <p class="text-sm leading-relaxed" x-text="selectedEntry.en.excerpt.text"></p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Paraphrase</h3>
+            <template x-if="selectedEntry.en.paraphrase && selectedEntry.en.paraphrase.text">
+              <div class="space-y-3">
+                <div x-show="selectedEntry.fr && selectedEntry.fr.paraphrase && selectedEntry.fr.paraphrase.text"
+                     class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">FR</span>
+                    <span class="text-xs text-gray-400" x-text="'genre: ' + (selectedEntry.fr && selectedEntry.fr.paraphrase && selectedEntry.fr.paraphrase.genre || '?')"></span>
+                  </div>
+                  <p class="text-sm leading-relaxed italic text-gray-700 dark:text-gray-300" x-text="selectedEntry.fr && selectedEntry.fr.paraphrase && selectedEntry.fr.paraphrase.text"></p>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">EN</span>
+                    <span class="text-xs text-gray-400" x-text="'genre: ' + (selectedEntry.en.paraphrase && selectedEntry.en.paraphrase.genre || '?')"></span>
+                  </div>
+                  <p class="text-sm leading-relaxed italic text-gray-700 dark:text-gray-300" x-text="selectedEntry.en.paraphrase && selectedEntry.en.paraphrase.text"></p>
+                </div>
+              </div>
+            </template>
+            <template x-if="!selectedEntry.en.paraphrase || !selectedEntry.en.paraphrase.text">
+              <div>
+                <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-3">
+                  <p class="text-sm text-red-700 dark:text-red-300 font-medium mb-1">Aucune paraphrase valide</p>
+                  <p x-show="selectedEntry.en.paraphrase && selectedEntry.en.paraphrase.arbitration"
+                     class="text-xs text-red-600 dark:text-red-400"
+                     x-text="selectedEntry.en.paraphrase && selectedEntry.en.paraphrase.arbitration && selectedEntry.en.paraphrase.arbitration.reason"></p>
+                </div>
+                <div x-data="{showHistory: false}"
+                     x-show="selectedEntry.en.paraphrase && (selectedEntry.en.paraphrase.history || []).length > 0">
+                  <button @click="showHistory = !showHistory"
+                          class="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1 mb-2">
+                    <svg :class="showHistory ? 'rotate-90' : ''" class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <span x-text="'Tentatives (' + (selectedEntry.en.paraphrase && (selectedEntry.en.paraphrase.history || []).length || 0) + ')'"></span>
+                  </button>
+                  <div x-show="showHistory" class="space-y-2">
+                    <template x-for="(attempt, idx) in (selectedEntry.en.paraphrase && selectedEntry.en.paraphrase.history || [])" :key="idx">
+                      <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 text-xs border border-gray-200 dark:border-gray-600">
+                        <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                          <span class="font-semibold capitalize" x-text="attempt.style || 'tentative ' + (idx+1)"></span>
+                          <span x-show="attempt.verification"
+                                :class="attempt.verification && attempt.verification.verdict === 'pass' ? 'text-green-600' : 'text-red-500'"
+                                x-text="attempt.verification && attempt.verification.verdict"></span>
+                          <template x-if="attempt.verification">
+                            <span class="text-gray-400 ml-auto">fidélité: <span x-text="attempt.verification.fidelity"></span>/10 · complétude: <span x-text="attempt.verification.completeness"></span>/10</span>
+                          </template>
+                        </div>
+                        <p class="italic text-gray-600 dark:text-gray-300 mb-1.5" x-text="attempt.text"></p>
+                        <template x-if="attempt.verification && (attempt.verification.issues || []).length > 0">
+                          <p class="text-red-600 dark:text-red-400">Problèmes : <span x-text="attempt.verification.issues.join(', ')"></span></p>
+                        </template>
+                        <p class="text-gray-400 mt-1"><span x-text="attempt.model"></span> · <span x-text="attempt.prompt_version"></span></p>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <div x-show="selectedEntry.en.speaker">
+            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Locuteur</h3>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+              <p class="text-sm font-medium" x-text="selectedEntry.en.speaker && selectedEntry.en.speaker.value || 'Non identifié'"></p>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-xs text-gray-500" x-text="selectedEntry.en.speaker && selectedEntry.en.speaker.role"></span>
+                <span class="text-xs" :class="confidenceClass(selectedEntry.en.speaker && selectedEntry.en.speaker.confidence)"
+                      x-text="selectedEntry.en.speaker && selectedEntry.en.speaker.confidence"></span>
+              </div>
+            </div>
+          </div>
+
+          <div x-show="selectedEntry.en.context">
+            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Contexte</h3>
+            <div class="space-y-3">
+              <div x-show="selectedEntry.en.context && selectedEntry.en.context.literary">
+                <div class="text-xs font-medium text-gray-500 mb-1">Littéraire</div>
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
+                  <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed"
+                     x-text="(selectedEntry.fr && selectedEntry.fr.context && selectedEntry.fr.context.literary && selectedEntry.fr.context.literary.text) || (selectedEntry.en.context && selectedEntry.en.context.literary && selectedEntry.en.context.literary.text)"></p>
+                  <div class="flex items-center gap-2 mt-2 text-xs">
+                    <span :class="confidenceClass(selectedEntry.en.context && selectedEntry.en.context.literary && selectedEntry.en.context.literary.confidence)"
+                          x-text="selectedEntry.en.context && selectedEntry.en.context.literary && selectedEntry.en.context.literary.confidence"></span>
+                    <span class="text-gray-400" x-text="selectedEntry.en.context && selectedEntry.en.context.literary && selectedEntry.en.context.literary.prompt_version"></span>
+                  </div>
+                </div>
+              </div>
+              <div x-show="(selectedEntry.en.context && selectedEntry.en.context.temporal || []).length > 0">
+                <div class="text-xs font-medium text-gray-500 mb-1">Dates</div>
+                <div class="space-y-1">
+                  <template x-for="(d, idx) in (selectedEntry.en.context && selectedEntry.en.context.temporal || [])" :key="idx">
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded p-2 border border-gray-200 dark:border-gray-600 text-xs flex items-center gap-2 flex-wrap">
+                      <span class="font-medium" x-text="d.label"></span>
+                      <span class="text-gray-500" x-text="formatDateRange(d.date_range)"></span>
+                      <span :class="confidenceClass(d.confidence)" x-text="d.confidence"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+              <div x-show="(selectedEntry.en.context && selectedEntry.en.context.places || []).length > 0">
+                <div class="text-xs font-medium text-gray-500 mb-1">Lieux</div>
+                <div class="flex flex-wrap gap-1">
+                  <template x-for="(place, idx) in (selectedEntry.en.context && selectedEntry.en.context.places || [])" :key="idx">
+                    <span class="text-xs bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded"
+                          x-text="place.name || place.id"></span>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Découverte</h3>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600 text-xs space-y-1.5">
+              <div>Mode : <span class="font-medium" x-text="selectedEntry.en.discovery && selectedEntry.en.discovery.mode"></span></div>
+              <template x-for="(step, idx) in (selectedEntry.en.discovery && selectedEntry.en.discovery.steps || [])" :key="idx">
+                <div x-show="step.step === 'union'" class="flex items-center gap-2 flex-wrap">
+                  <span class="font-mono font-medium" x-text="step.verse"></span>
+                  <template x-for="r in (step.routes || [])" :key="r">
+                    <span class="bg-gray-200 dark:bg-gray-600 px-1.5 py-0.5 rounded" x-text="r"></span>
+                  </template>
+                  <span x-show="step.single_route" class="text-amber-600 dark:text-amber-400 font-medium">⚠ route unique</span>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Review form -->
+          <div class="border-t-2 border-indigo-200 dark:border-indigo-800 pt-5">
+            <h3 class="text-sm font-semibold mb-4">Formulaire de revue</h3>
+
+            <div class="mb-4">
+              <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Décision</label>
+              <div class="flex flex-wrap gap-2">
+                <template x-for="opt in reviewStatusOptions" :key="opt.value">
+                  <label :class="reviewForm.status === opt.value ? opt.activeClass : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-transparent'"
+                         class="flex items-center px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer border transition-colors">
+                    <input type="radio" :value="opt.value" x-model="reviewForm.status" class="sr-only" />
+                    <span x-text="opt.label"></span>
+                  </label>
+                </template>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Note</label>
+              <textarea x-model="reviewForm.note" rows="2" placeholder="Observation libre..."
+                        class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+            </div>
+
+            <div x-data="{showFeedback: false}" class="mb-5">
+              <button @click="showFeedback = !showFeedback"
+                      class="flex items-center gap-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-400 mb-2 hover:underline">
+                <svg :class="showFeedback ? 'rotate-90' : ''" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                Contribuer à l'amélioration du process
+              </button>
+              <div x-show="showFeedback" class="space-y-3 pl-3 border-l-2 border-indigo-200 dark:border-indigo-800">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Domaine</label>
+                  <div class="flex flex-wrap gap-1.5">
+                    <template x-for="d in feedbackDomains" :key="d.value">
+                      <label :class="reviewForm.domains.includes(d.value) ? 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border-indigo-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600'"
+                             class="flex items-center px-2.5 py-1 rounded-lg text-xs font-medium cursor-pointer border transition-colors">
+                        <input type="checkbox" :value="d.value" x-model="reviewForm.domains" class="sr-only" />
+                        <span x-text="d.label"></span>
+                      </label>
+                    </template>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Problème</label>
+                  <textarea x-model="reviewForm.problem" rows="2" placeholder="Qu'est-ce qui est incorrect ?"
+                            class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-xs bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Suggestion</label>
+                  <textarea x-model="reviewForm.suggestion" rows="2" placeholder="Texte corrigé, instruction de prompt..."
+                            class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-xs bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+                </div>
+                <div x-show="promptVersions(selectedEntry).length > 0">
+                  <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Versions prompt</label>
+                  <div class="flex flex-wrap gap-1.5">
+                    <template x-for="pv in promptVersions(selectedEntry)" :key="pv">
+                      <span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded font-mono" x-text="pv"></span>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-2">
+              <button @click="saveLocal(selectedEntry)"
+                      class="flex-1 px-4 py-2 text-sm font-medium border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                Sauvegarder
+              </button>
+              <button @click="submitIssue(selectedEntry)" :disabled="submitting"
+                      :class="submitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-indigo-700'"
+                      class="flex-1 px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg transition-colors">
+                <span x-show="!submitting">Soumettre l'avis</span>
+                <span x-show="submitting">Envoi…</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </template>
+  </div>
+
+</div>
+
+<!-- Mobile filter drawer -->
+<div x-show="showFilterDrawer" x-cloak class="fixed inset-0 z-50 sm:hidden">
+  <div @click="showFilterDrawer = false" class="absolute inset-0 bg-black/50"></div>
+  <div class="absolute inset-y-0 left-0 w-72 bg-white dark:bg-gray-800 overflow-y-auto p-4">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="font-semibold">Filtres</h2>
+      <button @click="showFilterDrawer = false" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="text-sm text-gray-500">Filtres disponibles sur écran ≥ 640 px.</p>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+  <template x-for="t in toasts" :key="t.id">
+    <div :class="t.type === 'success' ? 'bg-green-600' : t.type === 'error' ? 'bg-red-600' : 'bg-gray-800'"
+         class="text-white text-sm px-4 py-3 rounded-lg shadow-lg pointer-events-auto max-w-sm"
+         x-transition x-text="t.msg"></div>
+  </template>
+</div>
+
+<script>
+function app() {
+  return {
+    owner: 'dasch0682',
+    repo: 'bible-extract',
+    branch: 'master',
+
+    topic: '',
+    topicLabel: '',
+    entries: [],
+    loading: false,
+    error: null,
+
+    /* source picker */
+    showSourcePicker: false,
+    sourceTab: 'repo',
+    sourceTabs: [
+      { id: 'repo', label: 'Dépôt' },
+      { id: 'url',  label: 'URL' },
+      { id: 'file', label: 'Fichier local' },
+    ],
+    availableTopics: [],
+    topicsLoading: false,
+    topicsError: null,
+    customUrl: { en: '', fr: '' },
+    urlError: null,
+    fileData: { en: null, fr: null, enName: '', frName: '' },
+    fileError: null,
+
+    filters: { search: '', status: 'all', required: false, flags: [], books: [], route: 'all', paraphrase: 'all' },
+
+    panelOpen: false,
+    selectedEntry: null,
+    showTokenModal: false,
+    showFilterDrawer: false,
+    darkMode: false,
+    submitting: false,
+    token: '',
+    tokenInput: '',
+    localReviews: {},
+    toasts: [],
+    reviewForm: { status: null, note: '', domains: [], problem: '', suggestion: '' },
+
+    statusOptions: [
+      { value: 'all', label: 'Tous' },
+      { value: 'pending', label: 'En attente' },
+      { value: 'approved', label: 'Approuvés' },
+      { value: 'rejected', label: 'Rejetés' },
+      { value: 'needs_rework', label: 'À retravailler' },
+    ],
+    reviewStatusOptions: [
+      { value: null, label: 'En attente', activeClass: 'bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 border-gray-400' },
+      { value: 'approved', label: '✓ Approuvé', activeClass: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-400' },
+      { value: 'needs_rework', label: '⟳ À retravailler', activeClass: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-400' },
+      { value: 'rejected', label: '✗ Rejeté', activeClass: 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-400' },
+    ],
+    routeOptions: [
+      { value: 'all', label: 'Toutes' },
+      { value: 'both', label: "Strong's + patterns" },
+      { value: 'strongs_only', label: "Strong's uniquement" },
+      { value: 'patterns_only', label: 'Patterns uniquement' },
+    ],
+    paraphraseOptions: [
+      { value: 'all', label: 'Toutes' },
+      { value: 'present', label: 'Présente' },
+      { value: 'absent', label: 'Absente / échouée' },
+    ],
+    allFlags: [
+      { key: 'paraphrase_failed', label: 'Paraphrase échouée' },
+      { key: 'genre_conflict:speaker:narrative', label: 'Conflit genre/locuteur' },
+      { key: 'speaker_ambiguous', label: 'Locuteur ambigu' },
+      { key: 'speaker_not_identified', label: 'Locuteur non identifié' },
+      { key: 'speaker_hypothetical', label: 'Locuteur hypothétique' },
+      { key: 'speaker_partial_coverage', label: 'Couverture partielle' },
+    ],
+    feedbackDomains: [
+      { value: 'paraphrase', label: 'Paraphrase' },
+      { value: 'speaker', label: 'Locuteur' },
+      { value: 'bounds', label: 'Bornes' },
+      { value: 'relevance', label: 'Pertinence' },
+      { value: 'literary', label: 'Contexte littéraire' },
+    ],
+    bookSections: [
+      { name: 'Évangiles', books: ['MAT','MRK','LUK','JHN'] },
+      { name: 'Actes', books: ['ACT'] },
+      { name: 'Lettres pauliniennes', books: ['ROM','1CO','2CO','GAL','EPH','PHP','COL','1TH','2TH','1TI','2TI','TIT'] },
+      { name: 'Lettres générales', books: ['HEB','JAS','1PE','2PE','1JN','2JN','3JN'] },
+      { name: 'Apocalypse', books: ['REV'] },
+    ],
+
+    get filtered() {
+      return this.entries.filter(e => {
+        const en = e.en;
+        const local = this.localReviews[this.entryKey(e)];
+        const effectiveStatus = (local ? local.status : en.review.status) || 'pending';
+
+        if (this.filters.search) {
+          const q = this.filters.search.toLowerCase();
+          if (!en.reference.label.toLowerCase().includes(q) &&
+              !en.excerpt.text.toLowerCase().includes(q) &&
+              !(e.fr && e.fr.excerpt.text.toLowerCase().includes(q))) return false;
+        }
+        if (this.filters.status !== 'all' && effectiveStatus !== this.filters.status) return false;
+        if (this.filters.required && !en.review.required) return false;
+        if (this.filters.flags.length > 0) {
+          const ef = en.review.flags || [];
+          if (!this.filters.flags.every(f => ef.includes(f))) return false;
+        }
+        if (this.filters.books.length > 0 && !this.filters.books.includes(en.reference.book)) return false;
+        if (this.filters.route !== 'all') {
+          const u = (en.discovery.steps || []).find(s => s.step === 'union');
+          if (u) {
+            const hasS = (u.routes || []).includes('strongs');
+            const hasP = (u.routes || []).some(r => r.startsWith('pattern:'));
+            if (this.filters.route === 'both' && !(hasS && hasP)) return false;
+            if (this.filters.route === 'strongs_only' && !(hasS && !hasP)) return false;
+            if (this.filters.route === 'patterns_only' && !(!hasS && hasP)) return false;
+          }
+        }
+        if (this.filters.paraphrase !== 'all') {
+          const has = en.paraphrase && en.paraphrase.text;
+          if (this.filters.paraphrase === 'present' && !has) return false;
+          if (this.filters.paraphrase === 'absent' && has) return false;
+        }
+        return true;
+      });
+    },
+
+    get flagCounts() {
+      const c = {};
+      for (const e of this.entries)
+        for (const f of (e.en.review.flags || []))
+          c[f] = (c[f] || 0) + 1;
+      return c;
+    },
+    get requiredCount() { return this.entries.filter(e => e.en.review.required).length; },
+    get localCount() { return Object.keys(this.localReviews).length; },
+    get hasActiveFilters() {
+      return this.filters.search || this.filters.status !== 'all' || this.filters.required ||
+             this.filters.flags.length > 0 || this.filters.books.length > 0 ||
+             this.filters.route !== 'all' || this.filters.paraphrase !== 'all';
+    },
+
+    async init() {
+      this.darkMode = localStorage.getItem('darkMode') === 'true';
+      this.token = sessionStorage.getItem('gh_token') || '';
+      this.loadLocalReviews();
+      this.showSourcePicker = true;
+      await this.loadAvailableTopics();
+    },
+
+    async openSourcePicker() {
+      this.showSourcePicker = true;
+      if (this.availableTopics.length === 0) await this.loadAvailableTopics();
+    },
+
+    async loadAvailableTopics() {
+      this.topicsLoading = true;
+      this.topicsError = null;
+      try {
+        const resp = await fetch(`https://api.github.com/repos/${this.owner}/${this.repo}/contents/out`);
+        if (!resp.ok) throw new Error(`GitHub API: HTTP ${resp.status}`);
+        const files = await resp.json();
+        const byTopic = {};
+        for (const f of files) {
+          const m = f.name.match(/^(.+)\.(en|fr)\.json$/);
+          if (!m) continue;
+          const [, topicName, lang] = m;
+          if (!byTopic[topicName]) byTopic[topicName] = { topic: topicName, label: topicName, langs: [] };
+          byTopic[topicName].langs.push({
+            code: lang,
+            size: f.size > 1024 ? Math.round(f.size / 1024) + ' ko' : f.size + ' o',
+            download_url: f.download_url,
+          });
+        }
+        this.availableTopics = Object.values(byTopic);
+      } catch (err) {
+        this.topicsError = err.message;
+      } finally {
+        this.topicsLoading = false;
+      }
+    },
+
+    async loadFromRepo(topicObj) {
+      this.loading = true; this.error = null;
+      this.topic = topicObj.topic;
+      this.topicLabel = topicObj.label || topicObj.topic;
+      try {
+        const base = `https://raw.githubusercontent.com/${this.owner}/${this.repo}/${this.branch}/out/${this.topic}`;
+        const enLang = topicObj.langs.find(l => l.code === 'en');
+        const frLang = topicObj.langs.find(l => l.code === 'fr');
+        const enUrl = enLang ? enLang.download_url : `${base}.en.json`;
+        const frUrl = frLang ? frLang.download_url : null;
+        const [enData, frData] = await Promise.all([
+          fetch(enUrl).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }),
+          frUrl ? fetch(frUrl).then(r => r.ok ? r.json() : null) : Promise.resolve(null),
+        ]);
+        this.entries = enData.map((e, i) => ({ en: e, fr: frData ? frData[i] : null }));
+        this.loadLocalReviews();
+        this.showSourcePicker = false;
+      } catch (err) {
+        this.error = err.message;
+        this.showSourcePicker = false;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async loadFromUrl() {
+      if (!this.customUrl.en) return;
+      this.loading = true; this.error = null; this.urlError = null;
+      try {
+        const [enData, frData] = await Promise.all([
+          fetch(this.customUrl.en).then(r => { if (!r.ok) throw new Error(`EN HTTP ${r.status}`); return r.json(); }),
+          this.customUrl.fr ? fetch(this.customUrl.fr).then(r => r.ok ? r.json() : null) : Promise.resolve(null),
+        ]);
+        this.entries = enData.map((e, i) => ({ en: e, fr: frData ? frData[i] : null }));
+        this.topic = this.customUrl.en.split('/').pop().replace(/\.en\.json$/, '');
+        this.topicLabel = this.topic;
+        this.loadLocalReviews();
+        this.showSourcePicker = false;
+      } catch (err) {
+        this.urlError = err.message;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async handleFileEn(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        this.fileData.en = JSON.parse(await file.text());
+        this.fileData.enName = file.name;
+        this.fileError = null;
+      } catch (e) { this.fileError = 'Fichier EN invalide : ' + e.message; }
+    },
+
+    async handleFileFr(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        this.fileData.fr = JSON.parse(await file.text());
+        this.fileData.frName = file.name;
+        this.fileError = null;
+      } catch (e) { this.fileError = 'Fichier FR invalide : ' + e.message; }
+    },
+
+    loadFromFiles() {
+      if (!this.fileData.en) return;
+      this.fileError = null;
+      this.entries = this.fileData.en.map((e, i) => ({ en: e, fr: this.fileData.fr ? this.fileData.fr[i] : null }));
+      this.topic = this.fileData.enName.replace(/\.en\.json$/, '');
+      this.topicLabel = this.topic;
+      this.loadLocalReviews();
+      this.showSourcePicker = false;
+    },
+
+    entryKey(entry) {
+      const r = entry.en.reference;
+      return `${this.topic}_${r.book}_${r.start}_${r.end}`;
+    },
+
+    selectEntry(entry) {
+      this.selectedEntry = entry;
+      this.panelOpen = true;
+      const local = this.localReviews[this.entryKey(entry)];
+      this.reviewForm = {
+        status: local ? local.status : entry.en.review.status,
+        note: local ? local.note : (entry.en.review.note || ''),
+        domains: [], problem: '', suggestion: '',
+      };
+    },
+
+    closePanel() { this.panelOpen = false; this.selectedEntry = null; },
+
+    getEffectiveStatus(entry) {
+      const local = this.localReviews[this.entryKey(entry)];
+      return local ? local.status : entry.en.review.status;
+    },
+
+    saveLocal(entry) {
+      const key = this.entryKey(entry);
+      const data = { status: this.reviewForm.status, note: this.reviewForm.note, savedAt: new Date().toISOString() };
+      this.localReviews[key] = data;
+      localStorage.setItem(`bible_review_${key}`, JSON.stringify(data));
+      this.toast('Revue sauvegardée localement', 'success');
+    },
+
+    loadLocalReviews() {
+      const prefix = `bible_review_${this.topic}_`;
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith(prefix)) {
+          try { this.localReviews[k.slice('bible_review_'.length)] = JSON.parse(localStorage.getItem(k)); } catch {}
+        }
+      }
+    },
+
+    async submitIssue(entry) {
+      if (!this.token) { this.showTokenModal = true; this.toast("Configurez d'abord votre token GitHub", 'error'); return; }
+      this.submitting = true;
+      try {
+        const ref = entry.en.reference;
+        const flags = entry.en.review.flags || [];
+        const payload = {
+          type: 'bible-extract-feedback', version: '1',
+          topic: this.topic,
+          ref: `${ref.book}.${ref.start}`, ref_label: ref.label,
+          flags,
+          review: { status: this.reviewForm.status, note: this.reviewForm.note },
+          feedback: { domains: this.reviewForm.domains, problem: this.reviewForm.problem, suggestion: this.reviewForm.suggestion, prompt_versions: this.promptVersions(entry) },
+          meta: {
+            submitted_at: new Date().toISOString(),
+            model_paraphrase: entry.en.paraphrase && entry.en.paraphrase.history && entry.en.paraphrase.history[0] && entry.en.paraphrase.history[0].model || null,
+            model_literary: entry.en.context && entry.en.context.literary && entry.en.context.literary.model || null,
+          },
+        };
+        const title = `[feedback] ${ref.label} | ${flags.length ? flags.join(', ') : 'no flags'}`;
+        const body = `## Feedback structuré\n\n\`\`\`json\n${JSON.stringify(payload, null, 2)}\n\`\`\``;
+        const resp = await fetch(`https://api.github.com/repos/${this.owner}/${this.repo}/issues`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${this.token}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
+          body: JSON.stringify({ title, body, labels: ['feedback'] }),
+        });
+        if (!resp.ok) { const e = await resp.json(); throw new Error(e.message || `HTTP ${resp.status}`); }
+        const issue = await resp.json();
+        this.saveLocal(entry);
+        this.toast(`Avis soumis — Issue #${issue.number}`, 'success');
+      } catch (err) {
+        this.toast(`Erreur : ${err.message}`, 'error');
+      } finally {
+        this.submitting = false;
+      }
+    },
+
+    saveToken() { this.token = this.tokenInput.trim(); sessionStorage.setItem('gh_token', this.token); this.showTokenModal = false; this.toast('Token enregistré', 'success'); },
+    toggleBook(code) { const i = this.filters.books.indexOf(code); if (i === -1) this.filters.books.push(code); else this.filters.books.splice(i, 1); },
+    clearFilters() { this.filters = { search: '', status: 'all', required: false, flags: [], books: [], route: 'all', paraphrase: 'all' }; },
+    toggleDark() { this.darkMode = !this.darkMode; localStorage.setItem('darkMode', this.darkMode); },
+    toast(msg, type = 'info') { const id = Date.now(); this.toasts.push({ id, msg, type }); setTimeout(() => { this.toasts = this.toasts.filter(t => t.id !== id); }, 3500); },
+
+    promptVersions(entry) {
+      if (!entry) return [];
+      const pvs = new Set();
+      const p = entry.en.paraphrase;
+      if (p) (p.history || []).forEach(h => { if (h.prompt_version) pvs.add(h.prompt_version); if (h.verification && h.verification.prompt_version) pvs.add(h.verification.prompt_version); });
+      if (entry.en.context && entry.en.context.literary && entry.en.context.literary.prompt_version) pvs.add(entry.en.context.literary.prompt_version);
+      return [...pvs];
+    },
+
+    speakerSummary(speaker) {
+      if (!speaker || !speaker.value) return '';
+      return speaker.value.split(' ').slice(0, 3).join(' ') + ` (${speaker.confidence || '?'})`;
+    },
+
+    formatDateRange(dr) {
+      if (!dr) return '';
+      const era = dr.era || 'CE';
+      return dr.from === dr.to ? `${Math.abs(dr.from)} ${era}` : `${Math.abs(dr.from)}–${Math.abs(dr.to)} ${era}`;
+    },
+
+    statusBadgeClass(s) {
+      return { approved: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400', rejected: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400', needs_rework: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400' }[s] || 'bg-gray-100 dark:bg-gray-700 text-gray-600';
+    },
+    statusLabel(s) {
+      return { approved: '✓ approuvé', rejected: '✗ rejeté', needs_rework: '⟳ à retravailler', pending: 'en attente' }[s] || s;
+    },
+    flagBadgeClass(flag) {
+      if (flag.startsWith('paraphrase_failed')) return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400';
+      if (flag.startsWith('genre_conflict')) return 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400';
+      if (flag.startsWith('speaker_ambiguous') || flag.startsWith('speaker_hypothetical')) return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400';
+      if (flag.startsWith('speaker_partial')) return 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400';
+      return 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300';
+    },
+    flagShortLabel(flag) {
+      return { 'paraphrase_failed': '✗ para.', 'genre_conflict:speaker:narrative': 'genre', 'speaker_ambiguous': 'ambigu', 'speaker_not_identified': 'locuteur?', 'speaker_hypothetical': 'hypothétique', 'speaker_partial_coverage': 'couverture partielle' }[flag] || flag;
+    },
+    flagLabel(flag) {
+      return { 'paraphrase_failed': 'Paraphrase échouée', 'genre_conflict:speaker:narrative': 'Conflit de genre (locuteur/narratif)', 'speaker_ambiguous': 'Locuteur ambigu', 'speaker_not_identified': 'Locuteur non identifié', 'speaker_hypothetical': 'Locuteur hypothétique', 'speaker_partial_coverage': 'Couverture partielle du locuteur' }[flag] || flag;
+    },
+    confidenceClass(level) {
+      return { high: 'text-green-600 dark:text-green-400', certain: 'text-green-600 dark:text-green-400', probable: 'text-blue-600 dark:text-blue-400', medium: 'text-yellow-600 dark:text-yellow-400', approximate: 'text-yellow-600 dark:text-yellow-400', low: 'text-red-500', disputed: 'text-red-500' }[level] || 'text-gray-500';
+    },
+    routeLabel(entry) {
+      const u = (entry.en.discovery.steps || []).find(s => s.step === 'union');
+      if (!u) return '';
+      const hasS = (u.routes || []).includes('strongs');
+      const hasP = (u.routes || []).some(r => r.startsWith('pattern:'));
+      if (hasS && hasP) return "Strong's + patterns";
+      return hasS ? "Strong's" : hasP ? 'patterns' : '';
+    },
+    routeBadgeClass(entry) {
+      const u = (entry.en.discovery.steps || []).find(s => s.step === 'union');
+      if (!u) return 'text-gray-400';
+      const hasS = (u.routes || []).includes('strongs');
+      const hasP = (u.routes || []).some(r => r.startsWith('pattern:'));
+      return hasS && hasP ? 'text-blue-500 dark:text-blue-400' : 'text-amber-500 dark:text-amber-400';
+    },
+  };
+}
+</script>
+</body>
+</html>
