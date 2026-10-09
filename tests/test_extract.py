@@ -33,11 +33,9 @@ TOPIC = {"_id": "t", "label": "la vérité", "label_fr": "la vérité", "label_e
          "extra_instructions_fr": "Nuance fr."}
 PARA = {
     "fr": {"close": "Jésus déclare qu'il est le chemin, la vérité et la vie, et que connaître Jésus, c'est connaître le Père.",
-           "condensed": "Jésus affirme qu'il est le chemin vers le Père.",
-           "free": "Connaître Jésus, qui est la voie, la vérité et la vie, c'est connaître le Père."},
+           "condensed": "Jésus affirme qu'il est le chemin vers le Père."},
     "en": {"close": "Jesus declares that he is the way, the truth and the life, and that knowing Jesus means knowing the Father.",
-           "condensed": "Jesus says he is the only way to the Father.",
-           "free": "Whoever knows Jesus, the way, the truth and the life, knows the Father."},
+           "condensed": "Jesus says he is the only way to the Father."},
 }
 KEEP = json.dumps({"relevant": True, "cited_verses": ["JHN.14.6"], "start": "JHN.14.6", "end": "JHN.14.7"})
 DROP = json.dumps({"relevant": False, "cited_verses": [], "start": None, "end": None})
@@ -203,7 +201,7 @@ def test_rules_mode_entries_validate_in_both_languages_and_agree_on_neutral_fiel
         assert entry["translation"] == LANGS[lang]["version_label"]
         assert entry["excerpt"]["verses"] == ["JHN.14.6", "JHN.14.7"]
         assert entry["excerpt"]["text"] == " ".join(CORPORA[lang]["JHN"]["14"][v] for v in ("6", "7"))
-        assert entry["paraphrase"]["text"] and len(entry["paraphrase"]["history"]) == 3
+        assert entry["paraphrase"]["text"] and len(entry["paraphrase"]["history"]) == 2
         assert entry["speaker"]["role"] == "speaker" and entry["speaker"]["confidence"] == "medium"
         assert entry["discovery"]["mode"] == "rules"
         assert entry["review"] == {"status": None, "note": None, "flags": entry["review"]["flags"], "required": False}

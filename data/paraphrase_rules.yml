@@ -5,6 +5,10 @@
 # value is discarded, whatever its other score. The specification fixes no minimum; this one is provisional.
 min_fidelity: 4
 
+# Excerpts longer than this (word count) use only close and condensed styles; free is skipped.
+# free tends to add information on long passages.
+free_max_words: 20
+
 # Target-language check (code, no model). Common words per language code of languages.yml.
 # A candidate fails when another language's words clearly outnumber the target language's.
 # Words shared by several languages are ignored by the code. A language without a list here is not
